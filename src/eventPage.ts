@@ -1,0 +1,68 @@
+// Listen to messages sent from other parts of the extension.
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    // onMessage must return "true" if response is async.
+    let isResponseAsync = false;
+    if (request.popupMounted) {
+        console.log('eventPage notified that Popup.tsx has mounted.');
+    }
+
+
+    return isResponseAsync;
+});
+
+
+const state = {
+  token: null,
+};
+const tokenLoadPromise = new Promise((resolve) => {
+  chrome.storage.sync.get(['token'], (token) => {
+    state.token = token
+    resolve(token);
+    console.log('hi', token);
+  });
+});
+
+
+const eventList = ['onBeforeNavigate', 'onCreatedNavigationTarget',
+    'onCommitted', 'onCompleted', 'onDOMContentLoaded',
+    'onErrorOccurred', 'onReferenceFragmentUpdated', 'onTabReplaced',
+    'onHistoryStateUpdated'];
+
+export type messageTypes = 'tabUpdate';
+
+// const state = {
+//   tabChangeCallbacks: [],
+// }
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  // Listen only to complete status
+  if (!changeInfo || changeInfo.status !== 'complete') { return; }
+
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (!tabs || !tabs.length) { return; }
+
+    chrome.tabs.sendMessage(tabs[0].id, { type: 'tabUpdate', changeInfo, tab });
+  });
+});
+
+chrome.runtime.onConnect.addListener((port) => {
+  switch(port.name) {
+    case 'videoContent': setupVideoContentPort(port)
+  }
+});
+
+function setupVideoContentPort(port: chrome.runtime.Port) {
+  console.log('portttt', port);
+  // port.postMessage({question: "Who's there?"});
+  // port.onMessage.addListener((msg) => {
+  // });
+}
+
+// eventList.forEach(function(e) {
+//   chrome.webNavigation[e].addListener(function(data) {
+//     if (typeof data)
+//       console.log(chrome.i18n.getMessage('inHandler'), e, data);
+//     else
+//       console.error(chrome.i18n.getMessage('inHandlerError'), e);
+//   });
+// });
+
