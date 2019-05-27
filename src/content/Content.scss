@@ -1,0 +1,11 @@
+#screen-popup-container {
+  position: absolute;
+  bottom: 5vmin;
+  right: 5vmin;
+  min-width: 300px;
+  min-height: 400px;
+  background: white;
+  color: black;
+  z-index: 999999999;
+  border: 2px solid blue;
+}
