@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 
 import { useLoginMutation, useRegisterMutation } from '../graphql';
 
-function Login({ history }) {
+export default withRouter(function Login({ history }) {
   // TODO: remove placeholder credentials
   const [form, setForm] = React.useState({
     email: 'user-1@demo.com',
@@ -16,12 +16,14 @@ function Login({ history }) {
     update: (cache, { data }) => {
       const { token, user } = data.login ? data.login : data.register;
       chrome.storage.sync.set({ token, user });
-      cache.writeData({ data: {
-        isLoggedIn: true,
-        userData: user
-      } });
+      cache.writeData({
+        data: {
+          isLoggedIn: true,
+          userData: user,
+        },
+      });
       // TODO: consider moving this to completed since update might be called multiple times. Moved here since omplete isn't available on the 3rd party hook lib
-      history.push('/')
+      history.push('/');
     },
   };
   let auth;
@@ -33,7 +35,12 @@ function Login({ history }) {
 
   return (
     <React.Fragment>
-      <form onSubmit={(e) => { e.preventDefault(); auth()}}>
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          auth();
+        }}
+      >
         {!isLogin && (
           <input
             type="text"
@@ -41,7 +48,7 @@ function Login({ history }) {
             placeholder="Name"
             value={form.name}
             required
-            onChange={e => setForm({ ...form, name: e.target.value})}
+            onChange={e => setForm({ ...form, name: e.target.value })}
           />
         )}
         <input
@@ -50,7 +57,7 @@ function Login({ history }) {
           placeholder="Email"
           value={form.email}
           required
-          onChange={e => setForm({ ...form, email: e.target.value})}
+          onChange={e => setForm({ ...form, email: e.target.value })}
         />
         <input
           type="password"
@@ -58,18 +65,15 @@ function Login({ history }) {
           placeholder="Password"
           value={form.password}
           required
-          onChange={e => setForm({ ...form, password: e.target.value})}
+          onChange={e => setForm({ ...form, password: e.target.value })}
         />
         <button type="submit">Login</button>
       </form>
       <div>
-        <a
-          href="#"
-          onClick={() => setLogin(!isLogin)}
-        >{isLogin ? 'Need to create an account?' : 'Already have an account?'}</a>
+        <button type="button" onClick={() => setLogin(!isLogin)}>
+          {isLogin ? 'Need to create an account?' : 'Already have an account?'}
+        </button>
       </div>
     </React.Fragment>
-  )
-}
-
-export default withRouter(Login)
+  );
+});

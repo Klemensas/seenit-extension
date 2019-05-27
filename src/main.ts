@@ -1,24 +1,27 @@
 import browserService, { getStorageValue } from './browserService';
 
-export let settings = {
+export const settings = {
   debug: true,
   popup: true,
 };
-export const settingPromise = getStorageValue('settings').then((storedSettings) => {
-  settings = {
-    ...settings,
-    ...storedSettings.settings,
-  };
-  return settings;
-});
+export const settingPromise = getStorageValue('settings').then(
+  storedSettings => {
+    Object.assign(settings, {
+      ...storedSettings.settings,
+    });
+    return settings;
+  },
+);
 
 export function debugLog(...data) {
-  if (!settings.debug) { return; }
+  if (!settings.debug) {
+    return;
+  }
 
-// tslint:disable-next-line: no-console
+  // eslint-disable-next-line no-console
   console.log(data);
 }
 
-browserService.addListener(({ newValue, oldValue }) => {
-  settings = newValue;
+browserService.addListener(({ newValue }) => {
+  Object.assign(settings, newValue);
 });

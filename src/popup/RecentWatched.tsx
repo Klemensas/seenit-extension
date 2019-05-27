@@ -6,7 +6,15 @@ export default function RecentWatched() {
     <React.Fragment>
       <p>Watched anything recently?</p>
       <Search />
-      <div style={{border: '3px solid red', backgroundColor: 'white', padding: '.5em', margin: '1em 0', fontSize: '0.75em' }}>
+      <div
+        style={{
+          border: '3px solid red',
+          backgroundColor: 'white',
+          padding: '.5em',
+          margin: '1em 0',
+          fontSize: '0.75em',
+        }}
+      >
         Missing popup after finishing a video?
         {/* TODO: check iframe and guide user for further steps */}
       </div>

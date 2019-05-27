@@ -3,6 +3,7 @@ import * as React from 'react';
 export default function CloseContent() {
   return (
     <button
+      type="button"
       style={{
         position: 'absolute',
         right: '-0.5em',
@@ -23,6 +24,8 @@ export default function CloseContent() {
         const container = document.getElementById('screen-popup-container');
         container.parentNode.removeChild(container);
       }}
-    >&times;</button>
+    >
+      &times;
+    </button>
   );
 }

@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Switch, Route } from 'react-router';
+import { Route, Switch } from 'react-router';
 
-import './Content.scss';
-import { VideoData } from './renderService';
+import Login from '../auth/Login';
 import AuthRoute from '../components/AuthRoute';
 import VideoEnd from '../watched/VideoEnd';
-import Login from '../auth/Login';
 import CloseContent from './CloseContent';
+import './Content.scss';
+import { VideoData } from './renderService';
 
 export const VideoContext = React.createContext<VideoData>(null);
 
@@ -15,9 +15,9 @@ export default function Content({ videoData }: { videoData: VideoData }) {
     <VideoContext.Provider value={videoData}>
       <CloseContent />
       <Switch>
-        <Route exact path="/login" component={Login}></Route>
+        <Route exact path="/login" component={Login} />
         <AuthRoute exact path="/" component={VideoEnd} />
       </Switch>
     </VideoContext.Provider>
-  )
+  );
 }

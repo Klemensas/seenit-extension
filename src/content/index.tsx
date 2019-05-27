@@ -1,16 +1,18 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo-hooks';
+import * as ReactDOM from 'react-dom';
 import { MemoryRouter } from 'react-router';
 
 import { apolloClient } from '../apollo';
+import { settingPromise, settings } from '../main';
 import Content from './Content';
 import RenderService, { VideoData } from './renderService';
-import { settingPromise, settings } from '../main';
 
 const render = async (videoData: VideoData) => {
   await settingPromise;
-  if (!settings.popup) { return; }
+  if (!settings.popup) {
+    return;
+  }
 
   let container = document.getElementById('screen-popup-container');
   if (!container) {
@@ -27,6 +29,6 @@ const render = async (videoData: VideoData) => {
     </MemoryRouter>,
     container,
   );
-}
+};
 
-export let renderService = new RenderService(render);
+export default new RenderService(render);

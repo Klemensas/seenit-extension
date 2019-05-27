@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import { useSearchContentQuery, TmdbMediaType } from '../graphql';
-import Search from './Search';
 import { VideoContext } from '../content/Content';
-import { WatchedForm } from './WatchedForm';
 import { Title } from '../content/renderService';
+import { TmdbMediaType, useSearchContentQuery } from '../graphql';
 import { debugLog } from '../main';
+import Search from './Search';
+import WatchedForm from './WatchedForm';
 
-export default function VideoEnd() {
+export default function VideoEnd(): React.ReactElement {
   const videoData = React.useContext(VideoContext);
 
   const title: Title = videoData.title || null;
@@ -18,39 +18,42 @@ export default function VideoEnd() {
   // 3: 1 result
   // 4: multiple results
 
-
   if (!title) {
-    return <div>No title?</div>
+    return <div>No title?</div>;
   }
 
-  const { data, loading, error } = useSearchContentQuery({ variables: { title: title.name }});
+  const { data, loading, error } = useSearchContentQuery({
+    variables: { title: title.name },
+  });
   debugLog('got da title', title, videoData, data, loading);
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   if (error) {
     debugLog('uhoh', error);
-    return <div>Unexpected error!</div>
+    return <div>Unexpected error!</div>;
   }
 
-  const { searchContent: { results } } = data;
-  const items = results.filter(({ media_type }) => media_type !== TmdbMediaType.Person);
+  const {
+    searchContent: { results },
+  } = data;
+  const items = results.filter(
+    ({ media_type: mediaType }) => mediaType !== TmdbMediaType.Person,
+  );
   debugLog('res', items);
 
   if (!items.length) {
     return (
       <React.Fragment>
-        <div>Couldn't find your watched title</div>
+        <div>Couldn&apos;t find your watched title</div>
         <Search />
       </React.Fragment>
-    )
+    );
   }
 
   const item = items[0];
 
-  return (
-    <WatchedForm item={item} title={title} />
-  )
+  return <WatchedForm item={item} title={title} />;
 }

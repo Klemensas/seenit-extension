@@ -25,9 +25,8 @@ export interface VideoData {
   duration: number;
 }
 
-
 export default class RenderService {
-  state: RenderServiceState = {
+  public state: RenderServiceState = {
     mutationObserver: null,
     videoEl: null,
     videoData: null,
@@ -35,25 +34,19 @@ export default class RenderService {
     // duration: null,
     // startTimestamp: null,
   };
-  port = chrome.runtime.connect({ name: 'videoContent' });
 
-  validation = {
+  public port = chrome.runtime.connect({ name: 'videoContent' });
+
+  public validation = {
     minLength: 360,
   };
-  // port.onMessage.addListener(function(msg) {
-  //   if (msg.question == "Who's there?")
-  //     port.postMessage({answer: "Madame"});
-  //   else if (msg.question == "Madame who?")
-  //     port.postMessage({answer: "Madame... Bovary"});
-  // });
-  // port.postMessage({joke: "Knock knock"});
 
   constructor(private cb: Function) {
     debugLog('setup render service');
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener((request, sender) => {
       // Page change
       if (request.type === 'tabUpdate') {
-        debugLog(request, sender) // new url is now in content scripts!
+        debugLog(request, sender); // new url is now in content scripts!
       }
       this.initPage();
     });
@@ -61,7 +54,7 @@ export default class RenderService {
     this.initPage();
   }
 
-  initPage() {
+  public initPage() {
     debugLog('init render');
     this.resetState();
     this.getVideoElement();
@@ -77,17 +70,23 @@ export default class RenderService {
     debugLog('fetch video');
     const videoEl = document.querySelector('video');
     if (videoEl && this.isVideoValid(videoEl)) {
-      return this.registerVideo(videoEl);
+      this.registerVideo(videoEl);
+      return;
     }
 
     this.state.mutationObserver = new MutationObserver(() => {
       const vEl = document.querySelector('video');
-      if (!vEl || !this.isVideoValid(vEl)) { return; }
+      if (!vEl || !this.isVideoValid(vEl)) {
+        return;
+      }
 
       this.state.mutationObserver.disconnect();
       this.registerVideo(vEl);
     });
-    this.state.mutationObserver.observe(document.body, { childList: true, subtree: true });
+    this.state.mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
   }
 
   private isVideoValid(videoEl: HTMLVideoElement) {
@@ -100,13 +99,22 @@ export default class RenderService {
   private registerVideo(videoEl: HTMLVideoElement) {
     this.state.videoEl = videoEl;
 
-    videoEl.addEventListener('play', (event) => { debugLog('play', event); this.onVideoPlay(this.state.videoEl, event); })
-    videoEl.addEventListener('pause', (event) => { debugLog('pause', event); this.onVideoPause(this.state.videoEl, event); })
+    videoEl.addEventListener('play', event => {
+      debugLog('play', event);
+      this.onVideoPlay(this.state.videoEl, event);
+    });
+    videoEl.addEventListener('pause', event => {
+      debugLog('pause', event);
+      this.onVideoPause(this.state.videoEl);
+    });
     // Endedd triggers pause on netflix, does it everywhere?
-    videoEl.addEventListener('ended', (event) => { debugLog('ended', event); this.onVideoEnd(this.state.videoEl, event); })
+    videoEl.addEventListener('ended', event => {
+      debugLog('ended', event);
+      this.onVideoEnd(this.state.videoEl);
+    });
 
     if (!videoEl.paused) {
-      this.onVideoPlay(videoEl)
+      this.onVideoPlay(videoEl);
     }
 
     debugLog('registered video, cb time', this.cb);
@@ -119,7 +127,7 @@ export default class RenderService {
     } else if (this.state.videoData.lastTimestamp !== timeTs) {
       debugLog('woosh', event, timeTs, this.state.videoData);
     } else {
-      debugLog('ts matches!')
+      debugLog('ts matches!');
     }
 
     this.state.videoData = {
@@ -130,26 +138,29 @@ export default class RenderService {
     };
   }
 
-  private onVideoPause(videoEl: HTMLVideoElement, event?: Event) {
-    const title = this.state.videoData && this.state.videoData.title ? this.state.videoData.title : this.getTitlesFromHeading();
+  private onVideoPause(videoEl: HTMLVideoElement) {
+    const title =
+      this.state.videoData && this.state.videoData.title
+        ? this.state.videoData.title
+        : RenderService.getTitlesFromHeading();
     this.state.videoData = {
       ...this.state.videoData,
       title,
       isPlaying: false,
       lastTimestamp: videoEl.currentTime,
-    }
+    };
 
     // TODO: should be a part of end
     debugLog('pause video');
     this.cb(this.state.videoData);
   }
 
-  private onVideoEnd(videoEl: HTMLVideoElement, event?: Event) {
+  private onVideoEnd(videoEl: HTMLVideoElement) {
     this.state.videoData = {
       ...this.state.videoData,
       isPlaying: false,
       lastTimestamp: videoEl.currentTime,
-    }
+    };
   }
 
   private onStartVideo(videoEl: HTMLVideoElement) {
@@ -158,50 +169,60 @@ export default class RenderService {
       playbackStartTime: Date.now(),
       duration: videoEl.duration,
       startTimestamp: videoEl.currentTime,
-      title: this.getTitlesFromHeading()
+      title: RenderService.getTitlesFromHeading(),
     };
   }
 
-  private getTitlesFromHeading(): Title {
+  public static getTitlesFromHeading(): Title {
     const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
     const potentialTitles = Array.from(headings)
       .sort((a, b) => +a.tagName.slice(1) - +b.tagName.slice(1))
-      .filter((node) => isValidNode(node));
+      .filter(node => RenderService.isValidNode(node));
     const title = potentialTitles[0];
 
-    if (!title) { return null};
+    if (!title) {
+      return null;
+    }
 
     const name = title.textContent;
     return {
       name,
-      ...extractSeasonFromElement(title)
+      ...RenderService.extractSeasonFromElement(title),
+    };
+  }
+
+  public static isValidNode(node: Element) {
+    if (!node.textContent || !new RegExp('\\w+').test(node.textContent)) {
+      return false;
     }
 
-    function isValidNode(node: Element) {
-      if (!node.textContent || !new RegExp('\\w+').test(node.textContent)) { return false; }
-
-      const brandRegexp = new RegExp('logo|brand', 'gi');
-      if (brandRegexp.test(node.id) || brandRegexp.test(node.className)) { return false; }
-
-      return true;
+    const brandRegexp = new RegExp('logo|brand', 'gi');
+    if (brandRegexp.test(node.id) || brandRegexp.test(node.className)) {
+      return false;
     }
 
-    function extractSeasonFromElement(title: Element): TvData {
-      let titleParent: Element;
-      try {
-        titleParent = title.parentElement.parentElement.parentElement;
-      } catch {
-        titleParent = title;
-      }
+    return true;
+  }
 
-      const match = titleParent.textContent.match(/(s(eason)?\s?(\d+)).?(e(pisode)?\s?(\d+))/im);
-      if (!match) { return null; }
-
-      return {
-        season: match[3],
-        episode: match[6],
-      }
+  public static extractSeasonFromElement(title: Element): TvData {
+    let titleParent: Element;
+    try {
+      titleParent = title.parentElement.parentElement.parentElement;
+    } catch {
+      titleParent = title;
     }
+
+    const match = titleParent.textContent.match(
+      /(s(eason)?\s?(\d+)).?(e(pisode)?\s?(\d+))/im,
+    );
+    if (!match) {
+      return null;
+    }
+
+    return {
+      season: match[3],
+      episode: match[6],
+    };
   }
 
   private removeMutationObserver() {

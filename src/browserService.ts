@@ -1,4 +1,4 @@
-export function getStorageValue<T = any>(...keys: string[]) {
+export function getStorageValue<T = object>(...keys: string[]) {
   return new Promise<T>(resolve => chrome.storage.sync.get(keys, resolve));
 }
 
@@ -8,25 +8,29 @@ export function storageChange() {
   // TODO: extend this to support targetKey subscription?
   // TODO: add listener removal
   function addListener(cb: Function, target: string = 'settings') {
-    if (!target) { throw new Error('Missing listener target key'); }
+    if (!target) {
+      throw new Error('Missing listener target key');
+    }
 
     cbs[target] = [...(cbs[target] || []), cb];
   }
 
-  chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (!Object.keys(cbs).length) { return; }
-
-    for (const key in changes) {
-      if (cbs[key]) {
-        cbs[key].forEach((cb) => cb(changes[key]));
-      }
+  chrome.storage.onChanged.addListener(changes => {
+    if (!Object.keys(cbs).length) {
+      return;
     }
-  })
+
+    Object.entries(changes).forEach(([key, value]) => {
+      if (cbs[key]) {
+        cbs[key].forEach(cb => cb(value));
+      }
+    });
+  });
 
   return {
     addListener,
-    cbs
-  }
+    cbs,
+  };
 }
 
 export default storageChange();

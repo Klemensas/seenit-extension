@@ -1,443 +1,447 @@
+import gql from 'graphql-tag';
+import * as React from 'react';
+import * as ReactApollo from 'react-apollo';
+import * as ReactApolloHooks from 'react-apollo-hooks';
+
 export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
-export type Scalars = {
+export interface Scalars {
   ID: string;
   String: string;
   Boolean: boolean;
   Int: number;
   Float: number;
   Upload: any;
-};
-
-export type Author = {
-  id?: Maybe<Scalars["Int"]>;
-  credit_id?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-  gender?: Maybe<Scalars["Int"]>;
-  profile_path?: Maybe<Scalars["String"]>;
-};
-
-export enum CacheControlScope {
-  Public = "PUBLIC",
-  Private = "PRIVATE"
 }
 
-export type Collection = {
-  id?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-  poster_path?: Maybe<Scalars["String"]>;
-  backdrop_path?: Maybe<Scalars["String"]>;
-};
+export interface Author {
+  id?: Maybe<Scalars['Int']>;
+  credit_id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['Int']>;
+  profile_path?: Maybe<Scalars['String']>;
+}
 
-export type Company = {
-  id?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-  logo_path?: Maybe<Scalars["String"]>;
-  origin_country?: Maybe<Scalars["String"]>;
-};
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE',
+}
 
-export type Country = {
-  iso_3166_1?: Maybe<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-};
+export interface Collection {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  poster_path?: Maybe<Scalars['String']>;
+  backdrop_path?: Maybe<Scalars['String']>;
+}
 
-export type Episode = {
-  id?: Maybe<Scalars["Int"]>;
-  air_date?: Maybe<Scalars["String"]>;
-  episode_number?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-  overview?: Maybe<Scalars["String"]>;
-  production_code?: Maybe<Scalars["String"]>;
-  season_number?: Maybe<Scalars["Int"]>;
-  show_id?: Maybe<Scalars["Int"]>;
-  still_path?: Maybe<Scalars["String"]>;
-  vote_average?: Maybe<Scalars["Float"]>;
-  vote_count?: Maybe<Scalars["Int"]>;
-};
+export interface Company {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  logo_path?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Scalars['String']>;
+}
 
-export type Genre = {
-  id?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-};
+export interface Country {
+  iso_3166_1?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+}
+
+export interface Episode {
+  id?: Maybe<Scalars['Int']>;
+  air_date?: Maybe<Scalars['String']>;
+  episode_number?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  overview?: Maybe<Scalars['String']>;
+  production_code?: Maybe<Scalars['String']>;
+  season_number?: Maybe<Scalars['Int']>;
+  show_id?: Maybe<Scalars['Int']>;
+  still_path?: Maybe<Scalars['String']>;
+  vote_average?: Maybe<Scalars['Float']>;
+  vote_count?: Maybe<Scalars['Int']>;
+}
+
+export interface Genre {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+}
 
 export type Item = Movie | Tv;
 
 export enum ItemType {
-  Movie = "Movie",
-  Tv = "Tv"
+  Movie = 'Movie',
+  Tv = 'Tv',
 }
 
-export type Language = {
-  iso_639_1?: Maybe<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-};
+export interface Language {
+  iso_639_1?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+}
 
-export type LocalAuth = {
+export interface LocalAuth {
   user: User;
-  token: Scalars["String"];
-};
+  token: Scalars['String'];
+}
 
-export type Movie = {
-  id: Scalars["ID"];
-  adult?: Maybe<Scalars["Boolean"]>;
-  backdrop_path?: Maybe<Scalars["String"]>;
+export interface Movie {
+  id: Scalars['ID'];
+  adult?: Maybe<Scalars['Boolean']>;
+  backdrop_path?: Maybe<Scalars['String']>;
   belongs_to_collection?: Maybe<Collection>;
-  budget?: Maybe<Scalars["Int"]>;
-  genre?: Maybe<Array<Maybe<Genre>>>;
-  homepage?: Maybe<Scalars["String"]>;
-  imdb_id?: Maybe<Scalars["String"]>;
-  original_language?: Maybe<Scalars["String"]>;
-  original_title?: Maybe<Scalars["String"]>;
-  overview?: Maybe<Scalars["String"]>;
-  popularity?: Maybe<Scalars["Float"]>;
-  poster_path?: Maybe<Scalars["String"]>;
-  production_companies?: Maybe<Array<Maybe<Company>>>;
-  production_countries?: Maybe<Array<Maybe<Country>>>;
-  release_date?: Maybe<Scalars["String"]>;
-  revenue?: Maybe<Scalars["Int"]>;
-  runtime?: Maybe<Scalars["Int"]>;
-  spoken_languages?: Maybe<Array<Maybe<Language>>>;
-  status?: Maybe<Scalars["String"]>;
-  tagline?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
-  video?: Maybe<Scalars["Boolean"]>;
-  vote_average?: Maybe<Scalars["Float"]>;
-  vote_count?: Maybe<Scalars["Int"]>;
-  tmdbId?: Maybe<Scalars["Int"]>;
-};
+  budget?: Maybe<Scalars['Int']>;
+  genre?: Maybe<Maybe<Genre>[]>;
+  homepage?: Maybe<Scalars['String']>;
+  imdb_id?: Maybe<Scalars['String']>;
+  original_language?: Maybe<Scalars['String']>;
+  original_title?: Maybe<Scalars['String']>;
+  overview?: Maybe<Scalars['String']>;
+  popularity?: Maybe<Scalars['Float']>;
+  poster_path?: Maybe<Scalars['String']>;
+  production_companies?: Maybe<Maybe<Company>[]>;
+  production_countries?: Maybe<Maybe<Country>[]>;
+  release_date?: Maybe<Scalars['String']>;
+  revenue?: Maybe<Scalars['Int']>;
+  runtime?: Maybe<Scalars['Int']>;
+  spoken_languages?: Maybe<Maybe<Language>[]>;
+  status?: Maybe<Scalars['String']>;
+  tagline?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  video?: Maybe<Scalars['Boolean']>;
+  vote_average?: Maybe<Scalars['Float']>;
+  vote_count?: Maybe<Scalars['Int']>;
+  tmdbId?: Maybe<Scalars['Int']>;
+}
 
-export type Mutation = {
-  _?: Maybe<Scalars["Boolean"]>;
+export interface Mutation {
+  _?: Maybe<Scalars['Boolean']>;
   addWatched: Watched;
   register: LocalAuth;
   login: LocalAuth;
-  setIsLoggedIn: Scalars["Boolean"];
+  setIsLoggedIn: Scalars['Boolean'];
   setUserData: User;
-};
+}
 
-export type MutationAddWatchedArgs = {
-  tmdbId: Scalars["Int"];
+export interface MutationAddWatchedArgs {
+  tmdbId: Scalars['Int'];
   mediaType: TmdbMediaType;
   rating?: Maybe<RatingInput>;
   review?: Maybe<ReviewInput>;
-  createdAt?: Maybe<Scalars["Float"]>;
-};
+  createdAt?: Maybe<Scalars['Float']>;
+}
 
-export type MutationRegisterArgs = {
-  name: Scalars["String"];
-  email: Scalars["String"];
-  password: Scalars["String"];
-};
+export interface MutationRegisterArgs {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+}
 
-export type MutationLoginArgs = {
-  email: Scalars["String"];
-  password: Scalars["String"];
-};
+export interface MutationLoginArgs {
+  email: Scalars['String'];
+  password: Scalars['String'];
+}
 
-export type MutationSetIsLoggedInArgs = {
-  isLoggedIn: Scalars["Boolean"];
-};
+export interface MutationSetIsLoggedInArgs {
+  isLoggedIn: Scalars['Boolean'];
+}
 
-export type MutationSetUserDataArgs = {
+export interface MutationSetUserDataArgs {
   userData: UserInput;
-};
+}
 
-export type Network = {
-  id?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-  logo_path?: Maybe<Scalars["String"]>;
-  origin_country?: Maybe<Scalars["String"]>;
-};
+export interface Network {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  logo_path?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Scalars['String']>;
+}
 
-export type Query = {
-  _?: Maybe<Scalars["Boolean"]>;
-  allWatched?: Maybe<Array<Watched>>;
+export interface Query {
+  _?: Maybe<Scalars['Boolean']>;
+  allWatched?: Maybe<Watched[]>;
   watched?: Maybe<Watched>;
-  users?: Maybe<Array<User>>;
+  users?: Maybe<User[]>;
   user?: Maybe<User>;
   me?: Maybe<User>;
   searchContent?: Maybe<TmdbSearch>;
-  isLoggedIn: Scalars["Boolean"];
+  isLoggedIn: Scalars['Boolean'];
   userData: User;
-};
+}
 
-export type QueryWatchedArgs = {
-  id: Scalars["ID"];
-};
+export interface QueryWatchedArgs {
+  id: Scalars['ID'];
+}
 
-export type QueryUserArgs = {
-  id: Scalars["ID"];
-};
+export interface QueryUserArgs {
+  id: Scalars['ID'];
+}
 
-export type QuerySearchContentArgs = {
-  title: Scalars["String"];
-};
+export interface QuerySearchContentArgs {
+  title: Scalars['String'];
+}
 
-export type Rating = {
-  id: Scalars["ID"];
-  value: Scalars["Float"];
-  tmdbId: Scalars["Int"];
-  userId: Scalars["ID"];
-  createdAt: Scalars["Float"];
-  updatedAt: Scalars["Float"];
+export interface Rating {
+  id: Scalars['ID'];
+  value: Scalars['Float'];
+  tmdbId: Scalars['Int'];
+  userId: Scalars['ID'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
   user?: Maybe<User>;
   watched?: Maybe<Watched>;
-};
+}
 
-export type RatingInput = {
-  value: Scalars["Float"];
-};
+export interface RatingInput {
+  value: Scalars['Float'];
+}
 
-export type Review = {
-  id: Scalars["ID"];
-  body: Scalars["String"];
-  tmdbId: Scalars["Int"];
-  userId: Scalars["ID"];
+export interface Review {
+  id: Scalars['ID'];
+  body: Scalars['String'];
+  tmdbId: Scalars['Int'];
+  userId: Scalars['ID'];
   user?: Maybe<User>;
   watched?: Maybe<Watched>;
-};
+}
 
-export type ReviewInput = {
-  body: Scalars["String"];
-};
+export interface ReviewInput {
+  body: Scalars['String'];
+}
 
-export type Season = {
-  id?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-  overview?: Maybe<Scalars["String"]>;
-  air_date?: Maybe<Scalars["String"]>;
-  episode_count?: Maybe<Scalars["Int"]>;
-  poster_path?: Maybe<Scalars["String"]>;
-  season_number?: Maybe<Scalars["Int"]>;
-};
+export interface Season {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  overview?: Maybe<Scalars['String']>;
+  air_date?: Maybe<Scalars['String']>;
+  episode_count?: Maybe<Scalars['Int']>;
+  poster_path?: Maybe<Scalars['String']>;
+  season_number?: Maybe<Scalars['Int']>;
+}
 
-export type Subscription = {
-  _?: Maybe<Scalars["Boolean"]>;
-};
+export interface Subscription {
+  _?: Maybe<Scalars['Boolean']>;
+}
 
 export type TmdbMedia = TmdbMovie | TmdbTv | TmdbPerson;
 
 export enum TmdbMediaType {
-  Movie = "movie",
-  Tv = "tv",
-  Person = "person"
+  Movie = 'movie',
+  Tv = 'tv',
+  Person = 'person',
 }
 
-export type TmdbMovie = {
-  id?: Maybe<Scalars["Int"]>;
-  title?: Maybe<Scalars["String"]>;
-  overview?: Maybe<Scalars["String"]>;
-  original_title?: Maybe<Scalars["String"]>;
-  original_language?: Maybe<Scalars["String"]>;
-  poster_path?: Maybe<Scalars["String"]>;
-  genre_ids?: Maybe<Array<Maybe<Scalars["Int"]>>>;
-  adult?: Maybe<Scalars["Boolean"]>;
-  release_date?: Maybe<Scalars["String"]>;
-  backdrop_path?: Maybe<Scalars["String"]>;
-  video?: Maybe<Scalars["Boolean"]>;
-  vote_count?: Maybe<Scalars["Int"]>;
-  vote_average?: Maybe<Scalars["Float"]>;
-  popularity?: Maybe<Scalars["Int"]>;
+export interface TmdbMovie {
+  id?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']>;
+  overview?: Maybe<Scalars['String']>;
+  original_title?: Maybe<Scalars['String']>;
+  original_language?: Maybe<Scalars['String']>;
+  poster_path?: Maybe<Scalars['String']>;
+  genre_ids?: Maybe<Maybe<Scalars['Int']>[]>;
+  adult?: Maybe<Scalars['Boolean']>;
+  release_date?: Maybe<Scalars['String']>;
+  backdrop_path?: Maybe<Scalars['String']>;
+  video?: Maybe<Scalars['Boolean']>;
+  vote_count?: Maybe<Scalars['Int']>;
+  vote_average?: Maybe<Scalars['Float']>;
+  popularity?: Maybe<Scalars['Int']>;
   media_type?: Maybe<TmdbMediaType>;
-};
+}
 
-export type TmdbPerson = {
-  popularity?: Maybe<Scalars["Int"]>;
-  id?: Maybe<Scalars["Int"]>;
-  vote_average?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-  profile_path?: Maybe<Scalars["String"]>;
-  adult?: Maybe<Scalars["String"]>;
+export interface TmdbPerson {
+  popularity?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
+  vote_average?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  profile_path?: Maybe<Scalars['String']>;
+  adult?: Maybe<Scalars['String']>;
   known_for?: Maybe<TmdbMedia>;
   media_type?: Maybe<TmdbMediaType>;
-};
+}
 
-export type TmdbSearch = {
-  results?: Maybe<Array<TmdbMedia>>;
-  page: Scalars["Int"];
-  total_pages: Scalars["Int"];
-  total_results: Scalars["Int"];
-};
+export interface TmdbSearch {
+  results?: Maybe<TmdbMedia[]>;
+  page: Scalars['Int'];
+  total_pages: Scalars['Int'];
+  total_results: Scalars['Int'];
+}
 
-export type TmdbTv = {
-  id?: Maybe<Scalars["Int"]>;
-  name?: Maybe<Scalars["String"]>;
-  overview?: Maybe<Scalars["String"]>;
-  original_name?: Maybe<Scalars["String"]>;
-  original_language?: Maybe<Scalars["String"]>;
-  poster_path?: Maybe<Scalars["String"]>;
-  genre_ids?: Maybe<Array<Maybe<Scalars["Int"]>>>;
-  backdrop_path?: Maybe<Scalars["String"]>;
-  first_air_date?: Maybe<Scalars["String"]>;
-  origin_country?: Maybe<Array<Maybe<Scalars["String"]>>>;
-  vote_count?: Maybe<Scalars["Int"]>;
-  vote_average?: Maybe<Scalars["Float"]>;
-  popularity?: Maybe<Scalars["Int"]>;
+export interface TmdbTv {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  overview?: Maybe<Scalars['String']>;
+  original_name?: Maybe<Scalars['String']>;
+  original_language?: Maybe<Scalars['String']>;
+  poster_path?: Maybe<Scalars['String']>;
+  genre_ids?: Maybe<Maybe<Scalars['Int']>[]>;
+  backdrop_path?: Maybe<Scalars['String']>;
+  first_air_date?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Maybe<Scalars['String']>[]>;
+  vote_count?: Maybe<Scalars['Int']>;
+  vote_average?: Maybe<Scalars['Float']>;
+  popularity?: Maybe<Scalars['Int']>;
   media_type?: Maybe<TmdbMediaType>;
-};
+}
 
-export type Tv = {
-  id: Scalars["ID"];
-  backdrop_path?: Maybe<Scalars["String"]>;
-  created_by?: Maybe<Array<Maybe<Author>>>;
-  episode_run_time?: Maybe<Array<Maybe<Scalars["Int"]>>>;
-  first_air_date?: Maybe<Scalars["String"]>;
-  genres?: Maybe<Array<Maybe<Genre>>>;
-  homepage?: Maybe<Scalars["String"]>;
-  in_production?: Maybe<Scalars["Boolean"]>;
-  languages?: Maybe<Array<Maybe<Scalars["String"]>>>;
-  last_air_date?: Maybe<Scalars["String"]>;
+export interface Tv {
+  id: Scalars['ID'];
+  backdrop_path?: Maybe<Scalars['String']>;
+  created_by?: Maybe<Maybe<Author>[]>;
+  episode_run_time?: Maybe<Maybe<Scalars['Int']>[]>;
+  first_air_date?: Maybe<Scalars['String']>;
+  genres?: Maybe<Maybe<Genre>[]>;
+  homepage?: Maybe<Scalars['String']>;
+  in_production?: Maybe<Scalars['Boolean']>;
+  languages?: Maybe<Maybe<Scalars['String']>[]>;
+  last_air_date?: Maybe<Scalars['String']>;
   last_episode_to_air?: Maybe<Episode>;
-  name?: Maybe<Scalars["String"]>;
+  name?: Maybe<Scalars['String']>;
   next_episode_to_air?: Maybe<Episode>;
-  networks?: Maybe<Array<Maybe<Network>>>;
-  number_of_episodes?: Maybe<Scalars["Int"]>;
-  number_of_seasons?: Maybe<Scalars["Int"]>;
-  origin_country?: Maybe<Array<Maybe<Scalars["String"]>>>;
-  original_language?: Maybe<Scalars["String"]>;
-  original_name?: Maybe<Scalars["String"]>;
-  overview?: Maybe<Scalars["String"]>;
-  popularity?: Maybe<Scalars["Int"]>;
-  poster_path?: Maybe<Scalars["String"]>;
-  production_companies?: Maybe<Array<Maybe<Company>>>;
-  seasons?: Maybe<Array<Maybe<Season>>>;
-  status?: Maybe<Scalars["String"]>;
-  type?: Maybe<Scalars["String"]>;
-  vote_average?: Maybe<Scalars["Float"]>;
-  vote_count?: Maybe<Scalars["Int"]>;
-  tmdbId?: Maybe<Scalars["Int"]>;
-};
+  networks?: Maybe<Maybe<Network>[]>;
+  number_of_episodes?: Maybe<Scalars['Int']>;
+  number_of_seasons?: Maybe<Scalars['Int']>;
+  origin_country?: Maybe<Maybe<Scalars['String']>[]>;
+  original_language?: Maybe<Scalars['String']>;
+  original_name?: Maybe<Scalars['String']>;
+  overview?: Maybe<Scalars['String']>;
+  popularity?: Maybe<Scalars['Int']>;
+  poster_path?: Maybe<Scalars['String']>;
+  production_companies?: Maybe<Maybe<Company>[]>;
+  seasons?: Maybe<Maybe<Season>[]>;
+  status?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  vote_average?: Maybe<Scalars['Float']>;
+  vote_count?: Maybe<Scalars['Int']>;
+  tmdbId?: Maybe<Scalars['Int']>;
+}
 
-export type User = {
-  id: Scalars["ID"];
-  name: Scalars["String"];
-  email: Scalars["String"];
-  createdAt: Scalars["Float"];
-  updatedAt: Scalars["Float"];
-  watched?: Maybe<Array<Watched>>;
-};
+export interface User {
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  watched?: Maybe<Watched[]>;
+}
 
-export type UserInput = {
-  id: Scalars["ID"];
-  name: Scalars["String"];
-  email: Scalars["String"];
-  updatedAt?: Maybe<Scalars["Float"]>;
-};
+export interface UserInput {
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  updatedAt?: Maybe<Scalars['Float']>;
+}
 
-export type Watched = {
-  id: Scalars["ID"];
-  tmdbId: Scalars["Int"];
-  createdAt: Scalars["Float"];
-  updatedAt: Scalars["Float"];
-  userId: Scalars["ID"];
+export interface Watched {
+  id: Scalars['ID'];
+  tmdbId: Scalars['Int'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  userId: Scalars['ID'];
   user?: Maybe<User>;
   itemType: ItemType;
   item?: Maybe<Item>;
   rating?: Maybe<Rating>;
   review?: Maybe<Review>;
-};
-export type LoginMutationVariables = {
-  email: Scalars["String"];
-  password: Scalars["String"];
-};
+}
+export interface LoginMutationVariables {
+  email: Scalars['String'];
+  password: Scalars['String'];
+}
 
-export type LoginMutation = { __typename?: "Mutation" } & {
-  login: { __typename?: "LocalAuth" } & Pick<LocalAuth, "token"> & {
-      user: { __typename?: "User" } & Pick<
+export type LoginMutation = { __typename?: 'Mutation' } & {
+  login: { __typename?: 'LocalAuth' } & Pick<LocalAuth, 'token'> & {
+      user: { __typename?: 'User' } & Pick<
         User,
-        "id" | "name" | "email" | "createdAt" | "updatedAt"
+        'id' | 'name' | 'email' | 'createdAt' | 'updatedAt'
       >;
     };
 };
 
-export type RegisterMutationVariables = {
-  name: Scalars["String"];
-  email: Scalars["String"];
-  password: Scalars["String"];
-};
+export interface RegisterMutationVariables {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+}
 
-export type RegisterMutation = { __typename?: "Mutation" } & {
-  register: { __typename?: "LocalAuth" } & Pick<LocalAuth, "token"> & {
-      user: { __typename?: "User" } & Pick<
+export type RegisterMutation = { __typename?: 'Mutation' } & {
+  register: { __typename?: 'LocalAuth' } & Pick<LocalAuth, 'token'> & {
+      user: { __typename?: 'User' } & Pick<
         User,
-        "id" | "name" | "email" | "createdAt" | "updatedAt"
+        'id' | 'name' | 'email' | 'createdAt' | 'updatedAt'
       >;
     };
 };
 
-export type SetIsLoggedInMutationVariables = {
-  isLoggedIn: Scalars["Boolean"];
-};
+export interface SetIsLoggedInMutationVariables {
+  isLoggedIn: Scalars['Boolean'];
+}
 
-export type SetIsLoggedInMutation = { __typename?: "Mutation" } & Pick<
+export type SetIsLoggedInMutation = { __typename?: 'Mutation' } & Pick<
   Mutation,
-  "setIsLoggedIn"
+  'setIsLoggedIn'
 >;
 
-export type SetUserDataMutationVariables = {
+export interface SetUserDataMutationVariables {
   userData: UserInput;
-};
+}
 
-export type SetUserDataMutation = { __typename?: "Mutation" } & {
-  setUserData: { __typename?: "User" } & Pick<
+export type SetUserDataMutation = { __typename?: 'Mutation' } & {
+  setUserData: { __typename?: 'User' } & Pick<
     User,
-    "id" | "name" | "email" | "createdAt"
+    'id' | 'name' | 'email' | 'createdAt'
   >;
 };
 
-export type AddWatchedMutationVariables = {
-  tmdbId: Scalars["Int"];
+export interface AddWatchedMutationVariables {
+  tmdbId: Scalars['Int'];
   mediaType: TmdbMediaType;
-  createdAt: Scalars["Float"];
+  createdAt: Scalars['Float'];
   rating?: Maybe<RatingInput>;
   review?: Maybe<ReviewInput>;
-};
+}
 
-export type AddWatchedMutation = { __typename?: "Mutation" } & {
-  addWatched: { __typename?: "Watched" } & Pick<
+export type AddWatchedMutation = { __typename?: 'Mutation' } & {
+  addWatched: { __typename?: 'Watched' } & Pick<
     Watched,
-    "id" | "tmdbId" | "createdAt"
+    'id' | 'tmdbId' | 'createdAt'
   > & {
-      rating: Maybe<{ __typename?: "Rating" } & Pick<Rating, "value">>;
-      review: Maybe<{ __typename?: "Review" } & Pick<Review, "body">>;
+      rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
+      review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
     };
 };
 
-export type WatchedQueryVariables = {};
+export interface WatchedQueryVariables {}
 
-export type WatchedQuery = { __typename?: "Query" } & {
+export type WatchedQuery = { __typename?: 'Query' } & {
   allWatched: Maybe<
-    Array<{ __typename?: "Watched" } & Pick<Watched, "id" | "tmdbId">>
+    ({ __typename?: 'Watched' } & Pick<Watched, 'id' | 'tmdbId'>)[]
   >;
 };
 
-export type UserWatchedQueryVariables = {
-  id: Scalars["ID"];
-};
+export interface UserWatchedQueryVariables {
+  id: Scalars['ID'];
+}
 
-export type UserWatchedQuery = { __typename?: "Query" } & {
+export type UserWatchedQuery = { __typename?: 'Query' } & {
   user: Maybe<
-    { __typename?: "User" } & Pick<User, "id" | "name"> & {
+    { __typename?: 'User' } & Pick<User, 'id' | 'name'> & {
         watched: Maybe<
           Array<
-            { __typename?: "Watched" } & Pick<
+            { __typename?: 'Watched' } & Pick<
               Watched,
-              "id" | "tmdbId" | "createdAt" | "itemType"
+              'id' | 'tmdbId' | 'createdAt' | 'itemType'
             > & {
                 rating: Maybe<
-                  { __typename?: "Rating" } & Pick<Rating, "value">
+                  { __typename?: 'Rating' } & Pick<Rating, 'value'>
                 >;
-                review: Maybe<{ __typename?: "Review" } & Pick<Review, "body">>;
+                review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
                 item: Maybe<
-
-                    | ({ __typename?: "Movie" } & Pick<
-                        Movie,
-                        "id" | "title" | "release_date" | "poster_path"
-                      >)
-                    | ({ __typename?: "Tv" } & Pick<
-                        Tv,
-                        "id" | "name" | "first_air_date" | "poster_path"
-                      >)
+                  | ({ __typename?: 'Movie' } & Pick<
+                      Movie,
+                      'id' | 'title' | 'release_date' | 'poster_path'
+                    >)
+                  | ({ __typename?: 'Tv' } & Pick<
+                      Tv,
+                      'id' | 'name' | 'first_air_date' | 'poster_path'
+                    >)
                 >;
               }
           >
@@ -446,61 +450,50 @@ export type UserWatchedQuery = { __typename?: "Query" } & {
   >;
 };
 
-export type IsUserLoggedInQueryVariables = {};
+export interface IsUserLoggedInQueryVariables {}
 
-export type IsUserLoggedInQuery = { __typename?: "Query" } & Pick<
+export type IsUserLoggedInQuery = { __typename?: 'Query' } & Pick<
   Query,
-  "isLoggedIn"
+  'isLoggedIn'
 >;
 
-export type UserDataQueryVariables = {};
+export interface UserDataQueryVariables {}
 
-export type UserDataQuery = { __typename?: "Query" } & {
-  userData: { __typename?: "User" } & Pick<
+export type UserDataQuery = { __typename?: 'Query' } & {
+  userData: { __typename?: 'User' } & Pick<
     User,
-    "id" | "name" | "email" | "createdAt"
+    'id' | 'name' | 'email' | 'createdAt'
   >;
 };
 
-export type SearchContentQueryVariables = {
-  title: Scalars["String"];
-};
+export interface SearchContentQueryVariables {
+  title: Scalars['String'];
+}
 
-export type SearchContentQuery = { __typename?: "Query" } & {
+export type SearchContentQuery = { __typename?: 'Query' } & {
   searchContent: Maybe<
-    { __typename?: "TmdbSearch" } & Pick<
+    { __typename?: 'TmdbSearch' } & Pick<
       TmdbSearch,
-      "total_pages" | "total_results" | "page"
+      'total_pages' | 'total_results' | 'page'
     > & {
         results: Maybe<
-          Array<
-
-              | ({ __typename?: "TmdbMovie" } & Pick<
-                  TmdbMovie,
-                  "id" | "title" | "media_type" | "poster_path" | "release_date"
-                >)
-              | ({ __typename?: "TmdbTv" } & Pick<
-                  TmdbTv,
-                  | "id"
-                  | "name"
-                  | "media_type"
-                  | "poster_path"
-                  | "first_air_date"
-                >)
-              | ({ __typename?: "TmdbPerson" } & Pick<
-                  TmdbPerson,
-                  "id" | "media_type"
-                >)
-          >
+          (
+            | ({ __typename?: 'TmdbMovie' } & Pick<
+                TmdbMovie,
+                'id' | 'title' | 'media_type' | 'poster_path' | 'release_date'
+              >)
+            | ({ __typename?: 'TmdbTv' } & Pick<
+                TmdbTv,
+                'id' | 'name' | 'media_type' | 'poster_path' | 'first_air_date'
+              >)
+            | ({ __typename?: 'TmdbPerson' } & Pick<
+                TmdbPerson,
+                'id' | 'media_type'
+              >))[]
         >;
       }
   >;
 };
-
-import gql from "graphql-tag";
-import * as React from "react";
-import * as ReactApollo from "react-apollo";
-import * as ReactApolloHooks from "react-apollo-hooks";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export const LoginDocument = gql`
@@ -526,10 +519,10 @@ export const LoginComponent = (
   props: Omit<
     Omit<
       ReactApollo.MutationProps<LoginMutation, LoginMutationVariables>,
-      "mutation"
+      'mutation'
     >,
-    "variables"
-  > & { variables?: LoginMutationVariables }
+    'variables'
+  > & { variables?: LoginMutationVariables },
 ) => (
   <ReactApollo.Mutation<LoginMutation, LoginMutationVariables>
     mutation={LoginDocument}
@@ -547,7 +540,7 @@ export function withLogin<TProps, TChildProps = {}>(
     LoginMutation,
     LoginMutationVariables,
     LoginProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withMutation<
     TProps,
@@ -555,8 +548,8 @@ export function withLogin<TProps, TChildProps = {}>(
     LoginMutationVariables,
     LoginProps<TChildProps>
   >(LoginDocument, {
-    alias: "withLogin",
-    ...operationOptions
+    alias: 'withLogin',
+    ...operationOptions,
   });
 }
 
@@ -564,11 +557,11 @@ export function useLoginMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
     LoginMutation,
     LoginMutationVariables
-  >
+  >,
 ) {
   return ReactApolloHooks.useMutation<LoginMutation, LoginMutationVariables>(
     LoginDocument,
-    baseOptions
+    baseOptions,
   );
 }
 export const RegisterDocument = gql`
@@ -594,10 +587,10 @@ export const RegisterComponent = (
   props: Omit<
     Omit<
       ReactApollo.MutationProps<RegisterMutation, RegisterMutationVariables>,
-      "mutation"
+      'mutation'
     >,
-    "variables"
-  > & { variables?: RegisterMutationVariables }
+    'variables'
+  > & { variables?: RegisterMutationVariables },
 ) => (
   <ReactApollo.Mutation<RegisterMutation, RegisterMutationVariables>
     mutation={RegisterDocument}
@@ -615,7 +608,7 @@ export function withRegister<TProps, TChildProps = {}>(
     RegisterMutation,
     RegisterMutationVariables,
     RegisterProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withMutation<
     TProps,
@@ -623,8 +616,8 @@ export function withRegister<TProps, TChildProps = {}>(
     RegisterMutationVariables,
     RegisterProps<TChildProps>
   >(RegisterDocument, {
-    alias: "withRegister",
-    ...operationOptions
+    alias: 'withRegister',
+    ...operationOptions,
   });
 }
 
@@ -632,7 +625,7 @@ export function useRegisterMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
     RegisterMutation,
     RegisterMutationVariables
-  >
+  >,
 ) {
   return ReactApolloHooks.useMutation<
     RegisterMutation,
@@ -656,10 +649,10 @@ export const SetIsLoggedInComponent = (
         SetIsLoggedInMutation,
         SetIsLoggedInMutationVariables
       >,
-      "mutation"
+      'mutation'
     >,
-    "variables"
-  > & { variables?: SetIsLoggedInMutationVariables }
+    'variables'
+  > & { variables?: SetIsLoggedInMutationVariables },
 ) => (
   <ReactApollo.Mutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>
     mutation={SetIsLoggedInDocument}
@@ -677,7 +670,7 @@ export function withSetIsLoggedIn<TProps, TChildProps = {}>(
     SetIsLoggedInMutation,
     SetIsLoggedInMutationVariables,
     SetIsLoggedInProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withMutation<
     TProps,
@@ -685,8 +678,8 @@ export function withSetIsLoggedIn<TProps, TChildProps = {}>(
     SetIsLoggedInMutationVariables,
     SetIsLoggedInProps<TChildProps>
   >(SetIsLoggedInDocument, {
-    alias: "withSetIsLoggedIn",
-    ...operationOptions
+    alias: 'withSetIsLoggedIn',
+    ...operationOptions,
   });
 }
 
@@ -694,7 +687,7 @@ export function useSetIsLoggedInMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
     SetIsLoggedInMutation,
     SetIsLoggedInMutationVariables
-  >
+  >,
 ) {
   return ReactApolloHooks.useMutation<
     SetIsLoggedInMutation,
@@ -723,10 +716,10 @@ export const SetUserDataComponent = (
         SetUserDataMutation,
         SetUserDataMutationVariables
       >,
-      "mutation"
+      'mutation'
     >,
-    "variables"
-  > & { variables?: SetUserDataMutationVariables }
+    'variables'
+  > & { variables?: SetUserDataMutationVariables },
 ) => (
   <ReactApollo.Mutation<SetUserDataMutation, SetUserDataMutationVariables>
     mutation={SetUserDataDocument}
@@ -744,7 +737,7 @@ export function withSetUserData<TProps, TChildProps = {}>(
     SetUserDataMutation,
     SetUserDataMutationVariables,
     SetUserDataProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withMutation<
     TProps,
@@ -752,8 +745,8 @@ export function withSetUserData<TProps, TChildProps = {}>(
     SetUserDataMutationVariables,
     SetUserDataProps<TChildProps>
   >(SetUserDataDocument, {
-    alias: "withSetUserData",
-    ...operationOptions
+    alias: 'withSetUserData',
+    ...operationOptions,
   });
 }
 
@@ -761,7 +754,7 @@ export function useSetUserDataMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
     SetUserDataMutation,
     SetUserDataMutationVariables
-  >
+  >,
 ) {
   return ReactApolloHooks.useMutation<
     SetUserDataMutation,
@@ -807,10 +800,10 @@ export const AddWatchedComponent = (
         AddWatchedMutation,
         AddWatchedMutationVariables
       >,
-      "mutation"
+      'mutation'
     >,
-    "variables"
-  > & { variables?: AddWatchedMutationVariables }
+    'variables'
+  > & { variables?: AddWatchedMutationVariables },
 ) => (
   <ReactApollo.Mutation<AddWatchedMutation, AddWatchedMutationVariables>
     mutation={AddWatchedDocument}
@@ -828,7 +821,7 @@ export function withAddWatched<TProps, TChildProps = {}>(
     AddWatchedMutation,
     AddWatchedMutationVariables,
     AddWatchedProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withMutation<
     TProps,
@@ -836,8 +829,8 @@ export function withAddWatched<TProps, TChildProps = {}>(
     AddWatchedMutationVariables,
     AddWatchedProps<TChildProps>
   >(AddWatchedDocument, {
-    alias: "withAddWatched",
-    ...operationOptions
+    alias: 'withAddWatched',
+    ...operationOptions,
   });
 }
 
@@ -845,7 +838,7 @@ export function useAddWatchedMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
     AddWatchedMutation,
     AddWatchedMutationVariables
-  >
+  >,
 ) {
   return ReactApolloHooks.useMutation<
     AddWatchedMutation,
@@ -863,9 +856,9 @@ export const WatchedDocument = gql`
 
 export const WatchedComponent = (
   props: Omit<
-    Omit<ReactApollo.QueryProps<WatchedQuery, WatchedQueryVariables>, "query">,
-    "variables"
-  > & { variables?: WatchedQueryVariables }
+    Omit<ReactApollo.QueryProps<WatchedQuery, WatchedQueryVariables>, 'query'>,
+    'variables'
+  > & { variables?: WatchedQueryVariables },
 ) => (
   <ReactApollo.Query<WatchedQuery, WatchedQueryVariables>
     query={WatchedDocument}
@@ -883,7 +876,7 @@ export function withWatched<TProps, TChildProps = {}>(
     WatchedQuery,
     WatchedQueryVariables,
     WatchedProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withQuery<
     TProps,
@@ -891,17 +884,17 @@ export function withWatched<TProps, TChildProps = {}>(
     WatchedQueryVariables,
     WatchedProps<TChildProps>
   >(WatchedDocument, {
-    alias: "withWatched",
-    ...operationOptions
+    alias: 'withWatched',
+    ...operationOptions,
   });
 }
 
 export function useWatchedQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<WatchedQueryVariables>
+  baseOptions?: ReactApolloHooks.QueryHookOptions<WatchedQueryVariables>,
 ) {
   return ReactApolloHooks.useQuery<WatchedQuery, WatchedQueryVariables>(
     WatchedDocument,
-    baseOptions
+    baseOptions,
   );
 }
 export const UserWatchedDocument = gql`
@@ -943,10 +936,10 @@ export const UserWatchedComponent = (
   props: Omit<
     Omit<
       ReactApollo.QueryProps<UserWatchedQuery, UserWatchedQueryVariables>,
-      "query"
+      'query'
     >,
-    "variables"
-  > & { variables: UserWatchedQueryVariables }
+    'variables'
+  > & { variables: UserWatchedQueryVariables },
 ) => (
   <ReactApollo.Query<UserWatchedQuery, UserWatchedQueryVariables>
     query={UserWatchedDocument}
@@ -964,7 +957,7 @@ export function withUserWatched<TProps, TChildProps = {}>(
     UserWatchedQuery,
     UserWatchedQueryVariables,
     UserWatchedProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withQuery<
     TProps,
@@ -972,17 +965,17 @@ export function withUserWatched<TProps, TChildProps = {}>(
     UserWatchedQueryVariables,
     UserWatchedProps<TChildProps>
   >(UserWatchedDocument, {
-    alias: "withUserWatched",
-    ...operationOptions
+    alias: 'withUserWatched',
+    ...operationOptions,
   });
 }
 
 export function useUserWatchedQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<UserWatchedQueryVariables>
+  baseOptions?: ReactApolloHooks.QueryHookOptions<UserWatchedQueryVariables>,
 ) {
   return ReactApolloHooks.useQuery<UserWatchedQuery, UserWatchedQueryVariables>(
     UserWatchedDocument,
-    baseOptions
+    baseOptions,
   );
 }
 export const IsUserLoggedInDocument = gql`
@@ -995,10 +988,10 @@ export const IsUserLoggedInComponent = (
   props: Omit<
     Omit<
       ReactApollo.QueryProps<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>,
-      "query"
+      'query'
     >,
-    "variables"
-  > & { variables?: IsUserLoggedInQueryVariables }
+    'variables'
+  > & { variables?: IsUserLoggedInQueryVariables },
 ) => (
   <ReactApollo.Query<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>
     query={IsUserLoggedInDocument}
@@ -1016,7 +1009,7 @@ export function withIsUserLoggedIn<TProps, TChildProps = {}>(
     IsUserLoggedInQuery,
     IsUserLoggedInQueryVariables,
     IsUserLoggedInProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withQuery<
     TProps,
@@ -1024,13 +1017,13 @@ export function withIsUserLoggedIn<TProps, TChildProps = {}>(
     IsUserLoggedInQueryVariables,
     IsUserLoggedInProps<TChildProps>
   >(IsUserLoggedInDocument, {
-    alias: "withIsUserLoggedIn",
-    ...operationOptions
+    alias: 'withIsUserLoggedIn',
+    ...operationOptions,
   });
 }
 
 export function useIsUserLoggedInQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<IsUserLoggedInQueryVariables>
+  baseOptions?: ReactApolloHooks.QueryHookOptions<IsUserLoggedInQueryVariables>,
 ) {
   return ReactApolloHooks.useQuery<
     IsUserLoggedInQuery,
@@ -1052,10 +1045,10 @@ export const UserDataComponent = (
   props: Omit<
     Omit<
       ReactApollo.QueryProps<UserDataQuery, UserDataQueryVariables>,
-      "query"
+      'query'
     >,
-    "variables"
-  > & { variables?: UserDataQueryVariables }
+    'variables'
+  > & { variables?: UserDataQueryVariables },
 ) => (
   <ReactApollo.Query<UserDataQuery, UserDataQueryVariables>
     query={UserDataDocument}
@@ -1073,7 +1066,7 @@ export function withUserData<TProps, TChildProps = {}>(
     UserDataQuery,
     UserDataQueryVariables,
     UserDataProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withQuery<
     TProps,
@@ -1081,17 +1074,17 @@ export function withUserData<TProps, TChildProps = {}>(
     UserDataQueryVariables,
     UserDataProps<TChildProps>
   >(UserDataDocument, {
-    alias: "withUserData",
-    ...operationOptions
+    alias: 'withUserData',
+    ...operationOptions,
   });
 }
 
 export function useUserDataQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<UserDataQueryVariables>
+  baseOptions?: ReactApolloHooks.QueryHookOptions<UserDataQueryVariables>,
 ) {
   return ReactApolloHooks.useQuery<UserDataQuery, UserDataQueryVariables>(
     UserDataDocument,
-    baseOptions
+    baseOptions,
   );
 }
 export const SearchContentDocument = gql`
@@ -1128,10 +1121,10 @@ export const SearchContentComponent = (
   props: Omit<
     Omit<
       ReactApollo.QueryProps<SearchContentQuery, SearchContentQueryVariables>,
-      "query"
+      'query'
     >,
-    "variables"
-  > & { variables: SearchContentQueryVariables }
+    'variables'
+  > & { variables: SearchContentQueryVariables },
 ) => (
   <ReactApollo.Query<SearchContentQuery, SearchContentQueryVariables>
     query={SearchContentDocument}
@@ -1149,7 +1142,7 @@ export function withSearchContent<TProps, TChildProps = {}>(
     SearchContentQuery,
     SearchContentQueryVariables,
     SearchContentProps<TChildProps>
-  >
+  >,
 ) {
   return ReactApollo.withQuery<
     TProps,
@@ -1157,13 +1150,13 @@ export function withSearchContent<TProps, TChildProps = {}>(
     SearchContentQueryVariables,
     SearchContentProps<TChildProps>
   >(SearchContentDocument, {
-    alias: "withSearchContent",
-    ...operationOptions
+    alias: 'withSearchContent',
+    ...operationOptions,
   });
 }
 
 export function useSearchContentQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<SearchContentQueryVariables>
+  baseOptions?: ReactApolloHooks.QueryHookOptions<SearchContentQueryVariables>,
 ) {
   return ReactApolloHooks.useQuery<
     SearchContentQuery,

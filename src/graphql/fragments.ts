@@ -14,34 +14,34 @@ const result: IntrospectionResultData = {
   __schema: {
     types: [
       {
-        kind: "UNION",
-        name: "Item",
+        kind: 'UNION',
+        name: 'Item',
         possibleTypes: [
           {
-            name: "Movie"
+            name: 'Movie',
           },
           {
-            name: "Tv"
-          }
-        ]
+            name: 'Tv',
+          },
+        ],
       },
       {
-        kind: "UNION",
-        name: "TmdbMedia",
+        kind: 'UNION',
+        name: 'TmdbMedia',
         possibleTypes: [
           {
-            name: "TmdbMovie"
+            name: 'TmdbMovie',
           },
           {
-            name: "TmdbTv"
+            name: 'TmdbTv',
           },
           {
-            name: "TmdbPerson"
-          }
-        ]
-      }
-    ]
-  }
+            name: 'TmdbPerson',
+          },
+        ],
+      },
+    ],
+  },
 };
 
 export default result;

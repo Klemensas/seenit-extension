@@ -1,20 +1,30 @@
 import * as React from 'react';
-import ApolloClient from 'apollo-client';
 import { useApolloClient } from 'react-apollo-hooks';
-import AsyncSelect from 'react-select/lib/Async';
+import AsyncSelect from 'react-select/async';
+import ApolloClient from 'apollo-client';
 
-import { SearchContentDocument } from '../graphql';
-import { WatchedForm } from './WatchedForm';
+import {
+  SearchContentDocument,
+  SearchContentQuery,
+  TmdbMovie,
+  TmdbTv,
+} from '../graphql';
+import WatchedForm from './WatchedForm';
 
-async function searchQuery(state, setState, client: ApolloClient<any>) {
+export interface SearchOption {
+  label: string;
+  value: string | number;
+}
+
+async function searchQuery(state, setState, client: ApolloClient<unknown>) {
   const loadState = {
     ...state,
-    loading: true,
-    error: null,
     data: [],
+    error: null,
+    loading: true,
   };
   setState(loadState);
-  const { data, errors } = await client.query({
+  const { data, errors } = await client.query<SearchContentQuery>({
     query: SearchContentDocument,
     variables: { title: state.query },
   });
@@ -22,44 +32,55 @@ async function searchQuery(state, setState, client: ApolloClient<any>) {
     setState({ ...loadState, loading: false, error: errors });
     return [];
   }
-  const options = data.searchContent.results.reduce((acc, item) => item.media_type === 'person' ? acc : acc.concat({
-    value: item.id,
-    label: `${item.name || item.title} (${(item.release_date || item.first_air_date || '').split('-')[0]})`,
-    ...item,
-  }), []);
+  const options = data.searchContent.results.reduce(
+    (acc: SearchOption[], item) =>
+      item.media_type === 'person'
+        ? acc
+        : acc.concat({
+            label: `${(item as TmdbTv).name || (item as TmdbMovie).title} (${
+              (
+                (item as TmdbMovie).release_date ||
+                (item as TmdbTv).first_air_date ||
+                ''
+              ).split('-')[0]
+            })`,
+            value: item.id,
+            ...item,
+          }),
+    [],
+  );
   setState({ ...loadState, loading: false, data: options });
   return options;
 }
 
-export default function Search() {
+export default function Search(): React.ReactElement {
   const [searchState, setSearchState] = React.useState({
-    loading: false,
-    query: '',
     data: [],
     error: null,
+    loading: false,
+    query: '',
   });
   const [selectedItem, setSelectedItem] = React.useState(null);
-  // const options = searchState.data.reduce((acc, item) => item.media_type === 'person' ? acc : [...acc, {
-  //   ...item,
-  //   displayName: item.name || item.title,
-  //   displayYear: (item.release_date || item.first_air_date || '').split('-')[0]
-  // }], []);
   const client = useApolloClient();
 
   return (
     <React.Fragment>
       <AsyncSelect
-        cacheOptions={true}
+        cacheOptions
         defaultOptions={searchState.data}
         inputValue={searchState.query}
-        noOptionsMessage={() => searchState.query ? 'No options' : 'Enter a query to search'}
-        loadOptions={query => searchQuery(searchState, setSearchState, client)}
-        onChange={(query, { action }) => setSelectedItem(query)}
+        noOptionsMessage={() =>
+          searchState.query ? 'No options' : 'Enter a query to search'
+        }
+        loadOptions={() => searchQuery(searchState, setSearchState, client)}
+        onChange={query => setSelectedItem(query)}
         onInputChange={(query, { action }) => {
-          if (action === 'input-change') { setSearchState({ ...searchState, query }) }
-        } }
+          if (action === 'input-change') {
+            setSearchState({ ...searchState, query });
+          }
+        }}
       />
-      {selectedItem ? (<WatchedForm item={selectedItem} />) : ''}
+      {selectedItem ? <WatchedForm item={selectedItem} /> : ''}
     </React.Fragment>
   );
 }
