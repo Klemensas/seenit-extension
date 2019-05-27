@@ -1,0 +1,60 @@
+
+mutation Login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    token
+    user {
+      id
+      name
+      email
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation Register($name: String!, $email: String!, $password: String!) {
+  register(name: $name, email: $email, password: $password) {
+    token
+    user {
+      id
+      name
+      email
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation SetIsLoggedIn($isLoggedIn: Boolean!) {
+  setIsLoggedIn(isLoggedIn: $isLoggedIn) @client
+}
+
+
+mutation SetUserData($userData: UserInput!) {
+  setUserData(userData: $userData) @client {
+    id
+    name
+    email
+    createdAt
+  }
+}
+
+mutation AddWatched($tmdbId: Int!, $mediaType: TmdbMediaType!, $createdAt: Float!, $rating: RatingInput, $review: ReviewInput) {
+  addWatched(
+    tmdbId: $tmdbId,
+    mediaType: $mediaType,
+    rating: $rating,
+    review: $review,
+    createdAt: $createdAt,
+  ) {
+    id
+    tmdbId
+    createdAt
+    rating {
+      value
+    }
+    review {
+      body
+    }
+  }
+}

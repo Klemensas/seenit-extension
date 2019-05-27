@@ -1,0 +1,81 @@
+query Watched {
+  allWatched {
+    id
+    tmdbId
+  }
+}
+
+query UserWatched($id: ID!) {
+  user(id: $id) {
+    id
+    name
+    watched {
+      id
+      tmdbId
+      createdAt
+      rating {
+        value
+      }
+      review {
+        body
+      }
+      itemType
+      item {
+        ...on Movie {
+          id
+          title
+          release_date
+          poster_path
+        }
+        ...on Tv {
+          id
+          name
+          first_air_date
+          poster_path
+        }
+      }
+    }
+  }
+}
+
+
+query IsUserLoggedIn {
+  isLoggedIn @client
+}
+
+query UserData {
+  userData @client {
+    id
+    name
+    email
+    createdAt
+  }
+}
+
+query SearchContent($title: String!) {
+  searchContent(title: $title) {
+    total_pages
+    total_results
+    page
+    results {
+      ... on TmdbMovie {
+        id
+        title
+        media_type
+        poster_path
+        release_date
+      }
+      ... on TmdbTv {
+        id
+        name
+        media_type
+        poster_path
+        first_air_date
+      }
+      ... on TmdbPerson {
+        id
+        media_type
+      }
+    }
+  }
+}

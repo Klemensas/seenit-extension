@@ -1,0 +1,18 @@
+directive @client on FIELD
+
+type Query {
+  isLoggedIn: Boolean!
+  userData: User!
+}
+
+type Mutation {
+  setIsLoggedIn(isLoggedIn: Boolean!): Boolean!
+  setUserData(userData: UserInput!): User!
+}
+
+input UserInput {
+    id: ID!
+    name: String!
+    email: String!
+    updatedAt: Float
+}
