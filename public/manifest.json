@@ -26,6 +26,7 @@
   "permissions": [
     "webNavigation",
     "management",
-    "storage"
+    "storage",
+    "tabs"
   ]
 }
