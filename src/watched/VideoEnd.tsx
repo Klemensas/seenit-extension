@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { VideoContext } from '../content/Content';
 import { Title } from '../content/renderService';
-import { TmdbMediaType, useSearchContentQuery } from '../graphql';
+import { TmdbMediaType, useSearchContentQuery, useTvQuery } from '../graphql';
 import { debugLog } from '../main';
 import Search from './Search';
 import WatchedForm from './WatchedForm';
@@ -25,24 +25,30 @@ export default function VideoEnd(): React.ReactElement {
   const { data, loading, error } = useSearchContentQuery({
     variables: { title: title.name },
   });
-  debugLog('got da title', title, videoData, data, loading);
 
-  if (loading) {
+  let items = [];
+  if (data && data.searchContent) {
+    const {
+      searchContent: { results },
+    } = data;
+    items = results.filter(({ media_type: mediaType }) => mediaType !== TmdbMediaType.Person);
+  }
+
+  const item = items[0];
+
+  const tvQuery = useTvQuery({
+    variables: { tmdbId: item ? item.id : null },
+    skip: !item || item.media_type !== TmdbMediaType.Tv,
+  });
+  const seasons = tvQuery.data && tvQuery.data.tv ? tvQuery.data.tv.seasons : null;
+
+  if (loading || tvQuery.loading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    debugLog('uhoh', error);
+  if (error || tvQuery.error) {
     return <div>Unexpected error!</div>;
   }
-
-  const {
-    searchContent: { results },
-  } = data;
-  const items = results.filter(
-    ({ media_type: mediaType }) => mediaType !== TmdbMediaType.Person,
-  );
-  debugLog('res', items);
 
   if (!items.length) {
     return (
@@ -53,7 +59,5 @@ export default function VideoEnd(): React.ReactElement {
     );
   }
 
-  const item = items[0];
-
-  return <WatchedForm item={item} title={title} />;
+  return <WatchedForm item={item} title={title} seasons={seasons} />;
 }
