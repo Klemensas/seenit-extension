@@ -1,11 +1,6 @@
 import * as React from 'react';
 
-import {
-  useUserDataQuery,
-  useUserWatchedQuery,
-  TmdbMovie,
-  TmdbTv,
-} from '../graphql';
+import { useUserDataQuery, useUserWatchedQuery, Movie, Tv } from '../graphql';
 
 export default function Watched(): React.ReactElement {
   const {
@@ -37,13 +32,9 @@ export default function Watched(): React.ReactElement {
               fontSize: '0.75em',
             }}
           >
-            <span>{(item as TmdbTv).name || (item as TmdbMovie).title}</span>
+            <span>{(item as Tv).name || (item as Movie).title}</span>
           </div>
-          <img
-            src={`https://image.tmdb.org/t/p/w154${item.poster_path}`}
-            style={{ position: 'relative' }}
-            alt=""
-          />
+          <img src={`https://image.tmdb.org/t/p/w154${item.poster_path}`} style={{ position: 'relative' }} alt="" />
         </div>
       ))}
     </div>

@@ -6,7 +6,7 @@ export default function RecentWatched() {
     <React.Fragment>
       <p>Watched anything recently?</p>
       <Search />
-      <div
+      {/* <div
         style={{
           border: '3px solid red',
           backgroundColor: 'white',
@@ -16,23 +16,7 @@ export default function RecentWatched() {
         }}
       >
         Missing popup after finishing a video?
-        {/* TODO: check iframe and guide user for further steps */}
-      </div>
+      </div> */}
     </React.Fragment>
-    // <Query query={watchedQuery}>
-    //   {({ loading, error, data }) => {
-    //     if (loading) { return <div>Loading...</div> }
-    //     if (error) { return <div>Error</div> }
-
-    //     const items = data.allWatched;
-
-    //     return (
-    //       <div>
-    //         {items.map(item => <div key={item.id}>{item.id} - {item.tmdbId}</div>)}
-    //       </div>
-    //     );
-    //   }}
-
-    // </Query>
   );
 }

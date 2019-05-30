@@ -4,14 +4,12 @@ export const settings = {
   debug: true,
   popup: true,
 };
-export const settingPromise = getStorageValue('settings').then(
-  storedSettings => {
-    Object.assign(settings, {
-      ...storedSettings.settings,
-    });
-    return settings;
-  },
-);
+export const settingPromise = getStorageValue<{ settings: object }>('settings').then(storedSettings => {
+  Object.assign(settings, {
+    ...storedSettings.settings,
+  });
+  return settings;
+});
 
 export function debugLog(...data) {
   if (!settings.debug) {
