@@ -1,52 +1,58 @@
 import gql from 'graphql-tag';
-import * as React from 'react';
 import * as ReactApollo from 'react-apollo';
+import * as React from 'react';
 import * as ReactApolloHooks from 'react-apollo-hooks';
-
 export type Maybe<T> = T | null;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
-export interface Scalars {
+export type Scalars = {
   ID: string;
   String: string;
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
-}
+};
 
-export interface Author {
+export type Author = {
+  __typename?: 'Author';
   id?: Maybe<Scalars['Int']>;
   credit_id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   gender?: Maybe<Scalars['Int']>;
   profile_path?: Maybe<Scalars['String']>;
-}
+};
 
 export enum CacheControlScope {
   Public = 'PUBLIC',
   Private = 'PRIVATE',
 }
 
-export interface Collection {
+export type Collection = {
+  __typename?: 'Collection';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   poster_path?: Maybe<Scalars['String']>;
   backdrop_path?: Maybe<Scalars['String']>;
-}
+};
 
-export interface Company {
+export type Company = {
+  __typename?: 'Company';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   logo_path?: Maybe<Scalars['String']>;
   origin_country?: Maybe<Scalars['String']>;
-}
+};
 
-export interface Country {
+export type Country = {
+  __typename?: 'Country';
   iso_3166_1?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-}
+};
 
-export interface Episode {
+export type Episode = {
+  __typename?: 'Episode';
   id?: Maybe<Scalars['Int']>;
   air_date?: Maybe<Scalars['String']>;
   episode_number?: Maybe<Scalars['Int']>;
@@ -58,12 +64,13 @@ export interface Episode {
   still_path?: Maybe<Scalars['String']>;
   vote_average?: Maybe<Scalars['Float']>;
   vote_count?: Maybe<Scalars['Int']>;
-}
+};
 
-export interface Genre {
+export type Genre = {
+  __typename?: 'Genre';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
-}
+};
 
 export type Item = Movie | Tv;
 
@@ -72,23 +79,26 @@ export enum ItemType {
   Tv = 'Tv',
 }
 
-export interface Language {
+export type Language = {
+  __typename?: 'Language';
   iso_639_1?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-}
+};
 
-export interface LocalAuth {
+export type LocalAuth = {
+  __typename?: 'LocalAuth';
   user: User;
   token: Scalars['String'];
-}
+};
 
-export interface Movie {
+export type Movie = {
+  __typename?: 'Movie';
   id: Scalars['ID'];
   adult?: Maybe<Scalars['Boolean']>;
   backdrop_path?: Maybe<Scalars['String']>;
   belongs_to_collection?: Maybe<Collection>;
   budget?: Maybe<Scalars['Int']>;
-  genre?: Maybe<Maybe<Genre>[]>;
+  genre?: Maybe<Array<Maybe<Genre>>>;
   homepage?: Maybe<Scalars['String']>;
   imdb_id?: Maybe<Scalars['String']>;
   original_language?: Maybe<Scalars['String']>;
@@ -96,12 +106,12 @@ export interface Movie {
   overview?: Maybe<Scalars['String']>;
   popularity?: Maybe<Scalars['Float']>;
   poster_path?: Maybe<Scalars['String']>;
-  production_companies?: Maybe<Maybe<Company>[]>;
-  production_countries?: Maybe<Maybe<Country>[]>;
+  production_companies?: Maybe<Array<Maybe<Company>>>;
+  production_countries?: Maybe<Array<Maybe<Country>>>;
   release_date?: Maybe<Scalars['String']>;
   revenue?: Maybe<Scalars['Int']>;
   runtime?: Maybe<Scalars['Int']>;
-  spoken_languages?: Maybe<Maybe<Language>[]>;
+  spoken_languages?: Maybe<Array<Maybe<Language>>>;
   status?: Maybe<Scalars['String']>;
   tagline?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
@@ -109,76 +119,86 @@ export interface Movie {
   vote_average?: Maybe<Scalars['Float']>;
   vote_count?: Maybe<Scalars['Int']>;
   tmdbId?: Maybe<Scalars['Int']>;
-}
+};
 
-export interface Mutation {
+export type Mutation = {
+  __typename?: 'Mutation';
   _?: Maybe<Scalars['Boolean']>;
   addWatched: Watched;
   register: LocalAuth;
   login: LocalAuth;
   setIsLoggedIn: Scalars['Boolean'];
   setUserData: User;
-}
+};
 
-export interface MutationAddWatchedArgs {
+export type MutationAddWatchedArgs = {
   tmdbId: Scalars['Int'];
   mediaType: TmdbMediaType;
   rating?: Maybe<RatingInput>;
   review?: Maybe<ReviewInput>;
+  tvData?: Maybe<TvDataInput>;
   createdAt?: Maybe<Scalars['Float']>;
-}
+};
 
-export interface MutationRegisterArgs {
+export type MutationRegisterArgs = {
   name: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
-}
+};
 
-export interface MutationLoginArgs {
+export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
-}
+};
 
-export interface MutationSetIsLoggedInArgs {
+export type MutationSetIsLoggedInArgs = {
   isLoggedIn: Scalars['Boolean'];
-}
+};
 
-export interface MutationSetUserDataArgs {
+export type MutationSetUserDataArgs = {
   userData: UserInput;
-}
+};
 
-export interface Network {
+export type Network = {
+  __typename?: 'Network';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   logo_path?: Maybe<Scalars['String']>;
   origin_country?: Maybe<Scalars['String']>;
-}
+};
 
-export interface Query {
+export type Query = {
+  __typename?: 'Query';
   _?: Maybe<Scalars['Boolean']>;
-  allWatched?: Maybe<Watched[]>;
+  tv?: Maybe<Tv>;
+  allWatched?: Maybe<Array<Watched>>;
   watched?: Maybe<Watched>;
-  users?: Maybe<User[]>;
+  users?: Maybe<Array<User>>;
   user?: Maybe<User>;
   me?: Maybe<User>;
   searchContent?: Maybe<TmdbSearch>;
   isLoggedIn: Scalars['Boolean'];
   userData: User;
-}
+};
 
-export interface QueryWatchedArgs {
+export type QueryTvArgs = {
+  tmdbId?: Maybe<Scalars['Int']>;
+};
+
+export type QueryWatchedArgs = {
   id: Scalars['ID'];
-}
+};
 
-export interface QueryUserArgs {
+export type QueryUserArgs = {
   id: Scalars['ID'];
-}
+};
 
-export interface QuerySearchContentArgs {
+export type QuerySearchContentArgs = {
   title: Scalars['String'];
-}
+};
 
-export interface Rating {
+export type Rating = {
+  __typename?: 'Rating';
   id: Scalars['ID'];
   value: Scalars['Float'];
   tmdbId: Scalars['Int'];
@@ -187,26 +207,30 @@ export interface Rating {
   updatedAt: Scalars['Float'];
   user?: Maybe<User>;
   watched?: Maybe<Watched>;
-}
+  tvData?: Maybe<TvData>;
+};
 
-export interface RatingInput {
+export type RatingInput = {
   value: Scalars['Float'];
-}
+};
 
-export interface Review {
+export type Review = {
+  __typename?: 'Review';
   id: Scalars['ID'];
   body: Scalars['String'];
   tmdbId: Scalars['Int'];
   userId: Scalars['ID'];
   user?: Maybe<User>;
   watched?: Maybe<Watched>;
-}
+  tvData?: Maybe<TvData>;
+};
 
-export interface ReviewInput {
+export type ReviewInput = {
   body: Scalars['String'];
-}
+};
 
-export interface Season {
+export type Season = {
+  __typename?: 'Season';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   overview?: Maybe<Scalars['String']>;
@@ -214,11 +238,12 @@ export interface Season {
   episode_count?: Maybe<Scalars['Int']>;
   poster_path?: Maybe<Scalars['String']>;
   season_number?: Maybe<Scalars['Int']>;
-}
+};
 
-export interface Subscription {
+export type Subscription = {
+  __typename?: 'Subscription';
   _?: Maybe<Scalars['Boolean']>;
-}
+};
 
 export type TmdbMedia = TmdbMovie | TmdbTv | TmdbPerson;
 
@@ -228,14 +253,15 @@ export enum TmdbMediaType {
   Person = 'person',
 }
 
-export interface TmdbMovie {
+export type TmdbMovie = {
+  __typename?: 'TmdbMovie';
   id?: Maybe<Scalars['Int']>;
   title?: Maybe<Scalars['String']>;
   overview?: Maybe<Scalars['String']>;
   original_title?: Maybe<Scalars['String']>;
   original_language?: Maybe<Scalars['String']>;
   poster_path?: Maybe<Scalars['String']>;
-  genre_ids?: Maybe<Maybe<Scalars['Int']>[]>;
+  genre_ids?: Maybe<Array<Maybe<Scalars['Int']>>>;
   adult?: Maybe<Scalars['Boolean']>;
   release_date?: Maybe<Scalars['String']>;
   backdrop_path?: Maybe<Scalars['String']>;
@@ -244,9 +270,10 @@ export interface TmdbMovie {
   vote_average?: Maybe<Scalars['Float']>;
   popularity?: Maybe<Scalars['Int']>;
   media_type?: Maybe<TmdbMediaType>;
-}
+};
 
-export interface TmdbPerson {
+export type TmdbPerson = {
+  __typename?: 'TmdbPerson';
   popularity?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   vote_average?: Maybe<Scalars['Int']>;
@@ -255,81 +282,97 @@ export interface TmdbPerson {
   adult?: Maybe<Scalars['String']>;
   known_for?: Maybe<TmdbMedia>;
   media_type?: Maybe<TmdbMediaType>;
-}
+};
 
-export interface TmdbSearch {
-  results?: Maybe<TmdbMedia[]>;
+export type TmdbSearch = {
+  __typename?: 'TmdbSearch';
+  results?: Maybe<Array<TmdbMedia>>;
   page: Scalars['Int'];
   total_pages: Scalars['Int'];
   total_results: Scalars['Int'];
-}
+};
 
-export interface TmdbTv {
+export type TmdbTv = {
+  __typename?: 'TmdbTv';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   overview?: Maybe<Scalars['String']>;
   original_name?: Maybe<Scalars['String']>;
   original_language?: Maybe<Scalars['String']>;
   poster_path?: Maybe<Scalars['String']>;
-  genre_ids?: Maybe<Maybe<Scalars['Int']>[]>;
+  genre_ids?: Maybe<Array<Maybe<Scalars['Int']>>>;
   backdrop_path?: Maybe<Scalars['String']>;
   first_air_date?: Maybe<Scalars['String']>;
-  origin_country?: Maybe<Maybe<Scalars['String']>[]>;
+  origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
   vote_count?: Maybe<Scalars['Int']>;
   vote_average?: Maybe<Scalars['Float']>;
   popularity?: Maybe<Scalars['Int']>;
   media_type?: Maybe<TmdbMediaType>;
-}
+};
 
-export interface Tv {
+export type Tv = {
+  __typename?: 'Tv';
   id: Scalars['ID'];
   backdrop_path?: Maybe<Scalars['String']>;
-  created_by?: Maybe<Maybe<Author>[]>;
-  episode_run_time?: Maybe<Maybe<Scalars['Int']>[]>;
+  created_by?: Maybe<Array<Maybe<Author>>>;
+  episode_run_time?: Maybe<Array<Maybe<Scalars['Int']>>>;
   first_air_date?: Maybe<Scalars['String']>;
-  genres?: Maybe<Maybe<Genre>[]>;
+  genres?: Maybe<Array<Maybe<Genre>>>;
   homepage?: Maybe<Scalars['String']>;
   in_production?: Maybe<Scalars['Boolean']>;
-  languages?: Maybe<Maybe<Scalars['String']>[]>;
+  languages?: Maybe<Array<Maybe<Scalars['String']>>>;
   last_air_date?: Maybe<Scalars['String']>;
   last_episode_to_air?: Maybe<Episode>;
   name?: Maybe<Scalars['String']>;
   next_episode_to_air?: Maybe<Episode>;
-  networks?: Maybe<Maybe<Network>[]>;
+  networks?: Maybe<Array<Maybe<Network>>>;
   number_of_episodes?: Maybe<Scalars['Int']>;
   number_of_seasons?: Maybe<Scalars['Int']>;
-  origin_country?: Maybe<Maybe<Scalars['String']>[]>;
+  origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
   original_language?: Maybe<Scalars['String']>;
   original_name?: Maybe<Scalars['String']>;
   overview?: Maybe<Scalars['String']>;
   popularity?: Maybe<Scalars['Int']>;
   poster_path?: Maybe<Scalars['String']>;
-  production_companies?: Maybe<Maybe<Company>[]>;
-  seasons?: Maybe<Maybe<Season>[]>;
+  production_companies?: Maybe<Array<Maybe<Company>>>;
+  seasons?: Maybe<Array<Maybe<Season>>>;
   status?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
   vote_average?: Maybe<Scalars['Float']>;
   vote_count?: Maybe<Scalars['Int']>;
   tmdbId?: Maybe<Scalars['Int']>;
-}
+};
 
-export interface User {
+export type TvData = {
+  __typename?: 'TvData';
+  season?: Maybe<Scalars['Int']>;
+  episode?: Maybe<Scalars['Int']>;
+};
+
+export type TvDataInput = {
+  episode?: Maybe<Scalars['Int']>;
+  season?: Maybe<Scalars['Int']>;
+};
+
+export type User = {
+  __typename?: 'User';
   id: Scalars['ID'];
   name: Scalars['String'];
   email: Scalars['String'];
   createdAt: Scalars['Float'];
   updatedAt: Scalars['Float'];
-  watched?: Maybe<Watched[]>;
-}
+  watched?: Maybe<Array<Watched>>;
+};
 
-export interface UserInput {
+export type UserInput = {
   id: Scalars['ID'];
   name: Scalars['String'];
   email: Scalars['String'];
   updatedAt?: Maybe<Scalars['Float']>;
-}
+};
 
-export interface Watched {
+export type Watched = {
+  __typename?: 'Watched';
   id: Scalars['ID'];
   tmdbId: Scalars['Int'];
   createdAt: Scalars['Float'];
@@ -340,108 +383,81 @@ export interface Watched {
   item?: Maybe<Item>;
   rating?: Maybe<Rating>;
   review?: Maybe<Review>;
-}
-export interface LoginMutationVariables {
+  tvData?: Maybe<TvData>;
+};
+export type LoginMutationVariables = {
   email: Scalars['String'];
   password: Scalars['String'];
-}
+};
 
 export type LoginMutation = { __typename?: 'Mutation' } & {
   login: { __typename?: 'LocalAuth' } & Pick<LocalAuth, 'token'> & {
-      user: { __typename?: 'User' } & Pick<
-        User,
-        'id' | 'name' | 'email' | 'createdAt' | 'updatedAt'
-      >;
+      user: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email' | 'createdAt' | 'updatedAt'>;
     };
 };
 
-export interface RegisterMutationVariables {
+export type RegisterMutationVariables = {
   name: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
-}
+};
 
 export type RegisterMutation = { __typename?: 'Mutation' } & {
   register: { __typename?: 'LocalAuth' } & Pick<LocalAuth, 'token'> & {
-      user: { __typename?: 'User' } & Pick<
-        User,
-        'id' | 'name' | 'email' | 'createdAt' | 'updatedAt'
-      >;
+      user: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email' | 'createdAt' | 'updatedAt'>;
     };
 };
 
-export interface SetIsLoggedInMutationVariables {
+export type SetIsLoggedInMutationVariables = {
   isLoggedIn: Scalars['Boolean'];
-}
-
-export type SetIsLoggedInMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'setIsLoggedIn'
->;
-
-export interface SetUserDataMutationVariables {
-  userData: UserInput;
-}
-
-export type SetUserDataMutation = { __typename?: 'Mutation' } & {
-  setUserData: { __typename?: 'User' } & Pick<
-    User,
-    'id' | 'name' | 'email' | 'createdAt'
-  >;
 };
 
-export interface AddWatchedMutationVariables {
+export type SetIsLoggedInMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'setIsLoggedIn'>;
+
+export type SetUserDataMutationVariables = {
+  userData: UserInput;
+};
+
+export type SetUserDataMutation = { __typename?: 'Mutation' } & {
+  setUserData: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email' | 'createdAt'>;
+};
+
+export type AddWatchedMutationVariables = {
   tmdbId: Scalars['Int'];
   mediaType: TmdbMediaType;
   createdAt: Scalars['Float'];
   rating?: Maybe<RatingInput>;
   review?: Maybe<ReviewInput>;
-}
+};
 
 export type AddWatchedMutation = { __typename?: 'Mutation' } & {
-  addWatched: { __typename?: 'Watched' } & Pick<
-    Watched,
-    'id' | 'tmdbId' | 'createdAt'
-  > & {
+  addWatched: { __typename?: 'Watched' } & Pick<Watched, 'id' | 'tmdbId' | 'createdAt'> & {
       rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
       review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
     };
 };
 
-export interface WatchedQueryVariables {}
+export type WatchedQueryVariables = {};
 
 export type WatchedQuery = { __typename?: 'Query' } & {
-  allWatched: Maybe<
-    ({ __typename?: 'Watched' } & Pick<Watched, 'id' | 'tmdbId'>)[]
-  >;
+  allWatched: Maybe<Array<{ __typename?: 'Watched' } & Pick<Watched, 'id' | 'tmdbId'>>>;
 };
 
-export interface UserWatchedQueryVariables {
+export type UserWatchedQueryVariables = {
   id: Scalars['ID'];
-}
+};
 
 export type UserWatchedQuery = { __typename?: 'Query' } & {
   user: Maybe<
     { __typename?: 'User' } & Pick<User, 'id' | 'name'> & {
         watched: Maybe<
           Array<
-            { __typename?: 'Watched' } & Pick<
-              Watched,
-              'id' | 'tmdbId' | 'createdAt' | 'itemType'
-            > & {
-                rating: Maybe<
-                  { __typename?: 'Rating' } & Pick<Rating, 'value'>
-                >;
+            { __typename?: 'Watched' } & Pick<Watched, 'id' | 'tmdbId' | 'createdAt' | 'itemType'> & {
+                rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
                 review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
                 item: Maybe<
-                  | ({ __typename?: 'Movie' } & Pick<
-                      Movie,
-                      'id' | 'title' | 'release_date' | 'poster_path'
-                    >)
-                  | ({ __typename?: 'Tv' } & Pick<
-                      Tv,
-                      'id' | 'name' | 'first_air_date' | 'poster_path'
-                    >)
+                  | ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title' | 'release_date' | 'poster_path'>)
+                  | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'>)
                 >;
               }
           >
@@ -450,34 +466,25 @@ export type UserWatchedQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export interface IsUserLoggedInQueryVariables {}
+export type IsUserLoggedInQueryVariables = {};
 
-export type IsUserLoggedInQuery = { __typename?: 'Query' } & Pick<
-  Query,
-  'isLoggedIn'
->;
+export type IsUserLoggedInQuery = { __typename?: 'Query' } & Pick<Query, 'isLoggedIn'>;
 
-export interface UserDataQueryVariables {}
+export type UserDataQueryVariables = {};
 
 export type UserDataQuery = { __typename?: 'Query' } & {
-  userData: { __typename?: 'User' } & Pick<
-    User,
-    'id' | 'name' | 'email' | 'createdAt'
-  >;
+  userData: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email' | 'createdAt'>;
 };
 
-export interface SearchContentQueryVariables {
+export type SearchContentQueryVariables = {
   title: Scalars['String'];
-}
+};
 
 export type SearchContentQuery = { __typename?: 'Query' } & {
   searchContent: Maybe<
-    { __typename?: 'TmdbSearch' } & Pick<
-      TmdbSearch,
-      'total_pages' | 'total_results' | 'page'
-    > & {
+    { __typename?: 'TmdbSearch' } & Pick<TmdbSearch, 'total_pages' | 'total_results' | 'page'> & {
         results: Maybe<
-          (
+          Array<
             | ({ __typename?: 'TmdbMovie' } & Pick<
                 TmdbMovie,
                 'id' | 'title' | 'media_type' | 'poster_path' | 'release_date'
@@ -486,15 +493,26 @@ export type SearchContentQuery = { __typename?: 'Query' } & {
                 TmdbTv,
                 'id' | 'name' | 'media_type' | 'poster_path' | 'first_air_date'
               >)
-            | ({ __typename?: 'TmdbPerson' } & Pick<
-                TmdbPerson,
-                'id' | 'media_type'
-              >))[]
+            | ({ __typename?: 'TmdbPerson' } & Pick<TmdbPerson, 'id' | 'media_type'>)
+          >
         >;
       }
   >;
 };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+export type TvQueryVariables = {
+  tmdbId: Scalars['Int'];
+};
+
+export type TvQuery = { __typename?: 'Query' } & {
+  tv: Maybe<
+    { __typename?: 'Tv' } & {
+      seasons: Maybe<
+        Array<Maybe<{ __typename?: 'Season' } & Pick<Season, 'name' | 'season_number' | 'episode_count'>>>
+      >;
+    }
+  >;
+};
 
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
@@ -510,29 +528,17 @@ export const LoginDocument = gql`
     }
   }
 `;
-export type LoginMutationFn = ReactApollo.MutationFn<
-  LoginMutation,
-  LoginMutationVariables
->;
+export type LoginMutationFn = ReactApollo.MutationFn<LoginMutation, LoginMutationVariables>;
+export type LoginComponentProps = Omit<
+  Omit<ReactApollo.MutationProps<LoginMutation, LoginMutationVariables>, 'mutation'>,
+  'variables'
+> & { variables?: LoginMutationVariables };
 
-export const LoginComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.MutationProps<LoginMutation, LoginMutationVariables>,
-      'mutation'
-    >,
-    'variables'
-  > & { variables?: LoginMutationVariables },
-) => (
-  <ReactApollo.Mutation<LoginMutation, LoginMutationVariables>
-    mutation={LoginDocument}
-    {...props}
-  />
+export const LoginComponent = (props: LoginComponentProps) => (
+  <ReactApollo.Mutation<LoginMutation, LoginMutationVariables> mutation={LoginDocument} {...props} />
 );
 
-export type LoginProps<TChildProps = {}> = Partial<
-  ReactApollo.MutateProps<LoginMutation, LoginMutationVariables>
-> &
+export type LoginProps<TChildProps = {}> = Partial<ReactApollo.MutateProps<LoginMutation, LoginMutationVariables>> &
   TChildProps;
 export function withLogin<TProps, TChildProps = {}>(
   operationOptions?: ReactApollo.OperationOption<
@@ -542,27 +548,19 @@ export function withLogin<TProps, TChildProps = {}>(
     LoginProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withMutation<
-    TProps,
-    LoginMutation,
-    LoginMutationVariables,
-    LoginProps<TChildProps>
-  >(LoginDocument, {
-    alias: 'withLogin',
-    ...operationOptions,
-  });
+  return ReactApollo.withMutation<TProps, LoginMutation, LoginMutationVariables, LoginProps<TChildProps>>(
+    LoginDocument,
+    {
+      alias: 'withLogin',
+      ...operationOptions,
+    },
+  );
 }
 
 export function useLoginMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<
-    LoginMutation,
-    LoginMutationVariables
-  >,
+  baseOptions?: ReactApolloHooks.MutationHookOptions<LoginMutation, LoginMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<LoginMutation, LoginMutationVariables>(
-    LoginDocument,
-    baseOptions,
-  );
+  return ReactApolloHooks.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions);
 }
 export const RegisterDocument = gql`
   mutation Register($name: String!, $email: String!, $password: String!) {
@@ -578,24 +576,14 @@ export const RegisterDocument = gql`
     }
   }
 `;
-export type RegisterMutationFn = ReactApollo.MutationFn<
-  RegisterMutation,
-  RegisterMutationVariables
->;
+export type RegisterMutationFn = ReactApollo.MutationFn<RegisterMutation, RegisterMutationVariables>;
+export type RegisterComponentProps = Omit<
+  Omit<ReactApollo.MutationProps<RegisterMutation, RegisterMutationVariables>, 'mutation'>,
+  'variables'
+> & { variables?: RegisterMutationVariables };
 
-export const RegisterComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.MutationProps<RegisterMutation, RegisterMutationVariables>,
-      'mutation'
-    >,
-    'variables'
-  > & { variables?: RegisterMutationVariables },
-) => (
-  <ReactApollo.Mutation<RegisterMutation, RegisterMutationVariables>
-    mutation={RegisterDocument}
-    {...props}
-  />
+export const RegisterComponent = (props: RegisterComponentProps) => (
+  <ReactApollo.Mutation<RegisterMutation, RegisterMutationVariables> mutation={RegisterDocument} {...props} />
 );
 
 export type RegisterProps<TChildProps = {}> = Partial<
@@ -610,50 +598,32 @@ export function withRegister<TProps, TChildProps = {}>(
     RegisterProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withMutation<
-    TProps,
-    RegisterMutation,
-    RegisterMutationVariables,
-    RegisterProps<TChildProps>
-  >(RegisterDocument, {
-    alias: 'withRegister',
-    ...operationOptions,
-  });
+  return ReactApollo.withMutation<TProps, RegisterMutation, RegisterMutationVariables, RegisterProps<TChildProps>>(
+    RegisterDocument,
+    {
+      alias: 'withRegister',
+      ...operationOptions,
+    },
+  );
 }
 
 export function useRegisterMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<
-    RegisterMutation,
-    RegisterMutationVariables
-  >,
+  baseOptions?: ReactApolloHooks.MutationHookOptions<RegisterMutation, RegisterMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<
-    RegisterMutation,
-    RegisterMutationVariables
-  >(RegisterDocument, baseOptions);
+  return ReactApolloHooks.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, baseOptions);
 }
 export const SetIsLoggedInDocument = gql`
   mutation SetIsLoggedIn($isLoggedIn: Boolean!) {
     setIsLoggedIn(isLoggedIn: $isLoggedIn) @client
   }
 `;
-export type SetIsLoggedInMutationFn = ReactApollo.MutationFn<
-  SetIsLoggedInMutation,
-  SetIsLoggedInMutationVariables
->;
+export type SetIsLoggedInMutationFn = ReactApollo.MutationFn<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>;
+export type SetIsLoggedInComponentProps = Omit<
+  Omit<ReactApollo.MutationProps<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>, 'mutation'>,
+  'variables'
+> & { variables?: SetIsLoggedInMutationVariables };
 
-export const SetIsLoggedInComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.MutationProps<
-        SetIsLoggedInMutation,
-        SetIsLoggedInMutationVariables
-      >,
-      'mutation'
-    >,
-    'variables'
-  > & { variables?: SetIsLoggedInMutationVariables },
-) => (
+export const SetIsLoggedInComponent = (props: SetIsLoggedInComponentProps) => (
   <ReactApollo.Mutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>
     mutation={SetIsLoggedInDocument}
     {...props}
@@ -684,15 +654,12 @@ export function withSetIsLoggedIn<TProps, TChildProps = {}>(
 }
 
 export function useSetIsLoggedInMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<
-    SetIsLoggedInMutation,
-    SetIsLoggedInMutationVariables
-  >,
+  baseOptions?: ReactApolloHooks.MutationHookOptions<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<
-    SetIsLoggedInMutation,
-    SetIsLoggedInMutationVariables
-  >(SetIsLoggedInDocument, baseOptions);
+  return ReactApolloHooks.useMutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>(
+    SetIsLoggedInDocument,
+    baseOptions,
+  );
 }
 export const SetUserDataDocument = gql`
   mutation SetUserData($userData: UserInput!) {
@@ -704,27 +671,14 @@ export const SetUserDataDocument = gql`
     }
   }
 `;
-export type SetUserDataMutationFn = ReactApollo.MutationFn<
-  SetUserDataMutation,
-  SetUserDataMutationVariables
->;
+export type SetUserDataMutationFn = ReactApollo.MutationFn<SetUserDataMutation, SetUserDataMutationVariables>;
+export type SetUserDataComponentProps = Omit<
+  Omit<ReactApollo.MutationProps<SetUserDataMutation, SetUserDataMutationVariables>, 'mutation'>,
+  'variables'
+> & { variables?: SetUserDataMutationVariables };
 
-export const SetUserDataComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.MutationProps<
-        SetUserDataMutation,
-        SetUserDataMutationVariables
-      >,
-      'mutation'
-    >,
-    'variables'
-  > & { variables?: SetUserDataMutationVariables },
-) => (
-  <ReactApollo.Mutation<SetUserDataMutation, SetUserDataMutationVariables>
-    mutation={SetUserDataDocument}
-    {...props}
-  />
+export const SetUserDataComponent = (props: SetUserDataComponentProps) => (
+  <ReactApollo.Mutation<SetUserDataMutation, SetUserDataMutationVariables> mutation={SetUserDataDocument} {...props} />
 );
 
 export type SetUserDataProps<TChildProps = {}> = Partial<
@@ -751,15 +705,12 @@ export function withSetUserData<TProps, TChildProps = {}>(
 }
 
 export function useSetUserDataMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<
-    SetUserDataMutation,
-    SetUserDataMutationVariables
-  >,
+  baseOptions?: ReactApolloHooks.MutationHookOptions<SetUserDataMutation, SetUserDataMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<
-    SetUserDataMutation,
-    SetUserDataMutationVariables
-  >(SetUserDataDocument, baseOptions);
+  return ReactApolloHooks.useMutation<SetUserDataMutation, SetUserDataMutationVariables>(
+    SetUserDataDocument,
+    baseOptions,
+  );
 }
 export const AddWatchedDocument = gql`
   mutation AddWatched(
@@ -769,13 +720,7 @@ export const AddWatchedDocument = gql`
     $rating: RatingInput
     $review: ReviewInput
   ) {
-    addWatched(
-      tmdbId: $tmdbId
-      mediaType: $mediaType
-      rating: $rating
-      review: $review
-      createdAt: $createdAt
-    ) {
+    addWatched(tmdbId: $tmdbId, mediaType: $mediaType, rating: $rating, review: $review, createdAt: $createdAt) {
       id
       tmdbId
       createdAt
@@ -788,27 +733,14 @@ export const AddWatchedDocument = gql`
     }
   }
 `;
-export type AddWatchedMutationFn = ReactApollo.MutationFn<
-  AddWatchedMutation,
-  AddWatchedMutationVariables
->;
+export type AddWatchedMutationFn = ReactApollo.MutationFn<AddWatchedMutation, AddWatchedMutationVariables>;
+export type AddWatchedComponentProps = Omit<
+  Omit<ReactApollo.MutationProps<AddWatchedMutation, AddWatchedMutationVariables>, 'mutation'>,
+  'variables'
+> & { variables?: AddWatchedMutationVariables };
 
-export const AddWatchedComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.MutationProps<
-        AddWatchedMutation,
-        AddWatchedMutationVariables
-      >,
-      'mutation'
-    >,
-    'variables'
-  > & { variables?: AddWatchedMutationVariables },
-) => (
-  <ReactApollo.Mutation<AddWatchedMutation, AddWatchedMutationVariables>
-    mutation={AddWatchedDocument}
-    {...props}
-  />
+export const AddWatchedComponent = (props: AddWatchedComponentProps) => (
+  <ReactApollo.Mutation<AddWatchedMutation, AddWatchedMutationVariables> mutation={AddWatchedDocument} {...props} />
 );
 
 export type AddWatchedProps<TChildProps = {}> = Partial<
@@ -835,15 +767,9 @@ export function withAddWatched<TProps, TChildProps = {}>(
 }
 
 export function useAddWatchedMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<
-    AddWatchedMutation,
-    AddWatchedMutationVariables
-  >,
+  baseOptions?: ReactApolloHooks.MutationHookOptions<AddWatchedMutation, AddWatchedMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<
-    AddWatchedMutation,
-    AddWatchedMutationVariables
-  >(AddWatchedDocument, baseOptions);
+  return ReactApolloHooks.useMutation<AddWatchedMutation, AddWatchedMutationVariables>(AddWatchedDocument, baseOptions);
 }
 export const WatchedDocument = gql`
   query Watched {
@@ -853,22 +779,16 @@ export const WatchedDocument = gql`
     }
   }
 `;
+export type WatchedComponentProps = Omit<
+  Omit<ReactApollo.QueryProps<WatchedQuery, WatchedQueryVariables>, 'query'>,
+  'variables'
+> & { variables?: WatchedQueryVariables };
 
-export const WatchedComponent = (
-  props: Omit<
-    Omit<ReactApollo.QueryProps<WatchedQuery, WatchedQueryVariables>, 'query'>,
-    'variables'
-  > & { variables?: WatchedQueryVariables },
-) => (
-  <ReactApollo.Query<WatchedQuery, WatchedQueryVariables>
-    query={WatchedDocument}
-    {...props}
-  />
+export const WatchedComponent = (props: WatchedComponentProps) => (
+  <ReactApollo.Query<WatchedQuery, WatchedQueryVariables> query={WatchedDocument} {...props} />
 );
 
-export type WatchedProps<TChildProps = {}> = Partial<
-  ReactApollo.DataProps<WatchedQuery, WatchedQueryVariables>
-> &
+export type WatchedProps<TChildProps = {}> = Partial<ReactApollo.DataProps<WatchedQuery, WatchedQueryVariables>> &
   TChildProps;
 export function withWatched<TProps, TChildProps = {}>(
   operationOptions?: ReactApollo.OperationOption<
@@ -878,24 +798,17 @@ export function withWatched<TProps, TChildProps = {}>(
     WatchedProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withQuery<
-    TProps,
-    WatchedQuery,
-    WatchedQueryVariables,
-    WatchedProps<TChildProps>
-  >(WatchedDocument, {
-    alias: 'withWatched',
-    ...operationOptions,
-  });
+  return ReactApollo.withQuery<TProps, WatchedQuery, WatchedQueryVariables, WatchedProps<TChildProps>>(
+    WatchedDocument,
+    {
+      alias: 'withWatched',
+      ...operationOptions,
+    },
+  );
 }
 
-export function useWatchedQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<WatchedQueryVariables>,
-) {
-  return ReactApolloHooks.useQuery<WatchedQuery, WatchedQueryVariables>(
-    WatchedDocument,
-    baseOptions,
-  );
+export function useWatchedQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<WatchedQueryVariables>) {
+  return ReactApolloHooks.useQuery<WatchedQuery, WatchedQueryVariables>(WatchedDocument, baseOptions);
 }
 export const UserWatchedDocument = gql`
   query UserWatched($id: ID!) {
@@ -931,20 +844,13 @@ export const UserWatchedDocument = gql`
     }
   }
 `;
+export type UserWatchedComponentProps = Omit<
+  Omit<ReactApollo.QueryProps<UserWatchedQuery, UserWatchedQueryVariables>, 'query'>,
+  'variables'
+> & { variables: UserWatchedQueryVariables };
 
-export const UserWatchedComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.QueryProps<UserWatchedQuery, UserWatchedQueryVariables>,
-      'query'
-    >,
-    'variables'
-  > & { variables: UserWatchedQueryVariables },
-) => (
-  <ReactApollo.Query<UserWatchedQuery, UserWatchedQueryVariables>
-    query={UserWatchedDocument}
-    {...props}
-  />
+export const UserWatchedComponent = (props: UserWatchedComponentProps) => (
+  <ReactApollo.Query<UserWatchedQuery, UserWatchedQueryVariables> query={UserWatchedDocument} {...props} />
 );
 
 export type UserWatchedProps<TChildProps = {}> = Partial<
@@ -959,44 +865,30 @@ export function withUserWatched<TProps, TChildProps = {}>(
     UserWatchedProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withQuery<
-    TProps,
-    UserWatchedQuery,
-    UserWatchedQueryVariables,
-    UserWatchedProps<TChildProps>
-  >(UserWatchedDocument, {
-    alias: 'withUserWatched',
-    ...operationOptions,
-  });
+  return ReactApollo.withQuery<TProps, UserWatchedQuery, UserWatchedQueryVariables, UserWatchedProps<TChildProps>>(
+    UserWatchedDocument,
+    {
+      alias: 'withUserWatched',
+      ...operationOptions,
+    },
+  );
 }
 
-export function useUserWatchedQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<UserWatchedQueryVariables>,
-) {
-  return ReactApolloHooks.useQuery<UserWatchedQuery, UserWatchedQueryVariables>(
-    UserWatchedDocument,
-    baseOptions,
-  );
+export function useUserWatchedQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<UserWatchedQueryVariables>) {
+  return ReactApolloHooks.useQuery<UserWatchedQuery, UserWatchedQueryVariables>(UserWatchedDocument, baseOptions);
 }
 export const IsUserLoggedInDocument = gql`
   query IsUserLoggedIn {
     isLoggedIn @client
   }
 `;
+export type IsUserLoggedInComponentProps = Omit<
+  Omit<ReactApollo.QueryProps<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>, 'query'>,
+  'variables'
+> & { variables?: IsUserLoggedInQueryVariables };
 
-export const IsUserLoggedInComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.QueryProps<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>,
-      'query'
-    >,
-    'variables'
-  > & { variables?: IsUserLoggedInQueryVariables },
-) => (
-  <ReactApollo.Query<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>
-    query={IsUserLoggedInDocument}
-    {...props}
-  />
+export const IsUserLoggedInComponent = (props: IsUserLoggedInComponentProps) => (
+  <ReactApollo.Query<IsUserLoggedInQuery, IsUserLoggedInQueryVariables> query={IsUserLoggedInDocument} {...props} />
 );
 
 export type IsUserLoggedInProps<TChildProps = {}> = Partial<
@@ -1022,13 +914,11 @@ export function withIsUserLoggedIn<TProps, TChildProps = {}>(
   });
 }
 
-export function useIsUserLoggedInQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<IsUserLoggedInQueryVariables>,
-) {
-  return ReactApolloHooks.useQuery<
-    IsUserLoggedInQuery,
-    IsUserLoggedInQueryVariables
-  >(IsUserLoggedInDocument, baseOptions);
+export function useIsUserLoggedInQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<IsUserLoggedInQueryVariables>) {
+  return ReactApolloHooks.useQuery<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>(
+    IsUserLoggedInDocument,
+    baseOptions,
+  );
 }
 export const UserDataDocument = gql`
   query UserData {
@@ -1040,25 +930,16 @@ export const UserDataDocument = gql`
     }
   }
 `;
+export type UserDataComponentProps = Omit<
+  Omit<ReactApollo.QueryProps<UserDataQuery, UserDataQueryVariables>, 'query'>,
+  'variables'
+> & { variables?: UserDataQueryVariables };
 
-export const UserDataComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.QueryProps<UserDataQuery, UserDataQueryVariables>,
-      'query'
-    >,
-    'variables'
-  > & { variables?: UserDataQueryVariables },
-) => (
-  <ReactApollo.Query<UserDataQuery, UserDataQueryVariables>
-    query={UserDataDocument}
-    {...props}
-  />
+export const UserDataComponent = (props: UserDataComponentProps) => (
+  <ReactApollo.Query<UserDataQuery, UserDataQueryVariables> query={UserDataDocument} {...props} />
 );
 
-export type UserDataProps<TChildProps = {}> = Partial<
-  ReactApollo.DataProps<UserDataQuery, UserDataQueryVariables>
-> &
+export type UserDataProps<TChildProps = {}> = Partial<ReactApollo.DataProps<UserDataQuery, UserDataQueryVariables>> &
   TChildProps;
 export function withUserData<TProps, TChildProps = {}>(
   operationOptions?: ReactApollo.OperationOption<
@@ -1068,24 +949,17 @@ export function withUserData<TProps, TChildProps = {}>(
     UserDataProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withQuery<
-    TProps,
-    UserDataQuery,
-    UserDataQueryVariables,
-    UserDataProps<TChildProps>
-  >(UserDataDocument, {
-    alias: 'withUserData',
-    ...operationOptions,
-  });
+  return ReactApollo.withQuery<TProps, UserDataQuery, UserDataQueryVariables, UserDataProps<TChildProps>>(
+    UserDataDocument,
+    {
+      alias: 'withUserData',
+      ...operationOptions,
+    },
+  );
 }
 
-export function useUserDataQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<UserDataQueryVariables>,
-) {
-  return ReactApolloHooks.useQuery<UserDataQuery, UserDataQueryVariables>(
-    UserDataDocument,
-    baseOptions,
-  );
+export function useUserDataQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<UserDataQueryVariables>) {
+  return ReactApolloHooks.useQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, baseOptions);
 }
 export const SearchContentDocument = gql`
   query SearchContent($title: String!) {
@@ -1116,20 +990,13 @@ export const SearchContentDocument = gql`
     }
   }
 `;
+export type SearchContentComponentProps = Omit<
+  Omit<ReactApollo.QueryProps<SearchContentQuery, SearchContentQueryVariables>, 'query'>,
+  'variables'
+> & { variables: SearchContentQueryVariables };
 
-export const SearchContentComponent = (
-  props: Omit<
-    Omit<
-      ReactApollo.QueryProps<SearchContentQuery, SearchContentQueryVariables>,
-      'query'
-    >,
-    'variables'
-  > & { variables: SearchContentQueryVariables },
-) => (
-  <ReactApollo.Query<SearchContentQuery, SearchContentQueryVariables>
-    query={SearchContentDocument}
-    {...props}
-  />
+export const SearchContentComponent = (props: SearchContentComponentProps) => (
+  <ReactApollo.Query<SearchContentQuery, SearchContentQueryVariables> query={SearchContentDocument} {...props} />
 );
 
 export type SearchContentProps<TChildProps = {}> = Partial<
@@ -1155,11 +1022,38 @@ export function withSearchContent<TProps, TChildProps = {}>(
   });
 }
 
-export function useSearchContentQuery(
-  baseOptions?: ReactApolloHooks.QueryHookOptions<SearchContentQueryVariables>,
+export function useSearchContentQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<SearchContentQueryVariables>) {
+  return ReactApolloHooks.useQuery<SearchContentQuery, SearchContentQueryVariables>(SearchContentDocument, baseOptions);
+}
+export const TvDocument = gql`
+  query Tv($tmdbId: Int!) {
+    tv(tmdbId: $tmdbId) {
+      seasons {
+        name
+        season_number
+        episode_count
+      }
+    }
+  }
+`;
+export type TvComponentProps = Omit<Omit<ReactApollo.QueryProps<TvQuery, TvQueryVariables>, 'query'>, 'variables'> & {
+  variables: TvQueryVariables;
+};
+
+export const TvComponent = (props: TvComponentProps) => (
+  <ReactApollo.Query<TvQuery, TvQueryVariables> query={TvDocument} {...props} />
+);
+
+export type TvProps<TChildProps = {}> = Partial<ReactApollo.DataProps<TvQuery, TvQueryVariables>> & TChildProps;
+export function withTv<TProps, TChildProps = {}>(
+  operationOptions?: ReactApollo.OperationOption<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps>>,
 ) {
-  return ReactApolloHooks.useQuery<
-    SearchContentQuery,
-    SearchContentQueryVariables
-  >(SearchContentDocument, baseOptions);
+  return ReactApollo.withQuery<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps>>(TvDocument, {
+    alias: 'withTv',
+    ...operationOptions,
+  });
+}
+
+export function useTvQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<TvQueryVariables>) {
+  return ReactApolloHooks.useQuery<TvQuery, TvQueryVariables>(TvDocument, baseOptions);
 }

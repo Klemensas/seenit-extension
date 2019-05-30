@@ -79,3 +79,13 @@ query SearchContent($title: String!) {
     }
   }
 }
+
+query Tv($tmdbId: Int!) {
+  tv(tmdbId: $tmdbId) {
+    seasons {
+      name
+      season_number
+      episode_count
+    }
+  }
+}
