@@ -1,17 +1,17 @@
 import * as React from 'react';
 import Select from 'react-select';
 
-import { TmdbMovie, TmdbTv, TmdbMediaType, useTvQuery, useSearchContentQuery } from '../graphql';
-import WatchedForm from './WatchedForm';
+import { TmdbMovie, TmdbTv, useSearchContentQuery } from '../graphql';
 
 export interface SearchOption {
   label: string;
   value: string | number;
 }
 
-export default function Search(): React.ReactElement {
+const Search: React.FC<{ setSelected: React.Dispatch<React.SetStateAction<TmdbMovie | TmdbTv>> }> = ({
+  setSelected,
+}) => {
   const [query, setQuery] = React.useState('');
-  const [selectedItem, setSelectedItem] = React.useState<TmdbMovie | TmdbTv>(null);
 
   const searchQuery = useSearchContentQuery({
     variables: { title: query },
@@ -34,32 +34,22 @@ export default function Search(): React.ReactElement {
         )
       : [];
 
-  const tvQuery = useTvQuery({
-    variables: { tmdbId: selectedItem ? selectedItem.id : null },
-    skip: !selectedItem || selectedItem.media_type !== TmdbMediaType.Tv,
-  });
-  const seasons = tvQuery.data && tvQuery.data.tv ? tvQuery.data.tv.seasons : null;
-
   return (
-    <React.Fragment>
-      <Select
-        cacheOptions
-        inputValue={query}
-        isLoading={searchQuery.loading}
-        options={options}
-        noOptionsMessage={() => (query ? 'No options' : 'Enter a query to search')}
-        onChange={value => setSelectedItem(value)}
-        onInputChange={(value, { action }) => {
-          if (action === 'input-change' || action === 'set-value') {
-            setQuery(value);
-          }
-        }}
-      />
-      {selectedItem && !tvQuery.loading ? (
-        <WatchedForm item={selectedItem} seasons={selectedItem.media_type === TmdbMediaType.Tv ? seasons : null} />
-      ) : (
-        ''
-      )}
-    </React.Fragment>
+    <Select
+      cacheOptions
+      inputValue={query}
+      isLoading={searchQuery.loading}
+      options={options}
+      placeholder="Search..."
+      noOptionsMessage={() => (query ? 'No options' : 'Enter a query to search')}
+      onChange={(value: any) => setSelected(value)}
+      onInputChange={(value, { action }) => {
+        if (action === 'input-change' || action === 'set-value') {
+          setQuery(value);
+        }
+      }}
+    />
   );
-}
+};
+
+export default Search;

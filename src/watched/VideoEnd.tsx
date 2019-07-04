@@ -1,14 +1,24 @@
 import * as React from 'react';
 
+import { TmdbMediaType, useSearchContentQuery, TmdbMovie, TmdbTv } from '../graphql';
 import { VideoContext } from '../content/Content';
 import { Title } from '../content/renderService';
-import { TmdbMediaType, useSearchContentQuery, useTvQuery } from '../graphql';
-import { debugLog } from '../main';
 import Search from './Search';
 import WatchedForm from './WatchedForm';
 
-export default function VideoEnd(): React.ReactElement {
+function renderSearch(setSelected) {
+  return (
+    <React.Fragment>
+      <div>Couldn&apos;t find your watched title</div>
+      <Search setSelected={setSelected} />
+    </React.Fragment>
+  );
+}
+
+const VideoEnd = () => {
   const videoData = React.useContext(VideoContext);
+  const [selected, setSelected] = React.useState<TmdbMovie | TmdbTv>(null);
+  const [searching, setSearching] = React.useState<boolean>(false);
 
   const title: Title = videoData.title || null;
 
@@ -17,14 +27,14 @@ export default function VideoEnd(): React.ReactElement {
   // 2: no items
   // 3: 1 result
   // 4: multiple results
-
-  if (!title) {
-    return <div>No title?</div>;
-  }
-
   const { data, loading, error } = useSearchContentQuery({
-    variables: { title: title.name },
+    variables: { title: title ? title.name : null },
+    skip: !title,
   });
+
+  if (!title && !selected) {
+    return renderSearch(setSelected);
+  }
 
   let items = [];
   if (data && data.searchContent) {
@@ -36,28 +46,33 @@ export default function VideoEnd(): React.ReactElement {
 
   const item = items[0];
 
-  const tvQuery = useTvQuery({
-    variables: { tmdbId: item ? item.id : null },
-    skip: !item || item.media_type !== TmdbMediaType.Tv,
-  });
-  const seasons = tvQuery.data && tvQuery.data.tv ? tvQuery.data.tv.seasons : null;
-
-  if (loading || tvQuery.loading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (error || tvQuery.error) {
+  if (error) {
     return <div>Unexpected error!</div>;
   }
 
-  if (!items.length) {
-    return (
-      <React.Fragment>
-        <div>Couldn&apos;t find your watched title</div>
-        <Search />
-      </React.Fragment>
-    );
+  if (!items.length && !selected) {
+    return renderSearch(setSelected);
   }
 
-  return <WatchedForm item={item} title={title} seasons={seasons} />;
-}
+  return (
+    <React.Fragment>
+      {searching ? (
+        <Search setSelected={setSelected} />
+      ) : (
+        <p style={{ fontSize: '0.8em' }}>
+          Not what you watched?{' '}
+          <button type="button" onClick={() => setSearching(true)}>
+            Search
+          </button>
+        </p>
+      )}
+      <WatchedForm item={selected || item} title={title} />;
+    </React.Fragment>
+  );
+};
+
+export default VideoEnd;

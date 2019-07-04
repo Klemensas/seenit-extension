@@ -2,12 +2,17 @@ export function getStorageValue<T = object>(...keys: string[]) {
   return new Promise<T>(resolve => chrome.storage.sync.get(keys, resolve));
 }
 
+export function updateStorage<T = object>(value: T) {
+  return new Promise<void>(resolve => chrome.storage.sync.set(value, resolve));
+}
+
 export function storageChange() {
   const cbs: { [key: string]: Function[] } = {};
 
   // TODO: extend this to support targetKey subscription?
   // TODO: add listener removal
   function addListener(cb: Function, target: string = 'settings') {
+    console.log('adding listener');
     if (!target) {
       throw new Error('Missing listener target key');
     }

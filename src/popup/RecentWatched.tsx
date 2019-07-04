@@ -1,11 +1,18 @@
 import * as React from 'react';
-import Search from '../watched/Search';
+import { Text, Overlay } from '@blueprintjs/core';
 
-export default function RecentWatched() {
+import { TmdbMovie, TmdbTv } from '../graphql';
+import Search from '../watched/Search';
+import WatchedForm from '../watched/WatchedForm';
+
+const RecentWatched = () => {
+  const [selected, setSelected] = React.useState<TmdbMovie | TmdbTv>(null);
+
   return (
     <React.Fragment>
-      <p>Watched anything recently?</p>
-      <Search />
+      <Text tagName="p">Watched anything recently?</Text>
+      <Search setSelected={setSelected} />
+      <div className="sp-y">{selected ? <WatchedForm item={selected} /> : null}</div>
       {/* <div
         style={{
           border: '3px solid red',
@@ -19,4 +26,6 @@ export default function RecentWatched() {
       </div> */}
     </React.Fragment>
   );
-}
+};
+
+export default RecentWatched;

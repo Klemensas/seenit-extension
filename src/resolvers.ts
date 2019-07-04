@@ -1,6 +1,8 @@
 import { Resolvers } from 'apollo-client';
 import gql from 'graphql-tag';
 
+import { updateStorage } from './browserService';
+
 export const typeDefs = gql`
   extend type Query {
     isLoggedIn: Boolean!
@@ -10,7 +12,7 @@ export const typeDefs = gql`
 export const resolvers: Resolvers = {
   Mutation: {
     setIsLoggedIn: (root, { isLoggedIn }, { cache }) => {
-      chrome.storage.sync.set({ token: null });
+      updateStorage({ token: null });
       cache.writeData({ data: { isLoggedIn } });
       return isLoggedIn;
     },

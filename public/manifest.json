@@ -17,6 +17,10 @@
     {
       "matches": ["*://*/*"],
       "js": ["js/content.js"]
+    }, {
+      "matches": ["*://*/*"],
+      "js": ["js/iframeContent.js"],
+      "all_frames": true
     }
   ],
   "background": {

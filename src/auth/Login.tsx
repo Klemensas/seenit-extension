@@ -2,6 +2,7 @@ import * as React from 'react';
 import { withRouter } from 'react-router';
 
 import { useLoginMutation, useRegisterMutation } from '../graphql';
+import { updateStorage } from '../browserService';
 
 export default withRouter(function Login({ history }) {
   // TODO: remove placeholder credentials
@@ -15,7 +16,7 @@ export default withRouter(function Login({ history }) {
     variables: form,
     update: (cache, { data }) => {
       const { token, user } = data.login ? data.login : data.register;
-      chrome.storage.sync.set({ token, user });
+      updateStorage({ token, user });
       cache.writeData({
         data: {
           isLoggedIn: true,

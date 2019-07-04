@@ -5,12 +5,13 @@ import Login from '../auth/Login';
 import AuthRoute from '../components/AuthRoute';
 import VideoEnd from '../watched/VideoEnd';
 import CloseContent from './CloseContent';
-import './Content.scss';
 import { VideoData } from './renderService';
+import './Content.scss';
 
 export const VideoContext = React.createContext<VideoData>(null);
 
-export default function Content({ videoData }: { videoData: VideoData }) {
+// eslint-disable-next-line react/prop-types
+const Content: React.FC<{ videoData: VideoData }> = ({ videoData }) => {
   return (
     <VideoContext.Provider value={videoData}>
       <CloseContent />
@@ -20,4 +21,6 @@ export default function Content({ videoData }: { videoData: VideoData }) {
       </Switch>
     </VideoContext.Provider>
   );
-}
+};
+
+export default Content;

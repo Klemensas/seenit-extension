@@ -1,4 +1,4 @@
-import { debugLog } from '../main';
+import { debugLog, settings } from '../main';
 
 export interface RenderServiceState {
   mutationObserver: MutationObserver;
@@ -25,6 +25,10 @@ export interface VideoData {
   duration: number;
 }
 
+export enum RenderAction {
+  iframeVideoCb = 'iframe video callback',
+}
+
 export default class RenderService {
   public state: RenderServiceState = {
     mutationObserver: null,
@@ -35,20 +39,22 @@ export default class RenderService {
     // startTimestamp: null,
   };
 
-  public port = chrome.runtime.connect({ name: 'videoContent' });
+  public port: chrome.runtime.Port;
 
   public validation = {
     minLength: 360,
   };
 
-  constructor(private cb: Function) {
-    debugLog('setup render service');
+  constructor(private cb: Function, private isIframe = false) {
+    this.port = chrome.runtime.connect({ name: isIframe ? 'iframeContent' : 'videoContent' });
     chrome.runtime.onMessage.addListener((request, sender) => {
       // Page change
       if (request.type === 'tabUpdate') {
         debugLog(request, sender); // new url is now in content scripts!
+        this.initPage();
       }
-      this.initPage();
+
+      this.handleIframeUpdate(request);
     });
 
     this.initPage();
@@ -58,6 +64,23 @@ export default class RenderService {
     debugLog('init render');
     this.resetState();
     this.getVideoElement();
+  }
+
+  public handleIframeUpdate(message) {
+    if (this.isIframe) {
+      return;
+    }
+
+    console.log('msg', message);
+    switch (message.type) {
+      case RenderAction.iframeVideoCb: {
+        console.log('triggg');
+        this.triggerCb(message.payload);
+        break;
+      }
+      default:
+        break;
+    }
   }
 
   private resetState() {
@@ -90,9 +113,6 @@ export default class RenderService {
   }
 
   private isVideoValid(videoEl: HTMLVideoElement) {
-    if (videoEl.duration < this.validation.minLength) {
-      debugLog('see', videoEl);
-    }
     return videoEl.duration >= this.validation.minLength;
   }
 
@@ -124,10 +144,6 @@ export default class RenderService {
     const timeTs = videoEl.currentTime;
     if (!this.state.videoData) {
       this.onStartVideo(videoEl);
-    } else if (this.state.videoData.lastTimestamp !== timeTs) {
-      debugLog('woosh', event, timeTs, this.state.videoData);
-    } else {
-      debugLog('ts matches!');
     }
 
     this.state.videoData = {
@@ -151,8 +167,7 @@ export default class RenderService {
     };
 
     // TODO: should be a part of end
-    debugLog('pause video');
-    this.cb(this.state.videoData);
+    this.triggerCb(this.state.videoData);
   }
 
   private onVideoEnd(videoEl: HTMLVideoElement) {
@@ -171,6 +186,13 @@ export default class RenderService {
       startTimestamp: videoEl.currentTime,
       title: RenderService.getTitlesFromHeading(),
     };
+  }
+
+  private triggerCb(videoData: VideoData) {
+    debugLog('pause video');
+    if (settings.blacklist.every(item => !new RegExp(item, 'i').test(window.location.href))) {
+      this.cb(videoData);
+    }
   }
 
   public static getTitlesFromHeading(): Title {
@@ -212,9 +234,7 @@ export default class RenderService {
       titleParent = title;
     }
 
-    const match = titleParent.textContent.match(
-      /(s(eason)?\s?(\d+)).?(e(pisode)?\s?(\d+))/im,
-    );
+    const match = titleParent.textContent.match(/(s(eason)?\s?(\d+)).?(e(pisode)?\s?(\d+))/im);
     if (!match) {
       return null;
     }
