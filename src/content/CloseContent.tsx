@@ -21,7 +21,7 @@ export default function CloseContent() {
         cursor: 'pointer',
       }}
       onClick={() => {
-        const container = document.getElementById('screen-popup-container');
+        const container = document.getElementById('seenit-popup-container');
         container.parentNode.removeChild(container);
       }}
     >

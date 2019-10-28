@@ -14,10 +14,10 @@ const render = async (videoData: VideoData) => {
     return;
   }
 
-  let container = document.getElementById('screen-popup-container');
+  let container = document.getElementById('seenit-popup-container');
   if (!container) {
     container = document.createElement('div');
-    container.setAttribute('id', 'screen-popup-container');
+    container.setAttribute('id', 'seenit-popup-container');
     document.body.appendChild(container);
   }
 

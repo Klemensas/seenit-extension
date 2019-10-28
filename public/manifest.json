@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Screen extension",
-  "description": "Screem browser extension",
+  "name": "Seenit extension",
+  "description": "Seenit browser extension",
   "version": "0.0.1",
   "icons": {
     "16": "icon16.png",
@@ -10,7 +10,7 @@
   },
   "browser_action": {
       "default_icon": "icon16.png",
-      "default_title": "Screen extension",
+      "default_title": "Seenit extension",
       "default_popup": "index.html"
   },
   "content_scripts": [
