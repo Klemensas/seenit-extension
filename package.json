@@ -67,6 +67,9 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@blueprintjs/core": "^3.16.2",
+    "@blueprintjs/datetime": "^3.10.0",
+    "@blueprintjs/select": "^3.8.1",
     "@graphql-codegen/cli": "^1.2.0",
     "@types/graphql": "^14.2.0",
     "@types/react-select": "^2.0.19",
