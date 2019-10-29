@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router';
 
-import { useIsUserLoggedInQuery } from '../graphql';
+import { IsUserLoggedInComponent } from '../graphql';
+import { apolloClient } from '../apollo';
 
 export default function AuthRoute({
   component: Component,
@@ -9,8 +10,11 @@ export default function AuthRoute({
 }: {
   component: React.FunctionComponent<unknown>;
 } & RouteProps) {
-  const {
-    data: { isLoggedIn },
-  } = useIsUserLoggedInQuery();
-  return <Route {...rest} render={() => (isLoggedIn ? <Component /> : <Redirect to="/login" />)} />;
+  return (
+    <IsUserLoggedInComponent client={apolloClient}>
+      {({ data }) => {
+        return <Route {...rest} render={() => (data.isLoggedIn ? <Component /> : <Redirect to="/login" />)} />;
+      }}
+    </IsUserLoggedInComponent>
+  )
 }
