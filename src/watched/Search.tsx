@@ -1,65 +1,81 @@
 import * as React from 'react';
-import Select from 'react-select';
+import { Button, MenuItem, PopoverPosition } from '@blueprintjs/core';
+import { Select } from '@blueprintjs/select';
 
-import { TmdbMovie, TmdbTv, TmdbMediaType, useTvQuery, useSearchContentQuery } from '../graphql';
-import WatchedForm from './WatchedForm';
+import { useSearchContentQuery, SearchItem } from '../graphql';
 
 export interface SearchOption {
   label: string;
   value: string | number;
+  item: SearchItem;
 }
 
-export default function Search(): React.ReactElement {
+
+const renderOption = ({ label, item }, { handleClick, modifiers }) => {
+  if (!modifiers.matchesPredicate) { return null; }
+
+  return (
+    <MenuItem
+      active={modifiers.active}
+      key={item.id}
+      text={label}
+      onClick={handleClick}
+    />
+  );
+};
+
+const Search: React.FC<{
+  selected?: SearchItem,
+  setSelected: React.Dispatch<React.SetStateAction<SearchItem>>,
+}> = ({
+  selected,
+  setSelected,
+}) => {
   const [query, setQuery] = React.useState('');
-  const [selectedItem, setSelectedItem] = React.useState<TmdbMovie | TmdbTv>(null);
 
   const searchQuery = useSearchContentQuery({
     variables: { title: query },
     skip: !query,
   });
-  const options =
-    searchQuery.data && searchQuery.data.searchContent
-      ? searchQuery.data.searchContent.results.reduce(
-          (acc: SearchOption[], item) =>
-            item.media_type === 'person'
-              ? acc
-              : acc.concat({
-                  label: `${(item as TmdbTv).name || (item as TmdbMovie).title} (${
-                    ((item as TmdbMovie).release_date || (item as TmdbTv).first_air_date || '').split('-')[0]
-                  })`,
-                  value: item.id,
-                  ...item,
-                }),
-          [],
-        )
-      : [];
-
-  const tvQuery = useTvQuery({
-    variables: { tmdbId: selectedItem ? selectedItem.id : null },
-    skip: !selectedItem || selectedItem.media_type !== TmdbMediaType.Tv,
-  });
-  const seasons = tvQuery.data && tvQuery.data.tv ? tvQuery.data.tv.seasons : null;
+  const options = searchQuery.data && searchQuery.data.searchContent
+    ? searchQuery.data.searchContent.reduce(
+        (acc: SearchOption[], item) =>
+          acc.concat({
+            label: `${item.title} (${
+              (item.release_date || '?').split('-')[0]
+            })`,
+            value: item.id,
+            item,
+          }),
+        [],
+      )
+    : [];
 
   return (
-    <React.Fragment>
-      <Select
-        cacheOptions
-        inputValue={query}
-        isLoading={searchQuery.loading}
-        options={options}
-        noOptionsMessage={() => (query ? 'No options' : 'Enter a query to search')}
-        onChange={value => setSelectedItem(value)}
-        onInputChange={(value, { action }) => {
-          if (action === 'input-change' || action === 'set-value') {
-            setQuery(value);
-          }
-        }}
+    <Select<SearchOption>
+      itemRenderer={renderOption}
+      items={options}
+      onQueryChange={(payload: string) => setQuery(payload)}
+      onItemSelect={({ item }) => setSelected(item)}
+      noResults={<div>Got nothing :(</div>}
+      initialContent={null}
+      popoverProps={{
+        minimal: true,
+        fill: true,
+        usePortal: false,
+        position: PopoverPosition.BOTTOM,
+      }}
+      className="select-popover-centered"
+    >
+      <Button
+        loading={searchQuery.loading}
+        large
+        minimal
+        text={selected ? selected.title : "Search..."}
+        className="bp3-fill"
       />
-      {selectedItem && !tvQuery.loading ? (
-        <WatchedForm item={selectedItem} seasons={selectedItem.media_type === TmdbMediaType.Tv ? seasons : null} />
-      ) : (
-        ''
-      )}
-    </React.Fragment>
+    </Select>
   );
-}
+};
+
+export default Search;
