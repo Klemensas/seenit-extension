@@ -1,49 +1,47 @@
+export interface IntrospectionResultData {
+  __schema: {
+    types: {
+      kind: string;
+      name: string;
+      possibleTypes: {
+        name: string;
+      }[];
+    }[];
+  };
+}
 
-      export interface IntrospectionResultData {
-        __schema: {
-          types: {
-            kind: string;
-            name: string;
-            possibleTypes: {
-              name: string;
-            }[];
-          }[];
-        };
-      }
-
-      const result: IntrospectionResultData = {
-  "__schema": {
-    "types": [
+const result: IntrospectionResultData = {
+  __schema: {
+    types: [
       {
-        "kind": "UNION",
-        "name": "Item",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'Item',
+        possibleTypes: [
           {
-            "name": "Movie"
+            name: 'Movie',
           },
           {
-            "name": "Tv"
-          }
-        ]
+            name: 'Tv',
+          },
+        ],
       },
       {
-        "kind": "UNION",
-        "name": "TmdbMedia",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'TmdbMedia',
+        possibleTypes: [
           {
-            "name": "TmdbMovie"
+            name: 'TmdbMovie',
           },
           {
-            "name": "TmdbTv"
+            name: 'TmdbTv',
           },
           {
-            "name": "TmdbPerson"
-          }
-        ]
-      }
-    ]
-  }
+            name: 'TmdbPerson',
+          },
+        ],
+      },
+    ],
+  },
 };
 
-      export default result;
-    
+export default result;
