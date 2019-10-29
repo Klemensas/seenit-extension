@@ -1,63 +1,77 @@
 import * as React from 'react';
 
+import { useSearchContentQuery, SearchItem, TmdbMediaType } from '../graphql';
 import { VideoContext } from '../content/Content';
-import { Title } from '../content/renderService';
-import { TmdbMediaType, useSearchContentQuery, useTvQuery } from '../graphql';
-import { debugLog } from '../main';
 import Search from './Search';
-import WatchedForm from './WatchedForm';
+import WatchedTvForm from './WatchedTvForm';
+import WatchedMovieForm from './WatchedMovieForm';
 
-export default function VideoEnd(): React.ReactElement {
+function renderSearch(setSelected: React.Dispatch<React.SetStateAction<SearchItem>>, prefix: React.ReactNode = <div>Couldn&apos;t find your watched title</div>) {
+  return (
+    <React.Fragment>
+      {prefix}
+      <Search setSelected={setSelected} />
+    </React.Fragment>
+  );
+}
+
+const VideoEnd = () => {
   const videoData = React.useContext(VideoContext);
-
-  const title: Title = videoData.title || null;
-
-  // 4 possible results
-  // 1: no title - thus query empty
-  // 2: no items
-  // 3: 1 result
-  // 4: multiple results
-
-  if (!title) {
-    return <div>No title?</div>;
-  }
-
+  const [selected, setSelected] = React.useState<SearchItem>(null);
+  const [searching, setSearching] = React.useState<boolean>(false);
+  const title = videoData.title || null;
   const { data, loading, error } = useSearchContentQuery({
-    variables: { title: title.name },
+    variables: { title: title ? title.name : null },
+    skip: !title,
   });
+
+  if (!title && !selected) {
+    return renderSearch(setSelected);
+  }
 
   let items = [];
   if (data && data.searchContent) {
     const {
-      searchContent: { results },
+      searchContent,
     } = data;
-    items = results.filter(({ media_type: mediaType }) => mediaType !== TmdbMediaType.Person);
+    items = searchContent;
   }
 
   const item = items[0];
 
-  const tvQuery = useTvQuery({
-    variables: { tmdbId: item ? item.id : null },
-    skip: !item || item.media_type !== TmdbMediaType.Tv,
-  });
-  const seasons = tvQuery.data && tvQuery.data.tv ? tvQuery.data.tv.seasons : null;
-
-  if (loading || tvQuery.loading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (error || tvQuery.error) {
+  if (error) {
     return <div>Unexpected error!</div>;
   }
 
-  if (!items.length) {
-    return (
-      <React.Fragment>
-        <div>Couldn&apos;t find your watched title</div>
-        <Search />
-      </React.Fragment>
-    );
+  if (!items.length && !selected) {
+    return renderSearch(setSelected);
   }
 
-  return <WatchedForm item={item} title={title} seasons={seasons} />;
-}
+  const target = selected || item;
+  const WatchedForm = target.type === TmdbMediaType.Movie ? WatchedMovieForm : WatchedTvForm;
+  const props = {
+    id: target.id,
+    season: title.season,
+    episode: title.episode,
+  }
+
+  return (
+    <React.Fragment>
+      {searching ? renderSearch(setSelected, null) : (
+        <p style={{ fontSize: '0.8em' }}>
+          Not what you watched?{' '}
+          <button type="button" onClick={() => setSearching(true)}>
+            Search
+          </button>
+        </p>
+      )}
+      <WatchedForm {...props} />;
+    </React.Fragment>
+  );
+};
+
+export default VideoEnd;
