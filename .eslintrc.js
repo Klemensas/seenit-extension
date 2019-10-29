@@ -32,6 +32,7 @@ module.exports = {
     }],
 
     'react/jsx-filename-extension': [1, { 'extensions': ['.tsx'] }],
+    'react/prop-types': false,
   },
   'settings': {
     'import/resolver': {
