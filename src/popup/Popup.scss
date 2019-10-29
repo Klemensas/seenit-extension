@@ -1,18 +1,33 @@
-$primary-color: darkblue;
-$background-color: #BADA55;
+@import '~@blueprintjs/core/lib/scss/variables';
 
-// Chrome applies an 8px margin by default (gross).
+$primary-color: darkblue;
+$background-color: #fefefe;
+
 body {
-    margin: 0px;
-    min-width: 400px;
+  margin: 0;
+  min-width: 400px;
 }
 
-.popupContainer {
-    align-items: center;
-    background-color: $background-color;
-    border: 2px solid $primary-color;
-    color: $primary-color;
-    font-size: 20px;
-    justify-content: center;
-    padding: 20px;
+.content-container {
+  align-items: center;
+  background-color: $background-color;
+  color: $primary-color;
+  font-size: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.navigation-container {
+  padding-top: $pt-navbar-height;
+
+  a {
+    color: inherit;
+  }
+
+  a:active,
+  a:focus,
+  a:hover {
+    text-decoration: none;
+    outline: 0;
+  }
 }

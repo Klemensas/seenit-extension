@@ -1,0 +1,16 @@
+.select-popover-centered {
+  position: relative;
+
+  .bp3-transition-container,
+  .bp3-select-popover {
+    width: 100%;
+  }
+}
+
+.flex {
+  display: flex;
+
+  &-between {
+    justify-content: space-between;
+  }
+}
