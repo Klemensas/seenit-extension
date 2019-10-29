@@ -39,16 +39,16 @@ mutation SetUserData($userData: UserInput!) {
   }
 }
 
-mutation AddWatched($tmdbId: Int!, $mediaType: TmdbMediaType!, $createdAt: Float!, $rating: RatingInput, $review: ReviewInput) {
+mutation AddWatched($itemId: ID!, $mediaType: TmdbMediaType!, $createdAt: Float!, $rating: RatingInput, $review: ReviewInput) {
   addWatched(
-    tmdbId: $tmdbId,
+    itemId: $itemId,
     mediaType: $mediaType,
     rating: $rating,
     review: $review,
     createdAt: $createdAt,
   ) {
     id
-    tmdbId
+    itemType
     createdAt
     rating {
       value

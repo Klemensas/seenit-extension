@@ -54,38 +54,62 @@ query UserData {
 
 query SearchContent($title: String!) {
   searchContent(title: $title) {
-    total_pages
-    total_results
-    page
-    results {
-      ... on TmdbMovie {
-        id
-        title
-        media_type
-        poster_path
-        release_date
-      }
-      ... on TmdbTv {
+    id,
+    tmdbId,
+    title,
+    release_date
+    type,
+    # total_pages
+    # total_results
+    # page
+    # results {
+    #   ... on TmdbMovie {
+    #     id
+    #     title
+    #     media_type
+    #     poster_path
+    #     release_date
+    #   }
+    #   ... on TmdbTv {
+    #     id
+    #     name
+    #     media_type
+    #     poster_path
+    #     first_air_date
+    #   }
+    #   ... on TmdbPerson {
+    #     id
+    #     media_type
+    #   }
+    # }
+  }
+}
+
+query Tv($id: ID!) {
+  tv(id: $id) {
+    id
+    name
+    first_air_date
+    poster_path
+    seasons {
+      id
+      name
+      season_number
+      episode_count
+      episodes {
         id
         name
-        media_type
-        poster_path
-        first_air_date
-      }
-      ... on TmdbPerson {
-        id
-        media_type
+        episode_number
       }
     }
   }
 }
 
-query Tv($tmdbId: Int!) {
-  tv(tmdbId: $tmdbId) {
-    seasons {
-      name
-      season_number
-      episode_count
-    }
+query Movie($id: ID!) {
+  movie(id: $id) {
+    id
+    title
+    release_date
+    poster_path
   }
 }
