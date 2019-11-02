@@ -16,7 +16,6 @@ const tokenLoadPromise = new Promise(resolve => {
   chrome.storage.sync.get(['token'], token => {
     state.token = token;
     resolve(token);
-    console.log('hi', token);
   });
 });
 
@@ -51,10 +50,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 function setupVideoContentPort(port: chrome.runtime.Port) {
-  console.log('portttt', port);
-  // port.postMessage({question: "Who's there?"});
-  // port.onMessage.addListener((msg) => {
-  // });
+  // videoContentPorts.push(port);
+}
+
+function setupIframeContentPort(port: chrome.runtime.Port) {
+  port.onMessage.addListener(message => {
+    chrome.tabs.sendMessage(port.sender.tab.id, message);
+  });
 }
 
 chrome.runtime.onConnect.addListener(port => {
@@ -63,6 +65,12 @@ chrome.runtime.onConnect.addListener(port => {
       setupVideoContentPort(port);
       break;
     }
+
+    case 'iframeContent': {
+      setupIframeContentPort(port);
+      break;
+    }
+
     default:
       break;
   }

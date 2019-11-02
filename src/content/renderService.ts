@@ -25,6 +25,10 @@ export interface VideoData {
   duration: number;
 }
 
+export enum RenderAction {
+  iframeVideoCb = 'iframe video callback',
+}
+
 export default class RenderService {
   public state: RenderServiceState = {
     mutationObserver: null,
@@ -35,20 +39,22 @@ export default class RenderService {
     // startTimestamp: null,
   };
 
-  public port = chrome.runtime.connect({ name: 'videoContent' });
+  public port: chrome.runtime.Port;
 
   public validation = {
     minLength: 360,
   };
 
-  constructor(private cb: Function) {
-    debugLog('setup render service');
+  constructor(private cb: Function, private isIframe = false) {
+    this.port = chrome.runtime.connect({ name: isIframe ? 'iframeContent' : 'videoContent' });
     chrome.runtime.onMessage.addListener((request, sender) => {
       // Page change
       if (request.type === 'tabUpdate') {
         debugLog(request, sender); // new url is now in content scripts!
+        this.initPage();
       }
-      this.initPage();
+
+      this.handleIframeUpdate(request);
     });
 
     this.initPage();
@@ -58,6 +64,27 @@ export default class RenderService {
     debugLog('init render');
     this.resetState();
     this.getVideoElement();
+  }
+
+  public handleIframeUpdate(message) {
+    if (this.isIframe) {
+      return;
+    }
+
+    console.log('msg', message);
+    switch (message.type) {
+      case RenderAction.iframeVideoCb: {
+
+        if (!message.payload.title) {
+          message.payload.title = RenderService.getTitlesFromHeading();
+        }
+
+        this.triggerCb(message.payload);
+        break;
+      }
+      default:
+        break;
+    }
   }
 
   private resetState() {
