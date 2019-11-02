@@ -25,7 +25,7 @@ getStorageValue<{ token?: string; user?: object }>('token', 'user').then(({ toke
 });
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:9000/graphql',
+  uri: `${process.env.SERVER_API}/graphql`,
 });
 
 const authLink = setContext((request, { headers }) =>

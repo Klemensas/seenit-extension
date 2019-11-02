@@ -1,11 +1,16 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   plugins: [
     new CopyPlugin([
       { from: 'public/', to: '../' },
-    ])
+    ]),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development',
+      SERVER_API: 'http://localhost:9000',
+    }),
   ],
   entry: {
     popup: path.join(__dirname, 'src/popup/index.tsx'),
