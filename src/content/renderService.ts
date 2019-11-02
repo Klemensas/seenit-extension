@@ -1,4 +1,4 @@
-import { debugLog } from '../main';
+import { debugLog, settings } from '../main';
 
 export interface RenderServiceState {
   mutationObserver: MutationObserver;
@@ -90,9 +90,6 @@ export default class RenderService {
   }
 
   private isVideoValid(videoEl: HTMLVideoElement) {
-    if (videoEl.duration < this.validation.minLength) {
-      debugLog('see', videoEl);
-    }
     return videoEl.duration >= this.validation.minLength;
   }
 
@@ -124,10 +121,6 @@ export default class RenderService {
     const timeTs = videoEl.currentTime;
     if (!this.state.videoData) {
       this.onStartVideo(videoEl);
-    } else if (this.state.videoData.lastTimestamp !== timeTs) {
-      debugLog('woosh', event, timeTs, this.state.videoData);
-    } else {
-      debugLog('ts matches!');
     }
 
     this.state.videoData = {
@@ -151,8 +144,7 @@ export default class RenderService {
     };
 
     // TODO: should be a part of end
-    debugLog('pause video');
-    this.cb(this.state.videoData);
+    this.triggerCb(this.state.videoData);
   }
 
   private onVideoEnd(videoEl: HTMLVideoElement) {
@@ -171,6 +163,13 @@ export default class RenderService {
       startTimestamp: videoEl.currentTime,
       title: RenderService.getTitlesFromHeading(),
     };
+  }
+
+  private triggerCb(videoData: VideoData) {
+    debugLog('pause video');
+    if (settings.blacklist.every(item => !new RegExp(item, 'i').test(window.location.href))) {
+      this.cb(videoData);
+    }
   }
 
   public static getTitlesFromHeading(): Title {
