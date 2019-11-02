@@ -238,9 +238,7 @@ export default class RenderService {
       titleParent = title;
     }
 
-    const match = titleParent.textContent.match(
-      /(s(eason)?\s?(\d+)).?(e(pisode)?\s?(\d+))/im,
-    );
+    const match = titleParent.textContent.match(/(s(eason|eries)?\s?(\d+)).?(e(pisode)?\s?(\d+))/im);
     if (!match) {
       return null;
     }
