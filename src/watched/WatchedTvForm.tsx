@@ -43,7 +43,8 @@ const WatchedTvForm: React.FC<{
   season?: number;
   episode?: number;
 }> = ({ id, season, episode }) => {
-  const [addWatched] = useAddWatchedMutation();
+  const [addWatched, { loading: loadingWatched }] = useAddWatchedMutation();
+
   const { data, loading } = useTvQuery({
     variables: { id },
   });
@@ -155,7 +156,7 @@ const WatchedTvForm: React.FC<{
             <FormGroup label="Rating" labelFor="rating">
               <Rating initialRating={values.rating} fractions={2} onChange={value => setFieldValue('rating', value)} />
             </FormGroup>
-            <Button type="submit" large fill intent={Intent.PRIMARY}>
+            <Button type="submit" large fill intent={Intent.PRIMARY} loading={loadingWatched}>
               Add
             </Button>
           </form>

@@ -9,7 +9,7 @@ import { useAddWatchedMutation, TmdbMediaType, useMovieQuery } from '../graphql'
 const WatchedMovieForm: React.FC<{
   id: string;
 }> = ({ id }) => {
-  const [addWatched] = useAddWatchedMutation();
+  const [addWatched, { loading: loadingWatched }] = useAddWatchedMutation();
   const { data, loading } = useMovieQuery({
     variables: { id },
   });
@@ -58,7 +58,7 @@ const WatchedMovieForm: React.FC<{
             <FormGroup label="Date" labelFor="createdAt">
               <DateInput
                 popoverProps={{
-                  fill: true
+                  fill: true,
                 }}
                 formatDate={date => date.toLocaleString()}
                 parseDate={str => new Date(str)}
@@ -73,7 +73,9 @@ const WatchedMovieForm: React.FC<{
             <FormGroup label="Rating" labelFor="rating">
               <Rating initialRating={values.rating} fractions={2} onChange={value => setFieldValue('rating', value)} />
             </FormGroup>
-            <Button type="submit" large fill intent={Intent.PRIMARY}>Add</Button>
+            <Button type="submit" large fill intent={Intent.PRIMARY} loading={loadingWatched}>
+              Add
+            </Button>
           </form>
         )}
       </Formik>
