@@ -283,12 +283,11 @@ export type Subscription = {
   _?: Maybe<Scalars['Boolean']>;
 };
 
-export type TmdbMedia = TmdbMovie | TmdbTv | TmdbPerson;
+export type TmdbMedia = TmdbMovie | TmdbTv;
 
 export enum TmdbMediaType {
-  Movie = 'movie',
-  Tv = 'tv',
-  Person = 'person',
+  Movie = 'Movie',
+  Tv = 'Tv',
 }
 
 export type TmdbMovie = {
@@ -460,12 +459,14 @@ export type AddWatchedMutationVariables = {
   createdAt: Scalars['Float'];
   rating?: Maybe<RatingInput>;
   review?: Maybe<ReviewInput>;
+  tvData?: Maybe<TvDataInput>;
 };
 
 export type AddWatchedMutation = { __typename?: 'Mutation' } & {
   addWatched: { __typename?: 'Watched' } & Pick<Watched, 'id' | 'itemType' | 'createdAt'> & {
       rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
       review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
+      tvData: Maybe<{ __typename?: 'TvData' } & Pick<TvData, 'season' | 'episode'>>;
     };
 };
 
@@ -488,9 +489,8 @@ export type UserWatchedQuery = { __typename?: 'Query' } & {
                 rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
                 review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
                 item: Maybe<
-
-                    | ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title' | 'release_date' | 'poster_path'>)
-                    | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'>)
+                  | ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title' | 'release_date' | 'poster_path'>)
+                  | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'>)
                 >;
               }
           >
@@ -754,8 +754,16 @@ export const AddWatchedDocument = gql`
     $createdAt: Float!
     $rating: RatingInput
     $review: ReviewInput
+    $tvData: TvDataInput
   ) {
-    addWatched(itemId: $itemId, mediaType: $mediaType, rating: $rating, review: $review, createdAt: $createdAt) {
+    addWatched(
+      itemId: $itemId
+      mediaType: $mediaType
+      rating: $rating
+      review: $review
+      createdAt: $createdAt
+      tvData: $tvData
+    ) {
       id
       itemType
       createdAt
@@ -764,6 +772,10 @@ export const AddWatchedDocument = gql`
       }
       review {
         body
+      }
+      tvData {
+        season
+        episode
       }
     }
   }

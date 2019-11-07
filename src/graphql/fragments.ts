@@ -35,9 +35,6 @@ const result: IntrospectionResultData = {
           {
             name: 'TmdbTv',
           },
-          {
-            name: 'TmdbPerson',
-          },
         ],
       },
     ],
