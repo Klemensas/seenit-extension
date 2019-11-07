@@ -1,16 +1,31 @@
-.select-popover-centered {
-  position: relative;
+#seenit-container {
+  @import '~@blueprintjs/core/src/common/variables';
+  @import '~@blueprintjs/core/src/common/colors';
 
-  .bp3-transition-container,
-  .bp3-select-popover {
-    width: 100%;
+  @import '~@blueprintjs/core/src/reset';
+  @import '~@blueprintjs/core/src/typography';
+  @import '~@blueprintjs/core/src/accessibility';
+  @import '~@blueprintjs/core/src/components/index';
+
+  @import '~@blueprintjs/datetime/lib/css/blueprint-datetime.css';
+  @import '~@blueprintjs/select/lib/css/blueprint-select.css';
+
+  @import 'blueprint-overrides';
+
+  .select-popover-centered {
+    position: relative;
+
+    .bp3-transition-container,
+    .bp3-select-popover {
+      width: 100%;
+    }
   }
-}
 
-.flex {
-  display: flex;
+  .flex {
+    display: flex;
 
-  &-between {
-    justify-content: space-between;
+    &-between {
+      justify-content: space-between;
+    }
   }
 }

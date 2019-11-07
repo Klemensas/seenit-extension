@@ -1,0 +1,7 @@
+& {
+  @include base-typography();
+
+  color: $pt-text-color;
+  font-family: $pt-font-family;
+  box-sizing: border-box;
+}

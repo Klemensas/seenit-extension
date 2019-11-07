@@ -4,12 +4,8 @@ import { NavLink, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Navbar, Alignment, Button } from '@blueprintjs/core';
 
-import '@blueprintjs/core/lib/css/blueprint.css';
-import '@blueprintjs/datetime/lib/css/blueprint-datetime.css';
-import '@blueprintjs/select/lib/css/blueprint-select.css';
-
-import './Popup.scss';
 import '../styles/main.scss';
+import './Popup.scss';
 
 import { useSetIsLoggedInMutation } from '../graphql';
 import Login from '../auth/Login';

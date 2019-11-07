@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router';
 
-import '@blueprintjs/core/lib/css/blueprint.css';
-import '@blueprintjs/datetime/lib/css/blueprint-datetime.css';
-import '@blueprintjs/select/lib/css/blueprint-select.css';
-
 import Login from '../auth/Login';
 import AuthRoute from '../components/AuthRoute';
 import VideoEnd from '../watched/VideoEnd';
 import CloseContent from './CloseContent';
-import './Content.scss';
 import { VideoData } from './renderService';
+
+import '../styles/main.scss';
+import './Content.scss';
 
 export const VideoContext = React.createContext<VideoData>(null);
 

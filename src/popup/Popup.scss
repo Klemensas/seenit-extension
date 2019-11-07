@@ -1,4 +1,4 @@
-@import '~@blueprintjs/core/lib/scss/variables';
+@import '~@blueprintjs/core/src/common/variables';
 
 $primary-color: darkblue;
 $background-color: #fefefe;
@@ -6,28 +6,28 @@ $background-color: #fefefe;
 #seenit-container {
   margin: 0;
   min-width: 400px;
-}
 
-.content-container {
-  align-items: center;
-  background-color: $background-color;
-  color: $primary-color;
-  font-size: 20px;
-  justify-content: center;
-  padding: 20px;
-}
-
-.navigation-container {
-  padding-top: $pt-navbar-height;
-
-  a {
-    color: inherit;
+  .content-container {
+    align-items: center;
+    background-color: $background-color;
+    color: $primary-color;
+    // font-size: 20px;
+    justify-content: center;
+    padding: 20px;
   }
 
-  a:active,
-  a:focus,
-  a:hover {
-    text-decoration: none;
-    outline: 0;
+  .navigation-container {
+    padding-top: $pt-navbar-height;
+
+    a {
+      color: inherit;
+    }
+
+    a:active,
+    a:focus,
+    a:hover {
+      text-decoration: none;
+      outline: 0;
+    }
   }
 }
