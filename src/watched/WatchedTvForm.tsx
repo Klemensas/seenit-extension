@@ -102,13 +102,17 @@ const WatchedTvForm: React.FC<{
             variables: {
               ...values,
               itemId: item.id,
-              rating: {
-                value: values.rating,
-              },
-              review: {
-                body: values.review,
-              },
               mediaType: TmdbMediaType.Tv,
+              rating: values.rating
+                ? {
+                    value: values.rating,
+                  }
+                : undefined,
+              review: values.review
+                ? {
+                    body: values.review,
+                  }
+                : undefined,
             },
           }).then(() => actions.setSubmitting(false));
         }}

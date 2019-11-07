@@ -42,13 +42,17 @@ const WatchedMovieForm: React.FC<{
             variables: {
               ...values,
               itemId: item.id,
-              rating: {
-                value: values.rating,
-              },
-              review: {
-                body: values.review,
-              },
               mediaType: TmdbMediaType.Movie,
+              rating: values.rating
+                ? {
+                    value: values.rating,
+                  }
+                : undefined,
+              review: values.review
+                ? {
+                    body: values.review,
+                  }
+                : undefined,
             },
           }).then(() => actions.setSubmitting(false));
         }}
