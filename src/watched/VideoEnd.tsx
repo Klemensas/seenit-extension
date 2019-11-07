@@ -55,10 +55,13 @@ const VideoEnd = () => {
 
   const target = selected || item;
   const WatchedForm = target.type === TmdbMediaType.Movie ? WatchedMovieForm : WatchedTvForm;
+
+  const season = Number.isNaN(parseInt(title.season, 10)) ? undefined : parseInt(title.season, 10);
+  const episode = Number.isNaN(parseInt(title.episode, 10)) ? undefined : parseInt(title.episode, 10);
   const props = {
     id: target.id,
-    season: title.season,
-    episode: title.episode,
+    season,
+    episode,
   };
 
   return (

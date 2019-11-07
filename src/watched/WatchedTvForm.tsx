@@ -10,7 +10,7 @@ import { useAddWatchedMutation, useTvQuery, TmdbMediaType } from '../graphql';
 interface EpisodeSelection {
   id: string;
   name: string;
-  value: { season: number; episode: number; }
+  value: { season: number; episode: number };
   seasonName: string;
   isSpecials: boolean;
   lastSeasonEpisode: boolean;
@@ -18,7 +18,9 @@ interface EpisodeSelection {
 }
 
 const renderEpisode: ItemRenderer<EpisodeSelection> = (episode, { handleClick, modifiers }) => {
-  if (!modifiers.matchesPredicate) { return null; }
+  if (!modifiers.matchesPredicate) {
+    return null;
+  }
 
   return (
     <React.Fragment key={episode.id}>
@@ -34,17 +36,17 @@ const renderEpisode: ItemRenderer<EpisodeSelection> = (episode, { handleClick, m
 };
 
 const itemFilter = (query: string, items: EpisodeSelection[]) =>
-  items.filter(({ name, seasonName }) => `${name} ${seasonName}`.toLowerCase().includes(query.toLowerCase()))
+  items.filter(({ name, seasonName }) => `${name} ${seasonName}`.toLowerCase().includes(query.toLowerCase()));
 
 const WatchedTvForm: React.FC<{
   id: string;
-  season?: string;
-  episode?: string;
+  season?: number;
+  episode?: number;
 }> = ({ id, season, episode }) => {
   const [addWatched] = useAddWatchedMutation();
   const { data, loading } = useTvQuery({
     variables: { id },
-  })
+  });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -52,23 +54,29 @@ const WatchedTvForm: React.FC<{
 
   const item = data.tv;
 
-  const seasons = data.tv.seasons || []
-  const options = seasons.reduce((acc: EpisodeSelection[], { season_number: season, episodes }, seasonIndex) =>
-    acc.concat(episodes.map(({ id, name, episode_number: episode }, episodeIndex) => ({
-      id,
-      name,
-      seasonName: `S${season}E${episode}`,
-      value: { season, episode },
-      lastSeasonEpisode: episodeIndex + 1 === episodes.length,
-      lastSeason: seasonIndex + 1 === seasons.length,
-      isSpecials: !season,
-    }))), []);
-  const tvData = season || episode ?
-    {
-      season,
-      episode,
-    }
-  : null;
+  const seasons = data.tv.seasons || [];
+  const options = seasons.reduce(
+    (acc: EpisodeSelection[], { season_number: season, episodes }, seasonIndex) =>
+      acc.concat(
+        episodes.map(({ id, name, episode_number: episode }, episodeIndex) => ({
+          id,
+          name,
+          seasonName: `S${season}E${episode}`,
+          value: { season, episode },
+          lastSeasonEpisode: episodeIndex + 1 === episodes.length,
+          lastSeason: seasonIndex + 1 === seasons.length,
+          isSpecials: !season,
+        })),
+      ),
+    [],
+  );
+  const tvData =
+    season || episode
+      ? {
+          season,
+          episode,
+        }
+      : null;
 
   return (
     <React.Fragment>
@@ -109,7 +117,7 @@ const WatchedTvForm: React.FC<{
             <FormGroup label="Date" labelFor="createdAt">
               <DateInput
                 popoverProps={{
-                  fill: true
+                  fill: true,
                 }}
                 formatDate={date => date.toLocaleString()}
                 parseDate={str => new Date(str)}
@@ -130,7 +138,15 @@ const WatchedTvForm: React.FC<{
                   position: PopoverPosition.BOTTOM,
                 }}
               >
-                <Button fill text={values.tvData ? `Season ${values.tvData.season}, Episode ${values.tvData.episode}` : "Select an episode"} rightIcon="caret-down" />
+                <Button
+                  fill
+                  text={
+                    values.tvData
+                      ? `Season ${values.tvData.season}, Episode ${values.tvData.episode}`
+                      : 'Select an episode'
+                  }
+                  rightIcon="caret-down"
+                />
               </Select>
             </FormGroup>
             <FormGroup label="Review" labelFor="review">
@@ -139,7 +155,9 @@ const WatchedTvForm: React.FC<{
             <FormGroup label="Rating" labelFor="rating">
               <Rating initialRating={values.rating} fractions={2} onChange={value => setFieldValue('rating', value)} />
             </FormGroup>
-            <Button type="submit" large fill intent={Intent.PRIMARY}>Add</Button>
+            <Button type="submit" large fill intent={Intent.PRIMARY}>
+              Add
+            </Button>
           </form>
         )}
       </Formik>
