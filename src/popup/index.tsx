@@ -13,6 +13,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, () => {
         <Popup />
       </ApolloProvider>
     </MemoryRouter>,
-    document.getElementById('popup'),
+    document.getElementById('seenit-popup'),
   );
 });
