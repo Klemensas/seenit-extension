@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { Text } from '@blueprintjs/core';
 
-import { SearchItem } from '../graphql';
-import { TmdbMediaType } from '../graphql/react';
+import { SearchItem, TmdbMediaType } from '../graphql';
 import Search from '../watched/Search';
 import WatchedMovieForm from '../watched/WatchedMovieForm';
 import WatchedTvForm from '../watched/WatchedTvForm';
@@ -13,17 +11,15 @@ const RecentWatched = () => {
   if (!selected) {
     return (
       <React.Fragment>
-        <Text tagName="p">Watched anything recently?</Text>
+        <h3 className="bp3-heading">Watched anything recently?</h3>
         <Search selected={selected} setSelected={setSelected} />
       </React.Fragment>
-    )
+    );
   }
 
-  const WatchedForm = selected.type === TmdbMediaType.Movie ? WatchedMovieForm : WatchedTvForm
+  const WatchedForm = selected.type === TmdbMediaType.Movie ? WatchedMovieForm : WatchedTvForm;
 
-  return (
-    <WatchedForm id={selected.id} />
-  );
+  return <WatchedForm id={selected.id} />;
 };
 
 export default RecentWatched;

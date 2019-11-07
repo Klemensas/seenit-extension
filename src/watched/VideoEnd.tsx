@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Button } from '@blueprintjs/core';
 
 import { useSearchContentQuery, SearchItem, TmdbMediaType } from '../graphql';
 import { VideoContext } from '../content/Content';
@@ -6,7 +7,10 @@ import Search from './Search';
 import WatchedTvForm from './WatchedTvForm';
 import WatchedMovieForm from './WatchedMovieForm';
 
-function renderSearch(setSelected: React.Dispatch<React.SetStateAction<SearchItem>>, prefix: React.ReactNode = <div>Couldn&apos;t find your watched title</div>) {
+function renderSearch(
+  setSelected: React.Dispatch<React.SetStateAction<SearchItem>>,
+  prefix: React.ReactNode = <div>Couldn&apos;t find your watched title</div>,
+) {
   return (
     <React.Fragment>
       {prefix}
@@ -31,9 +35,7 @@ const VideoEnd = () => {
 
   let items = [];
   if (data && data.searchContent) {
-    const {
-      searchContent,
-    } = data;
+    const { searchContent } = data;
     items = searchContent;
   }
 
@@ -57,16 +59,18 @@ const VideoEnd = () => {
     id: target.id,
     season: title.season,
     episode: title.episode,
-  }
+  };
 
   return (
     <React.Fragment>
-      {searching ? renderSearch(setSelected, null) : (
+      {searching ? (
+        renderSearch(setSelected, null)
+      ) : (
         <p style={{ fontSize: '0.8em' }}>
           Not what you watched?{' '}
-          <button type="button" onClick={() => setSearching(true)}>
+          <Button type="button" onClick={() => setSearching(true)}>
             Search
-          </button>
+          </Button>
         </p>
       )}
       <WatchedForm {...props} />;
