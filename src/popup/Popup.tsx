@@ -10,7 +10,6 @@ import './Popup.scss';
 import { useSetIsLoggedInMutation } from '../graphql';
 import Login from '../auth/Login';
 import AuthRoute from '../components/AuthRoute';
-import Watched from '../watched/Watched';
 import RecentWatched from './RecentWatched';
 import Settings from './Settings';
 
@@ -29,12 +28,11 @@ export default function Popup() {
             <NavLink to="/">
               <Button minimal>Add item</Button>
             </NavLink>
-            <NavLink to="/watched">
-              <Button minimal>Watched</Button>
-            </NavLink>
             <NavLink to="/settings">
               <Button minimal>Settings</Button>
             </NavLink>
+          </Navbar.Group>
+          <Navbar.Group align={Alignment.RIGHT}>
             <Navbar.Divider />
             <Button minimal icon="refresh" onClick={() => chrome.runtime.reload()} />
             <Button minimal icon="log-out" onClick={() => setLoggedIn()} />
@@ -46,7 +44,6 @@ export default function Popup() {
           <Route exact path="/login" component={Login} />
           <AuthRoute exact path="/" component={RecentWatched} />
           <AuthRoute exact path="/settings" component={Settings} />
-          <AuthRoute exact path="/watched" component={Watched} />
         </Switch>
         <ToastContainer />
       </div>
