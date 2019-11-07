@@ -12,7 +12,6 @@ interface EpisodeSelection {
   name: string;
   value: { season: number; episode: number };
   seasonName: string;
-  isSpecials: boolean;
   lastSeasonEpisode: boolean;
   lastSeason: boolean;
 }
@@ -24,12 +23,7 @@ const renderEpisode: ItemRenderer<EpisodeSelection> = (episode, { handleClick, m
 
   return (
     <React.Fragment key={episode.id}>
-      <MenuItem
-        active={modifiers.active}
-        text={episode.name}
-        label={!episode.isSpecials && episode.seasonName}
-        onClick={handleClick}
-      />
+      <MenuItem active={modifiers.active} text={episode.name} label={episode.seasonName} onClick={handleClick} />
       {episode.lastSeasonEpisode && !episode.lastSeason && <MenuDivider />}
     </React.Fragment>
   );
@@ -62,7 +56,7 @@ const WatchedTvForm: React.FC<{
         episodes.map(({ id, name, episode_number: episode }, episodeIndex) => ({
           id,
           name,
-          seasonName: `S${season}E${episode}`,
+          seasonName: season ? `S${season}E${episode}` : null,
           value: { season, episode },
           lastSeasonEpisode: episodeIndex + 1 === episodes.length,
           lastSeason: seasonIndex + 1 === seasons.length,
