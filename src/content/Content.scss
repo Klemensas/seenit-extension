@@ -5,13 +5,13 @@
     position: fixed;
     bottom: 5vmin;
     right: 5vmin;
-    min-width: 300px;
+    width: 320px;
     min-height: 400px;
     background: white;
     color: black;
     z-index: 999999999;
     border: 1px solid rgba($black, 0.25);
-    padding: 24px 16px 16px;
+    padding: 24px 12px 12px;
     box-shadow: 0 0 4px 1px rgba($dark-gray2, 0.25);
   }
 }

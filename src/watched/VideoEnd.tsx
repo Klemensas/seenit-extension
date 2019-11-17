@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Button } from '@blueprintjs/core';
+import { Button, Icon, Text } from '@blueprintjs/core';
 
 import { useSearchContentQuery, SearchItem } from '../graphql';
 import { VideoContext } from '../content/Content';
 import Search from './Search';
 import WatchedForm from './WatchedForm';
+import ProgressBar from '../components/ProgressBar';
+import { closeContent } from '../utils/close';
 
 function renderSearch(
   setSelected: React.Dispatch<React.SetStateAction<SearchItem>>,
@@ -22,6 +24,7 @@ const VideoEnd = () => {
   const videoData = React.useContext(VideoContext);
   const [selected, setSelected] = React.useState<SearchItem>(null);
   const [searching, setSearching] = React.useState<boolean>(false);
+  const [isSaved, setIsSaved] = React.useState<boolean>(false);
   const title = videoData.title || null;
   const { data, loading, error } = useSearchContentQuery({
     variables: { title: title ? title.name : null },
@@ -50,6 +53,19 @@ const VideoEnd = () => {
 
   if (!items.length && !selected) {
     return renderSearch(setSelected);
+  }
+
+  if (isSaved) {
+    return (
+      <div className="flex flex-direction-column flex-align-items-center">
+        <Icon icon="tick" iconSize={64} intent="success" />
+        <h4 className="bp3-heading">Success</h4>
+        <Text tagName="p" className="mb-4">
+          The show was added to your watched item list
+        </Text>
+        <ProgressBar duration={2500} onRest={closeContent} />
+      </div>
+    );
   }
 
   const target = selected || item;
