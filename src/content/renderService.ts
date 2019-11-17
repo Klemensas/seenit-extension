@@ -67,17 +67,15 @@ export default class RenderService {
   }
 
   public handleIframeUpdate(message) {
-    if (this.isIframe) {
-      return;
-    }
+    if (this.isIframe) return;
 
     console.log('msg', message);
     switch (message.type) {
       case RenderAction.iframeVideoCb: {
-
-        if (!message.payload.title) {
-          message.payload.title = RenderService.getTitlesFromHeading();
-        }
+        // Ignore iframe titles
+        // if (!message.payload.title) {
+        message.payload.title = RenderService.getTitlesFromHeading();
+        // }
 
         this.triggerCb(message.payload);
         break;
