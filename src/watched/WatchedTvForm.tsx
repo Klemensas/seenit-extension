@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { MutationFn } from 'react-apollo-hooks';
 import { Formik } from 'formik';
 import Rating from 'react-rating';
 import { FormGroup, TextArea, Button, MenuItem, MenuDivider, PopoverPosition, Intent } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { Select, ItemRenderer } from '@blueprintjs/select';
 
-import { useAddWatchedMutation, useTvQuery, TmdbMediaType } from '../graphql';
+import { TmdbMediaType, TvQuery, AddWatchedMutation, AddWatchedMutationVariables } from '../graphql';
 
 interface EpisodeSelection {
   id: string;
@@ -32,26 +33,9 @@ const renderEpisode: ItemRenderer<EpisodeSelection> = (episode, { handleClick, m
 const itemFilter = (query: string, items: EpisodeSelection[]) =>
   items.filter(({ name, seasonName }) => `${name} ${seasonName}`.toLowerCase().includes(query.toLowerCase()));
 
-const WatchedTvForm: React.FC<{
-  id: string;
-  season?: number;
-  episode?: number;
-}> = ({ id, season, episode }) => {
-  const [addWatched, { loading: loadingWatched }] = useAddWatchedMutation();
-
-  const { data, loading } = useTvQuery({
-    variables: { id },
-  });
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  const item = data.tv;
-
-  const seasons = data.tv.seasons || [];
-  const options = seasons.reduce(
-    (acc: EpisodeSelection[], { season_number: season, episodes }, seasonIndex) =>
+const getSelectOptions = (seasons: TvQuery['tv']['seasons']) =>
+  seasons.reduce(
+    (acc, { season_number: season, episodes }, seasonIndex) =>
       acc.concat(
         episodes.map(({ id, name, episode_number: episode }, episodeIndex) => ({
           id,
@@ -65,6 +49,19 @@ const WatchedTvForm: React.FC<{
       ),
     [],
   );
+
+interface Props {
+  item: TvQuery['tv'];
+  season?: number;
+  episode?: number;
+  onSubmit: MutationFn<AddWatchedMutation, AddWatchedMutationVariables>;
+  isLoading: boolean;
+}
+
+const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoading }) => {
+  console.error('rerender');
+  const seasons = item.seasons || [];
+  const options = getSelectOptions(seasons);
   const tvData =
     season || episode
       ? {
@@ -84,15 +81,14 @@ const WatchedTvForm: React.FC<{
         <div style={{ padding: '0 0.5em' }}>Did you enjoy watching {item.name}?</div>
       </div>
       <Formik
-        enableReinitialize
         initialValues={{
           review: '',
           rating: null,
           createdAt: Date.now(),
           tvData,
         }}
-        onSubmit={(values, actions) => {
-          addWatched({
+        onSubmit={(values, actions) =>
+          onSubmit({
             variables: {
               ...values,
               itemId: item.id,
@@ -108,8 +104,8 @@ const WatchedTvForm: React.FC<{
                   }
                 : undefined,
             },
-          }).then(() => actions.setSubmitting(false));
-        }}
+          }).then(() => actions.setSubmitting(false))
+        }
       >
         {({ values, handleChange, handleSubmit, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
@@ -154,7 +150,7 @@ const WatchedTvForm: React.FC<{
             <FormGroup label="Rating" labelFor="rating">
               <Rating initialRating={values.rating} fractions={2} onChange={value => setFieldValue('rating', value)} />
             </FormGroup>
-            <Button type="submit" large fill intent={Intent.PRIMARY} loading={loadingWatched}>
+            <Button type="submit" large fill intent={Intent.PRIMARY} loading={isLoading}>
               Add
             </Button>
           </form>

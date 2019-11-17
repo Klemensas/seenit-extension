@@ -1,25 +1,19 @@
 import * as React from 'react';
+import { MutationFn } from 'react-apollo-hooks';
 import { Formik } from 'formik';
 import Rating from 'react-rating';
 import { FormGroup, TextArea, Button, Intent } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 
-import { useAddWatchedMutation, TmdbMediaType, useMovieQuery } from '../graphql';
+import { TmdbMediaType, MovieQuery, AddWatchedMutation, AddWatchedMutationVariables } from '../graphql';
 
-const WatchedMovieForm: React.FC<{
-  id: string;
-}> = ({ id }) => {
-  const [addWatched, { loading: loadingWatched }] = useAddWatchedMutation();
-  const { data, loading } = useMovieQuery({
-    variables: { id },
-  });
+interface Props {
+  item: MovieQuery['movie'];
+  onSubmit: MutationFn<AddWatchedMutation, AddWatchedMutationVariables>;
+  isLoading: boolean;
+}
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  const item = data.movie;
-
+const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
   return (
     <React.Fragment>
       <div style={{ display: 'flex' }}>
@@ -38,7 +32,7 @@ const WatchedMovieForm: React.FC<{
           createdAt: Date.now(),
         }}
         onSubmit={(values, actions) => {
-          addWatched({
+          onSubmit({
             variables: {
               ...values,
               itemId: item.id,
@@ -77,7 +71,7 @@ const WatchedMovieForm: React.FC<{
             <FormGroup label="Rating" labelFor="rating">
               <Rating initialRating={values.rating} fractions={2} onChange={value => setFieldValue('rating', value)} />
             </FormGroup>
-            <Button type="submit" large fill intent={Intent.PRIMARY} loading={loadingWatched}>
+            <Button type="submit" large fill intent={Intent.PRIMARY} loading={isLoading}>
               Add
             </Button>
           </form>

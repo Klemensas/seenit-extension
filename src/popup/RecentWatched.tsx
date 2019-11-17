@@ -1,9 +1,8 @@
 import * as React from 'react';
 
-import { SearchItem, TmdbMediaType } from '../graphql';
+import { SearchItem } from '../graphql';
 import Search from '../watched/Search';
-import WatchedMovieForm from '../watched/WatchedMovieForm';
-import WatchedTvForm from '../watched/WatchedTvForm';
+import WatchedForm from '../watched/WatchedForm';
 
 const RecentWatched = () => {
   const [selected, setSelected] = React.useState<SearchItem>(null);
@@ -17,9 +16,7 @@ const RecentWatched = () => {
     );
   }
 
-  const WatchedForm = selected.type === TmdbMediaType.Movie ? WatchedMovieForm : WatchedTvForm;
-
-  return <WatchedForm id={selected.id} />;
+  return <WatchedForm id={selected.id} type={selected.type} />;
 };
 
 export default RecentWatched;
