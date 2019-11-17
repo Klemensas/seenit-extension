@@ -67,9 +67,9 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@blueprintjs/core": "^3.16.2",
-    "@blueprintjs/datetime": "^3.10.0",
-    "@blueprintjs/select": "^3.8.1",
+    "@blueprintjs/core": "^3.19.1",
+    "@blueprintjs/datetime": "^3.14.0",
+    "@blueprintjs/select": "^3.11.1",
     "@graphql-codegen/cli": "^1.2.0",
     "@types/graphql": "^14.2.0",
     "@types/react-select": "^2.0.19",
@@ -93,6 +93,7 @@
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
     "react-select": "^3.0.3",
+    "react-spring": "^8.0.27",
     "react-toastify": "^5.1.1",
     "webpack-dev-server": "^3.4.1"
   }
