@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Button } from '@blueprintjs/core';
 
+import { closeContent } from '../utils/close';
+
 export default function CloseContent() {
   return (
     <Button
@@ -11,10 +13,7 @@ export default function CloseContent() {
       }}
       icon="cross"
       minimal
-      onClick={() => {
-        const container = document.getElementById('seenit-container');
-        container.parentNode.removeChild(container);
-      }}
+      onClick={closeContent}
     />
   );
 }
