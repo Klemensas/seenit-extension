@@ -9,7 +9,6 @@ export interface IntrospectionResultData {
     }[];
   };
 }
-
 const result: IntrospectionResultData = {
   __schema: {
     types: [
@@ -40,5 +39,4 @@ const result: IntrospectionResultData = {
     ],
   },
 };
-
 export default result;

@@ -1,7 +1,9 @@
 import gql from 'graphql-tag';
-import * as ReactApollo from 'react-apollo';
+import * as ApolloReactCommon from '@apollo/react-common';
 import * as React from 'react';
-import * as ReactApolloHooks from 'react-apollo-hooks';
+import * as ApolloReactComponents from '@apollo/react-components';
+import * as ApolloReactHoc from '@apollo/react-hoc';
+import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
@@ -416,6 +418,7 @@ export type Watched = {
   review?: Maybe<Review>;
   tvData?: Maybe<TvData>;
 };
+
 export type LoginMutationVariables = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -563,40 +566,61 @@ export const LoginDocument = gql`
     }
   }
 `;
-export type LoginMutationFn = ReactApollo.MutationFn<LoginMutation, LoginMutationVariables>;
+export type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>;
 export type LoginComponentProps = Omit<
-  Omit<ReactApollo.MutationProps<LoginMutation, LoginMutationVariables>, 'mutation'>,
-  'variables'
-> & { variables?: LoginMutationVariables };
+  ApolloReactComponents.MutationComponentOptions<LoginMutation, LoginMutationVariables>,
+  'mutation'
+>;
 
 export const LoginComponent = (props: LoginComponentProps) => (
-  <ReactApollo.Mutation<LoginMutation, LoginMutationVariables> mutation={LoginDocument} {...props} />
+  <ApolloReactComponents.Mutation<LoginMutation, LoginMutationVariables> mutation={LoginDocument} {...props} />
 );
 
-export type LoginProps<TChildProps = {}> = Partial<ReactApollo.MutateProps<LoginMutation, LoginMutationVariables>> &
+export type LoginProps<TChildProps = {}> = ApolloReactHoc.MutateProps<LoginMutation, LoginMutationVariables> &
   TChildProps;
 export function withLogin<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     LoginMutation,
     LoginMutationVariables,
     LoginProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withMutation<TProps, LoginMutation, LoginMutationVariables, LoginProps<TChildProps>>(
+  return ApolloReactHoc.withMutation<TProps, LoginMutation, LoginMutationVariables, LoginProps<TChildProps>>(
     LoginDocument,
     {
-      alias: 'withLogin',
+      alias: 'login',
       ...operationOptions,
     },
   );
 }
 
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
 export function useLoginMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<LoginMutation, LoginMutationVariables>,
+  baseOptions?: ApolloReactHooks.MutationHookOptions<LoginMutation, LoginMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions);
+  return ApolloReactHooks.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions);
 }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>;
+export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const RegisterDocument = gql`
   mutation Register($name: String!, $email: String!, $password: String!) {
     register(name: $name, email: $email, password: $password) {
@@ -611,91 +635,141 @@ export const RegisterDocument = gql`
     }
   }
 `;
-export type RegisterMutationFn = ReactApollo.MutationFn<RegisterMutation, RegisterMutationVariables>;
+export type RegisterMutationFn = ApolloReactCommon.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 export type RegisterComponentProps = Omit<
-  Omit<ReactApollo.MutationProps<RegisterMutation, RegisterMutationVariables>, 'mutation'>,
-  'variables'
-> & { variables?: RegisterMutationVariables };
+  ApolloReactComponents.MutationComponentOptions<RegisterMutation, RegisterMutationVariables>,
+  'mutation'
+>;
 
 export const RegisterComponent = (props: RegisterComponentProps) => (
-  <ReactApollo.Mutation<RegisterMutation, RegisterMutationVariables> mutation={RegisterDocument} {...props} />
+  <ApolloReactComponents.Mutation<RegisterMutation, RegisterMutationVariables> mutation={RegisterDocument} {...props} />
 );
 
-export type RegisterProps<TChildProps = {}> = Partial<
-  ReactApollo.MutateProps<RegisterMutation, RegisterMutationVariables>
-> &
+export type RegisterProps<TChildProps = {}> = ApolloReactHoc.MutateProps<RegisterMutation, RegisterMutationVariables> &
   TChildProps;
 export function withRegister<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     RegisterMutation,
     RegisterMutationVariables,
     RegisterProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withMutation<TProps, RegisterMutation, RegisterMutationVariables, RegisterProps<TChildProps>>(
+  return ApolloReactHoc.withMutation<TProps, RegisterMutation, RegisterMutationVariables, RegisterProps<TChildProps>>(
     RegisterDocument,
     {
-      alias: 'withRegister',
+      alias: 'register',
       ...operationOptions,
     },
   );
 }
 
+/**
+ * __useRegisterMutation__
+ *
+ * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerMutation, { data, loading, error }] = useRegisterMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
 export function useRegisterMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<RegisterMutation, RegisterMutationVariables>,
+  baseOptions?: ApolloReactHooks.MutationHookOptions<RegisterMutation, RegisterMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, baseOptions);
+  return ApolloReactHooks.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, baseOptions);
 }
+export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
+export type RegisterMutationResult = ApolloReactCommon.MutationResult<RegisterMutation>;
+export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
 export const SetIsLoggedInDocument = gql`
   mutation SetIsLoggedIn($isLoggedIn: Boolean!) {
     setIsLoggedIn(isLoggedIn: $isLoggedIn) @client
   }
 `;
-export type SetIsLoggedInMutationFn = ReactApollo.MutationFn<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>;
+export type SetIsLoggedInMutationFn = ApolloReactCommon.MutationFunction<
+  SetIsLoggedInMutation,
+  SetIsLoggedInMutationVariables
+>;
 export type SetIsLoggedInComponentProps = Omit<
-  Omit<ReactApollo.MutationProps<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>, 'mutation'>,
-  'variables'
-> & { variables?: SetIsLoggedInMutationVariables };
+  ApolloReactComponents.MutationComponentOptions<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>,
+  'mutation'
+>;
 
 export const SetIsLoggedInComponent = (props: SetIsLoggedInComponentProps) => (
-  <ReactApollo.Mutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>
+  <ApolloReactComponents.Mutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>
     mutation={SetIsLoggedInDocument}
     {...props}
   />
 );
 
-export type SetIsLoggedInProps<TChildProps = {}> = Partial<
-  ReactApollo.MutateProps<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>
+export type SetIsLoggedInProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  SetIsLoggedInMutation,
+  SetIsLoggedInMutationVariables
 > &
   TChildProps;
 export function withSetIsLoggedIn<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     SetIsLoggedInMutation,
     SetIsLoggedInMutationVariables,
     SetIsLoggedInProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withMutation<
+  return ApolloReactHoc.withMutation<
     TProps,
     SetIsLoggedInMutation,
     SetIsLoggedInMutationVariables,
     SetIsLoggedInProps<TChildProps>
   >(SetIsLoggedInDocument, {
-    alias: 'withSetIsLoggedIn',
+    alias: 'setIsLoggedIn',
     ...operationOptions,
   });
 }
 
+/**
+ * __useSetIsLoggedInMutation__
+ *
+ * To run a mutation, you first call `useSetIsLoggedInMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetIsLoggedInMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setIsLoggedInMutation, { data, loading, error }] = useSetIsLoggedInMutation({
+ *   variables: {
+ *      isLoggedIn: // value for 'isLoggedIn'
+ *   },
+ * });
+ */
 export function useSetIsLoggedInMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>,
+  baseOptions?: ApolloReactHooks.MutationHookOptions<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>(
+  return ApolloReactHooks.useMutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>(
     SetIsLoggedInDocument,
     baseOptions,
   );
 }
+export type SetIsLoggedInMutationHookResult = ReturnType<typeof useSetIsLoggedInMutation>;
+export type SetIsLoggedInMutationResult = ApolloReactCommon.MutationResult<SetIsLoggedInMutation>;
+export type SetIsLoggedInMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SetIsLoggedInMutation,
+  SetIsLoggedInMutationVariables
+>;
 export const SetUserDataDocument = gql`
   mutation SetUserData($userData: UserInput!) {
     setUserData(userData: $userData) @client {
@@ -706,47 +780,77 @@ export const SetUserDataDocument = gql`
     }
   }
 `;
-export type SetUserDataMutationFn = ReactApollo.MutationFn<SetUserDataMutation, SetUserDataMutationVariables>;
+export type SetUserDataMutationFn = ApolloReactCommon.MutationFunction<
+  SetUserDataMutation,
+  SetUserDataMutationVariables
+>;
 export type SetUserDataComponentProps = Omit<
-  Omit<ReactApollo.MutationProps<SetUserDataMutation, SetUserDataMutationVariables>, 'mutation'>,
-  'variables'
-> & { variables?: SetUserDataMutationVariables };
+  ApolloReactComponents.MutationComponentOptions<SetUserDataMutation, SetUserDataMutationVariables>,
+  'mutation'
+>;
 
 export const SetUserDataComponent = (props: SetUserDataComponentProps) => (
-  <ReactApollo.Mutation<SetUserDataMutation, SetUserDataMutationVariables> mutation={SetUserDataDocument} {...props} />
+  <ApolloReactComponents.Mutation<SetUserDataMutation, SetUserDataMutationVariables>
+    mutation={SetUserDataDocument}
+    {...props}
+  />
 );
 
-export type SetUserDataProps<TChildProps = {}> = Partial<
-  ReactApollo.MutateProps<SetUserDataMutation, SetUserDataMutationVariables>
+export type SetUserDataProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  SetUserDataMutation,
+  SetUserDataMutationVariables
 > &
   TChildProps;
 export function withSetUserData<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     SetUserDataMutation,
     SetUserDataMutationVariables,
     SetUserDataProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withMutation<
+  return ApolloReactHoc.withMutation<
     TProps,
     SetUserDataMutation,
     SetUserDataMutationVariables,
     SetUserDataProps<TChildProps>
   >(SetUserDataDocument, {
-    alias: 'withSetUserData',
+    alias: 'setUserData',
     ...operationOptions,
   });
 }
 
+/**
+ * __useSetUserDataMutation__
+ *
+ * To run a mutation, you first call `useSetUserDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetUserDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setUserDataMutation, { data, loading, error }] = useSetUserDataMutation({
+ *   variables: {
+ *      userData: // value for 'userData'
+ *   },
+ * });
+ */
 export function useSetUserDataMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<SetUserDataMutation, SetUserDataMutationVariables>,
+  baseOptions?: ApolloReactHooks.MutationHookOptions<SetUserDataMutation, SetUserDataMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<SetUserDataMutation, SetUserDataMutationVariables>(
+  return ApolloReactHooks.useMutation<SetUserDataMutation, SetUserDataMutationVariables>(
     SetUserDataDocument,
     baseOptions,
   );
 }
+export type SetUserDataMutationHookResult = ReturnType<typeof useSetUserDataMutation>;
+export type SetUserDataMutationResult = ApolloReactCommon.MutationResult<SetUserDataMutation>;
+export type SetUserDataMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SetUserDataMutation,
+  SetUserDataMutationVariables
+>;
 export const AddWatchedDocument = gql`
   mutation AddWatched(
     $itemId: ID!
@@ -780,44 +884,76 @@ export const AddWatchedDocument = gql`
     }
   }
 `;
-export type AddWatchedMutationFn = ReactApollo.MutationFn<AddWatchedMutation, AddWatchedMutationVariables>;
+export type AddWatchedMutationFn = ApolloReactCommon.MutationFunction<AddWatchedMutation, AddWatchedMutationVariables>;
 export type AddWatchedComponentProps = Omit<
-  Omit<ReactApollo.MutationProps<AddWatchedMutation, AddWatchedMutationVariables>, 'mutation'>,
-  'variables'
-> & { variables?: AddWatchedMutationVariables };
+  ApolloReactComponents.MutationComponentOptions<AddWatchedMutation, AddWatchedMutationVariables>,
+  'mutation'
+>;
 
 export const AddWatchedComponent = (props: AddWatchedComponentProps) => (
-  <ReactApollo.Mutation<AddWatchedMutation, AddWatchedMutationVariables> mutation={AddWatchedDocument} {...props} />
+  <ApolloReactComponents.Mutation<AddWatchedMutation, AddWatchedMutationVariables>
+    mutation={AddWatchedDocument}
+    {...props}
+  />
 );
 
-export type AddWatchedProps<TChildProps = {}> = Partial<
-  ReactApollo.MutateProps<AddWatchedMutation, AddWatchedMutationVariables>
+export type AddWatchedProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  AddWatchedMutation,
+  AddWatchedMutationVariables
 > &
   TChildProps;
 export function withAddWatched<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     AddWatchedMutation,
     AddWatchedMutationVariables,
     AddWatchedProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withMutation<
+  return ApolloReactHoc.withMutation<
     TProps,
     AddWatchedMutation,
     AddWatchedMutationVariables,
     AddWatchedProps<TChildProps>
   >(AddWatchedDocument, {
-    alias: 'withAddWatched',
+    alias: 'addWatched',
     ...operationOptions,
   });
 }
 
+/**
+ * __useAddWatchedMutation__
+ *
+ * To run a mutation, you first call `useAddWatchedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddWatchedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addWatchedMutation, { data, loading, error }] = useAddWatchedMutation({
+ *   variables: {
+ *      itemId: // value for 'itemId'
+ *      mediaType: // value for 'mediaType'
+ *      createdAt: // value for 'createdAt'
+ *      rating: // value for 'rating'
+ *      review: // value for 'review'
+ *      tvData: // value for 'tvData'
+ *   },
+ * });
+ */
 export function useAddWatchedMutation(
-  baseOptions?: ReactApolloHooks.MutationHookOptions<AddWatchedMutation, AddWatchedMutationVariables>,
+  baseOptions?: ApolloReactHooks.MutationHookOptions<AddWatchedMutation, AddWatchedMutationVariables>,
 ) {
-  return ReactApolloHooks.useMutation<AddWatchedMutation, AddWatchedMutationVariables>(AddWatchedDocument, baseOptions);
+  return ApolloReactHooks.useMutation<AddWatchedMutation, AddWatchedMutationVariables>(AddWatchedDocument, baseOptions);
 }
+export type AddWatchedMutationHookResult = ReturnType<typeof useAddWatchedMutation>;
+export type AddWatchedMutationResult = ApolloReactCommon.MutationResult<AddWatchedMutation>;
+export type AddWatchedMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddWatchedMutation,
+  AddWatchedMutationVariables
+>;
 export const WatchedDocument = gql`
   query Watched {
     allWatched {
@@ -827,36 +963,59 @@ export const WatchedDocument = gql`
   }
 `;
 export type WatchedComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<WatchedQuery, WatchedQueryVariables>, 'query'>,
-  'variables'
-> & { variables?: WatchedQueryVariables };
+  ApolloReactComponents.QueryComponentOptions<WatchedQuery, WatchedQueryVariables>,
+  'query'
+>;
 
 export const WatchedComponent = (props: WatchedComponentProps) => (
-  <ReactApollo.Query<WatchedQuery, WatchedQueryVariables> query={WatchedDocument} {...props} />
+  <ApolloReactComponents.Query<WatchedQuery, WatchedQueryVariables> query={WatchedDocument} {...props} />
 );
 
-export type WatchedProps<TChildProps = {}> = Partial<ReactApollo.DataProps<WatchedQuery, WatchedQueryVariables>> &
+export type WatchedProps<TChildProps = {}> = ApolloReactHoc.DataProps<WatchedQuery, WatchedQueryVariables> &
   TChildProps;
 export function withWatched<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     WatchedQuery,
     WatchedQueryVariables,
     WatchedProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withQuery<TProps, WatchedQuery, WatchedQueryVariables, WatchedProps<TChildProps>>(
+  return ApolloReactHoc.withQuery<TProps, WatchedQuery, WatchedQueryVariables, WatchedProps<TChildProps>>(
     WatchedDocument,
     {
-      alias: 'withWatched',
+      alias: 'watched',
       ...operationOptions,
     },
   );
 }
 
-export function useWatchedQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<WatchedQueryVariables>) {
-  return ReactApolloHooks.useQuery<WatchedQuery, WatchedQueryVariables>(WatchedDocument, baseOptions);
+/**
+ * __useWatchedQuery__
+ *
+ * To run a query within a React component, call `useWatchedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWatchedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWatchedQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useWatchedQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<WatchedQuery, WatchedQueryVariables>) {
+  return ApolloReactHooks.useQuery<WatchedQuery, WatchedQueryVariables>(WatchedDocument, baseOptions);
 }
+export function useWatchedLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<WatchedQuery, WatchedQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<WatchedQuery, WatchedQueryVariables>(WatchedDocument, baseOptions);
+}
+export type WatchedQueryHookResult = ReturnType<typeof useWatchedQuery>;
+export type WatchedLazyQueryHookResult = ReturnType<typeof useWatchedLazyQuery>;
+export type WatchedQueryResult = ApolloReactCommon.QueryResult<WatchedQuery, WatchedQueryVariables>;
 export const UserWatchedDocument = gql`
   query UserWatched($id: ID!) {
     user(id: $id) {
@@ -892,81 +1051,141 @@ export const UserWatchedDocument = gql`
   }
 `;
 export type UserWatchedComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<UserWatchedQuery, UserWatchedQueryVariables>, 'query'>,
-  'variables'
-> & { variables: UserWatchedQueryVariables };
+  ApolloReactComponents.QueryComponentOptions<UserWatchedQuery, UserWatchedQueryVariables>,
+  'query'
+> &
+  ({ variables: UserWatchedQueryVariables; skip?: boolean } | { skip: boolean });
 
 export const UserWatchedComponent = (props: UserWatchedComponentProps) => (
-  <ReactApollo.Query<UserWatchedQuery, UserWatchedQueryVariables> query={UserWatchedDocument} {...props} />
+  <ApolloReactComponents.Query<UserWatchedQuery, UserWatchedQueryVariables> query={UserWatchedDocument} {...props} />
 );
 
-export type UserWatchedProps<TChildProps = {}> = Partial<
-  ReactApollo.DataProps<UserWatchedQuery, UserWatchedQueryVariables>
-> &
+export type UserWatchedProps<TChildProps = {}> = ApolloReactHoc.DataProps<UserWatchedQuery, UserWatchedQueryVariables> &
   TChildProps;
 export function withUserWatched<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     UserWatchedQuery,
     UserWatchedQueryVariables,
     UserWatchedProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withQuery<TProps, UserWatchedQuery, UserWatchedQueryVariables, UserWatchedProps<TChildProps>>(
+  return ApolloReactHoc.withQuery<TProps, UserWatchedQuery, UserWatchedQueryVariables, UserWatchedProps<TChildProps>>(
     UserWatchedDocument,
     {
-      alias: 'withUserWatched',
+      alias: 'userWatched',
       ...operationOptions,
     },
   );
 }
 
-export function useUserWatchedQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<UserWatchedQueryVariables>) {
-  return ReactApolloHooks.useQuery<UserWatchedQuery, UserWatchedQueryVariables>(UserWatchedDocument, baseOptions);
+/**
+ * __useUserWatchedQuery__
+ *
+ * To run a query within a React component, call `useUserWatchedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserWatchedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserWatchedQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserWatchedQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<UserWatchedQuery, UserWatchedQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<UserWatchedQuery, UserWatchedQueryVariables>(UserWatchedDocument, baseOptions);
 }
+export function useUserWatchedLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UserWatchedQuery, UserWatchedQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<UserWatchedQuery, UserWatchedQueryVariables>(UserWatchedDocument, baseOptions);
+}
+export type UserWatchedQueryHookResult = ReturnType<typeof useUserWatchedQuery>;
+export type UserWatchedLazyQueryHookResult = ReturnType<typeof useUserWatchedLazyQuery>;
+export type UserWatchedQueryResult = ApolloReactCommon.QueryResult<UserWatchedQuery, UserWatchedQueryVariables>;
 export const IsUserLoggedInDocument = gql`
   query IsUserLoggedIn {
     isLoggedIn @client
   }
 `;
 export type IsUserLoggedInComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>, 'query'>,
-  'variables'
-> & { variables?: IsUserLoggedInQueryVariables };
+  ApolloReactComponents.QueryComponentOptions<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>,
+  'query'
+>;
 
 export const IsUserLoggedInComponent = (props: IsUserLoggedInComponentProps) => (
-  <ReactApollo.Query<IsUserLoggedInQuery, IsUserLoggedInQueryVariables> query={IsUserLoggedInDocument} {...props} />
+  <ApolloReactComponents.Query<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>
+    query={IsUserLoggedInDocument}
+    {...props}
+  />
 );
 
-export type IsUserLoggedInProps<TChildProps = {}> = Partial<
-  ReactApollo.DataProps<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>
+export type IsUserLoggedInProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  IsUserLoggedInQuery,
+  IsUserLoggedInQueryVariables
 > &
   TChildProps;
 export function withIsUserLoggedIn<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     IsUserLoggedInQuery,
     IsUserLoggedInQueryVariables,
     IsUserLoggedInProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withQuery<
+  return ApolloReactHoc.withQuery<
     TProps,
     IsUserLoggedInQuery,
     IsUserLoggedInQueryVariables,
     IsUserLoggedInProps<TChildProps>
   >(IsUserLoggedInDocument, {
-    alias: 'withIsUserLoggedIn',
+    alias: 'isUserLoggedIn',
     ...operationOptions,
   });
 }
 
-export function useIsUserLoggedInQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<IsUserLoggedInQueryVariables>) {
-  return ReactApolloHooks.useQuery<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>(
+/**
+ * __useIsUserLoggedInQuery__
+ *
+ * To run a query within a React component, call `useIsUserLoggedInQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsUserLoggedInQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsUserLoggedInQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIsUserLoggedInQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>(
     IsUserLoggedInDocument,
     baseOptions,
   );
 }
+export function useIsUserLoggedInLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>(
+    IsUserLoggedInDocument,
+    baseOptions,
+  );
+}
+export type IsUserLoggedInQueryHookResult = ReturnType<typeof useIsUserLoggedInQuery>;
+export type IsUserLoggedInLazyQueryHookResult = ReturnType<typeof useIsUserLoggedInLazyQuery>;
+export type IsUserLoggedInQueryResult = ApolloReactCommon.QueryResult<
+  IsUserLoggedInQuery,
+  IsUserLoggedInQueryVariables
+>;
 export const UserDataDocument = gql`
   query UserData {
     userData @client {
@@ -978,36 +1197,61 @@ export const UserDataDocument = gql`
   }
 `;
 export type UserDataComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<UserDataQuery, UserDataQueryVariables>, 'query'>,
-  'variables'
-> & { variables?: UserDataQueryVariables };
+  ApolloReactComponents.QueryComponentOptions<UserDataQuery, UserDataQueryVariables>,
+  'query'
+>;
 
 export const UserDataComponent = (props: UserDataComponentProps) => (
-  <ReactApollo.Query<UserDataQuery, UserDataQueryVariables> query={UserDataDocument} {...props} />
+  <ApolloReactComponents.Query<UserDataQuery, UserDataQueryVariables> query={UserDataDocument} {...props} />
 );
 
-export type UserDataProps<TChildProps = {}> = Partial<ReactApollo.DataProps<UserDataQuery, UserDataQueryVariables>> &
+export type UserDataProps<TChildProps = {}> = ApolloReactHoc.DataProps<UserDataQuery, UserDataQueryVariables> &
   TChildProps;
 export function withUserData<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     UserDataQuery,
     UserDataQueryVariables,
     UserDataProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withQuery<TProps, UserDataQuery, UserDataQueryVariables, UserDataProps<TChildProps>>(
+  return ApolloReactHoc.withQuery<TProps, UserDataQuery, UserDataQueryVariables, UserDataProps<TChildProps>>(
     UserDataDocument,
     {
-      alias: 'withUserData',
+      alias: 'userData',
       ...operationOptions,
     },
   );
 }
 
-export function useUserDataQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<UserDataQueryVariables>) {
-  return ReactApolloHooks.useQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, baseOptions);
+/**
+ * __useUserDataQuery__
+ *
+ * To run a query within a React component, call `useUserDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<UserDataQuery, UserDataQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, baseOptions);
 }
+export function useUserDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UserDataQuery, UserDataQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, baseOptions);
+}
+export type UserDataQueryHookResult = ReturnType<typeof useUserDataQuery>;
+export type UserDataLazyQueryHookResult = ReturnType<typeof useUserDataLazyQuery>;
+export type UserDataQueryResult = ApolloReactCommon.QueryResult<UserDataQuery, UserDataQueryVariables>;
 export const SearchContentDocument = gql`
   query SearchContent($title: String!) {
     searchContent(title: $title) {
@@ -1020,40 +1264,74 @@ export const SearchContentDocument = gql`
   }
 `;
 export type SearchContentComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<SearchContentQuery, SearchContentQueryVariables>, 'query'>,
-  'variables'
-> & { variables: SearchContentQueryVariables };
+  ApolloReactComponents.QueryComponentOptions<SearchContentQuery, SearchContentQueryVariables>,
+  'query'
+> &
+  ({ variables: SearchContentQueryVariables; skip?: boolean } | { skip: boolean });
 
 export const SearchContentComponent = (props: SearchContentComponentProps) => (
-  <ReactApollo.Query<SearchContentQuery, SearchContentQueryVariables> query={SearchContentDocument} {...props} />
+  <ApolloReactComponents.Query<SearchContentQuery, SearchContentQueryVariables>
+    query={SearchContentDocument}
+    {...props}
+  />
 );
 
-export type SearchContentProps<TChildProps = {}> = Partial<
-  ReactApollo.DataProps<SearchContentQuery, SearchContentQueryVariables>
+export type SearchContentProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  SearchContentQuery,
+  SearchContentQueryVariables
 > &
   TChildProps;
 export function withSearchContent<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<
+  operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     SearchContentQuery,
     SearchContentQueryVariables,
     SearchContentProps<TChildProps>
   >,
 ) {
-  return ReactApollo.withQuery<
+  return ApolloReactHoc.withQuery<
     TProps,
     SearchContentQuery,
     SearchContentQueryVariables,
     SearchContentProps<TChildProps>
   >(SearchContentDocument, {
-    alias: 'withSearchContent',
+    alias: 'searchContent',
     ...operationOptions,
   });
 }
 
-export function useSearchContentQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<SearchContentQueryVariables>) {
-  return ReactApolloHooks.useQuery<SearchContentQuery, SearchContentQueryVariables>(SearchContentDocument, baseOptions);
+/**
+ * __useSearchContentQuery__
+ *
+ * To run a query within a React component, call `useSearchContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchContentQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useSearchContentQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<SearchContentQuery, SearchContentQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<SearchContentQuery, SearchContentQueryVariables>(SearchContentDocument, baseOptions);
 }
+export function useSearchContentLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<SearchContentQuery, SearchContentQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<SearchContentQuery, SearchContentQueryVariables>(
+    SearchContentDocument,
+    baseOptions,
+  );
+}
+export type SearchContentQueryHookResult = ReturnType<typeof useSearchContentQuery>;
+export type SearchContentLazyQueryHookResult = ReturnType<typeof useSearchContentLazyQuery>;
+export type SearchContentQueryResult = ApolloReactCommon.QueryResult<SearchContentQuery, SearchContentQueryVariables>;
 export const TvDocument = gql`
   query Tv($id: ID!) {
     tv(id: $id) {
@@ -1075,27 +1353,48 @@ export const TvDocument = gql`
     }
   }
 `;
-export type TvComponentProps = Omit<Omit<ReactApollo.QueryProps<TvQuery, TvQueryVariables>, 'query'>, 'variables'> & {
-  variables: TvQueryVariables;
-};
+export type TvComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<TvQuery, TvQueryVariables>, 'query'> &
+  ({ variables: TvQueryVariables; skip?: boolean } | { skip: boolean });
 
 export const TvComponent = (props: TvComponentProps) => (
-  <ReactApollo.Query<TvQuery, TvQueryVariables> query={TvDocument} {...props} />
+  <ApolloReactComponents.Query<TvQuery, TvQueryVariables> query={TvDocument} {...props} />
 );
 
-export type TvProps<TChildProps = {}> = Partial<ReactApollo.DataProps<TvQuery, TvQueryVariables>> & TChildProps;
+export type TvProps<TChildProps = {}> = ApolloReactHoc.DataProps<TvQuery, TvQueryVariables> & TChildProps;
 export function withTv<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps>>,
+  operationOptions?: ApolloReactHoc.OperationOption<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps>>,
 ) {
-  return ReactApollo.withQuery<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps>>(TvDocument, {
-    alias: 'withTv',
+  return ApolloReactHoc.withQuery<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps>>(TvDocument, {
+    alias: 'tv',
     ...operationOptions,
   });
 }
 
-export function useTvQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<TvQueryVariables>) {
-  return ReactApolloHooks.useQuery<TvQuery, TvQueryVariables>(TvDocument, baseOptions);
+/**
+ * __useTvQuery__
+ *
+ * To run a query within a React component, call `useTvQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTvQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTvQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useTvQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<TvQuery, TvQueryVariables>) {
+  return ApolloReactHooks.useQuery<TvQuery, TvQueryVariables>(TvDocument, baseOptions);
 }
+export function useTvLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TvQuery, TvQueryVariables>) {
+  return ApolloReactHooks.useLazyQuery<TvQuery, TvQueryVariables>(TvDocument, baseOptions);
+}
+export type TvQueryHookResult = ReturnType<typeof useTvQuery>;
+export type TvLazyQueryHookResult = ReturnType<typeof useTvLazyQuery>;
+export type TvQueryResult = ApolloReactCommon.QueryResult<TvQuery, TvQueryVariables>;
 export const MovieDocument = gql`
   query Movie($id: ID!) {
     movie(id: $id) {
@@ -1107,25 +1406,49 @@ export const MovieDocument = gql`
   }
 `;
 export type MovieComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<MovieQuery, MovieQueryVariables>, 'query'>,
-  'variables'
-> & { variables: MovieQueryVariables };
+  ApolloReactComponents.QueryComponentOptions<MovieQuery, MovieQueryVariables>,
+  'query'
+> &
+  ({ variables: MovieQueryVariables; skip?: boolean } | { skip: boolean });
 
 export const MovieComponent = (props: MovieComponentProps) => (
-  <ReactApollo.Query<MovieQuery, MovieQueryVariables> query={MovieDocument} {...props} />
+  <ApolloReactComponents.Query<MovieQuery, MovieQueryVariables> query={MovieDocument} {...props} />
 );
 
-export type MovieProps<TChildProps = {}> = Partial<ReactApollo.DataProps<MovieQuery, MovieQueryVariables>> &
-  TChildProps;
+export type MovieProps<TChildProps = {}> = ApolloReactHoc.DataProps<MovieQuery, MovieQueryVariables> & TChildProps;
 export function withMovie<TProps, TChildProps = {}>(
-  operationOptions?: ReactApollo.OperationOption<TProps, MovieQuery, MovieQueryVariables, MovieProps<TChildProps>>,
+  operationOptions?: ApolloReactHoc.OperationOption<TProps, MovieQuery, MovieQueryVariables, MovieProps<TChildProps>>,
 ) {
-  return ReactApollo.withQuery<TProps, MovieQuery, MovieQueryVariables, MovieProps<TChildProps>>(MovieDocument, {
-    alias: 'withMovie',
+  return ApolloReactHoc.withQuery<TProps, MovieQuery, MovieQueryVariables, MovieProps<TChildProps>>(MovieDocument, {
+    alias: 'movie',
     ...operationOptions,
   });
 }
 
-export function useMovieQuery(baseOptions?: ReactApolloHooks.QueryHookOptions<MovieQueryVariables>) {
-  return ReactApolloHooks.useQuery<MovieQuery, MovieQueryVariables>(MovieDocument, baseOptions);
+/**
+ * __useMovieQuery__
+ *
+ * To run a query within a React component, call `useMovieQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMovieQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMovieQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMovieQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MovieQuery, MovieQueryVariables>) {
+  return ApolloReactHooks.useQuery<MovieQuery, MovieQueryVariables>(MovieDocument, baseOptions);
 }
+export function useMovieLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MovieQuery, MovieQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<MovieQuery, MovieQueryVariables>(MovieDocument, baseOptions);
+}
+export type MovieQueryHookResult = ReturnType<typeof useMovieQuery>;
+export type MovieLazyQueryHookResult = ReturnType<typeof useMovieLazyQuery>;
+export type MovieQueryResult = ApolloReactCommon.QueryResult<MovieQuery, MovieQueryVariables>;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MutationFn } from 'react-apollo-hooks';
+import { MutationFunction } from 'react-apollo';
 import { Formik } from 'formik';
 import Rating from 'react-rating';
 import { FormGroup, TextArea, Button, Intent } from '@blueprintjs/core';
@@ -9,7 +9,7 @@ import { TmdbMediaType, MovieQuery, AddWatchedMutation, AddWatchedMutationVariab
 
 interface Props {
   item: MovieQuery['movie'];
-  onSubmit: MutationFn<AddWatchedMutation, AddWatchedMutationVariables>;
+  onSubmit: MutationFunction<AddWatchedMutation, AddWatchedMutationVariables>;
   isLoading: boolean;
 }
 

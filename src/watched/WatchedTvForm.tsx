@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MutationFn } from 'react-apollo-hooks';
+import { MutationFunction } from 'react-apollo';
 import { Formik } from 'formik';
 import Rating from 'react-rating';
 import { FormGroup, TextArea, Button, MenuItem, MenuDivider, PopoverPosition, Intent } from '@blueprintjs/core';
@@ -54,7 +54,7 @@ interface Props {
   item: TvQuery['tv'];
   season?: number;
   episode?: number;
-  onSubmit: MutationFn<AddWatchedMutation, AddWatchedMutationVariables>;
+  onSubmit: MutationFunction<AddWatchedMutation, AddWatchedMutationVariables>;
   isLoading: boolean;
 }
 
