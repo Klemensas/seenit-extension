@@ -2,14 +2,13 @@ import * as React from 'react';
 import { withRouter } from 'react-router';
 import { FormGroup, InputGroup, Button, Intent } from '@blueprintjs/core';
 
-import { useLoginMutation, useRegisterMutation, IsUserLoggedInDocument, useIsUserLoggedInQuery, useUserWatchedQuery } from '../graphql';
+import { useLoginMutation, useRegisterMutation } from '../graphql';
 import { updateStorage } from '../browserService';
 
 export default withRouter(function Login({ history }) {
-  // TODO: remove placeholder credentials
   const [form, setForm] = React.useState({
-    email: 'user-1@demo.com',
-    password: 'test',
+    email: '',
+    password: '',
     name: '',
   });
   const [isLogin, setLogin] = React.useState(true);
@@ -56,14 +55,6 @@ export default withRouter(function Login({ history }) {
               placeholder="John Doe"
               value={form.name}
             />
-            {/* <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={form.name}
-              required
-              onChange={e => setForm({ ...form, name: e.target.value })}
-            /> */}
           </FormGroup>
         )}
         <FormGroup label="Email" labelFor="email-input">
@@ -76,14 +67,6 @@ export default withRouter(function Login({ history }) {
             placeholder="you@mail.com"
             value={form.email}
           />
-          {/* <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            required
-            onChange={e => setForm({ ...form, email: e.target.value })}
-          /> */}
         </FormGroup>
         <FormGroup label="Password" labelFor="password-input">
           <InputGroup
@@ -96,16 +79,11 @@ export default withRouter(function Login({ history }) {
             value={form.password}
           />
         </FormGroup>
-        {/* <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          required
-          onChange={e => setForm({ ...form, password: e.target.value })}
-        /> */}
+
         <div className="flex flex-between">
-          <Button type="submit" intent={Intent.PRIMARY}>{isLogin ? 'Login' : 'Register'}</Button>
+          <Button type="submit" intent={Intent.PRIMARY}>
+            {isLogin ? 'Login' : 'Register'}
+          </Button>
           <Button type="button" onClick={() => setLogin(!isLogin)}>
             {isLogin ? 'Need to create an account?' : 'Already have an account?'}
           </Button>
