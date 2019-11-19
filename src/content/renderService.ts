@@ -69,7 +69,6 @@ export default class RenderService {
   public handleIframeUpdate(message) {
     if (this.isIframe) return;
 
-    console.log('msg', message);
     switch (message.type) {
       case RenderAction.iframeVideoCb: {
         // Ignore iframe titles
