@@ -1,0 +1,30 @@
+name: "Upload extension"
+on: pull_request
+
+jobs:
+  upload:
+    name: upload
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
+      SERVER_API: https://server.seenit.show
+    steps:
+      - uses: actions/checkout@v1
+      - name: install node v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: npm setup
+        run: npm install && npm run build
+      # - name: tsc
+      #   working-directory: ./client
+      #   run: yarn tsc
+      - uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -qq -r ./seenit.zip ./dist
+      - uses: wei/curl@v1
+        with:
+          args:
+            -H "Authorization: Bearer ${{ secrets.TOKEN }}"
+            -H "x-goog-api-version: 2"
+            --upload-file ./seenit.zip https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.APP_ID }}
