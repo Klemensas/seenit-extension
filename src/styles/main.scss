@@ -12,6 +12,20 @@
 
   @import 'blueprint-overrides';
 
+  .seenit-logo {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 700;
+
+    .logo-eyes {
+      display: inline-flex;
+      font-size: 15px;
+      margin-top: -2px;
+      transform: rotateY(180deg);
+    }
+  }
+
   .select-popover-centered {
     position: relative;
 

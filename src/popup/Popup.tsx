@@ -4,14 +4,26 @@ import { NavLink, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Navbar, Alignment, Button } from '@blueprintjs/core';
 
-import '../styles/main.scss';
-import './Popup.scss';
-
 import { useSetIsLoggedInMutation } from '../graphql';
 import Login from '../auth/Login';
 import AuthRoute from '../components/AuthRoute';
 import RecentWatched from './RecentWatched';
 import Settings from './Settings';
+
+import '../styles/main.scss';
+import './Popup.scss';
+
+export function Logo() {
+  return (
+    <div className="seenit-logo">
+      S
+      <span className="logo-eyes" role="img" aria-label="ee">
+        👀
+      </span>
+      N&nbsp;IT
+    </div>
+  );
+}
 
 export default function Popup() {
   const [setLoggedIn] = useSetIsLoggedInMutation({
@@ -23,7 +35,9 @@ export default function Popup() {
       <div className="navigation-container">
         <Navbar fixedToTop>
           <Navbar.Group align={Alignment.LEFT}>
-            <Navbar.Heading>SeenIt</Navbar.Heading>
+            <Navbar.Heading>
+              <Logo />
+            </Navbar.Heading>
             <Navbar.Divider />
             <NavLink to="/">
               <Button minimal>Add item</Button>
