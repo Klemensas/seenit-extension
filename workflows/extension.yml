@@ -1,4 +1,4 @@
-name: "TS Compiler"
+name: "Upload extension"
 on: pull_request
 
 jobs:
