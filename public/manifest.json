@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Seenit extension",
-  "description": "Seenit browser extension",
+  "name": "SeenIt",
+  "description": "Browser extension for logging watched content to the SeenIt platform",
   "version": "0.0.1",
   "icons": {
     "16": "icon16.png",
@@ -10,7 +10,7 @@
   },
   "browser_action": {
       "default_icon": "icon16.png",
-      "default_title": "Seenit extension",
+      "default_title": "SeenIt",
       "default_popup": "index.html"
   },
   "content_scripts": [
@@ -28,9 +28,6 @@
       "persistent": false
   },
   "permissions": [
-    "webNavigation",
-    "management",
-    "storage",
-    "tabs"
+    "storage"
   ]
 }
