@@ -59,7 +59,6 @@ interface Props {
 }
 
 const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoading }) => {
-  console.error('rerender');
   const seasons = item.seasons || [];
   const options = getSelectOptions(seasons);
   const tvData =
