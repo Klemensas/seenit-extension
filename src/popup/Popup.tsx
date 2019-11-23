@@ -12,6 +12,7 @@ import Settings from './Settings';
 
 import '../styles/main.scss';
 import './Popup.scss';
+import { isProduction } from '../utils/helpers';
 
 export function Logo() {
   return (
@@ -48,7 +49,7 @@ export default function Popup() {
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
             <Navbar.Divider />
-            <Button minimal icon="refresh" onClick={() => chrome.runtime.reload()} />
+            {!isProduction && <Button minimal icon="refresh" onClick={() => chrome.runtime.reload()} />}
             <Button minimal icon="log-out" onClick={() => setLoggedIn()} />
           </Navbar.Group>
         </Navbar>
