@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "SeenIt",
   "description": "Browser extension for logging watched content to the SeenIt platform",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
