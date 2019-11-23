@@ -23,7 +23,7 @@ jobs:
         with:
           args: zip -qq -r ./seenit.zip ./dist
       - name: Upload extension
-        uses: Klemensas/chrome-extension-upload-action@v1.1
+        uses: Klemensas/chrome-extension-upload-action@v1.3
         with:
           refresh-token: ${{ secrets.REFRESH_TOKEN }}
           client-id: ${{ secrets.CLIENT_ID }}
