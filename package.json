@@ -72,7 +72,7 @@
     "@blueprintjs/select": "^3.11.1",
     "@graphql-codegen/cli": "^1.8.3",
     "@types/graphql": "^14.5.0",
-    "@types/react-select": "^2.0.19",
+    "@types/react-select": "^3.0.8",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.13",
