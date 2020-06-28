@@ -26,6 +26,37 @@ export type Author = {
   profile_path?: Maybe<Scalars['String']>;
 };
 
+export type AutoTracked = {
+  __typename?: 'AutoTracked';
+  id: Scalars['ID'];
+  userId: Scalars['ID'];
+  user: User;
+  itemType?: Maybe<ItemType>;
+  item?: Maybe<Item>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+  meta: AutoTrackedMeta;
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+};
+
+export type AutoTrackedMeta = {
+  __typename?: 'AutoTrackedMeta';
+  title?: Maybe<Scalars['String']>;
+  filename?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+};
+
+export type AutoTrackedMetaInput = {
+  title?: Maybe<Scalars['String']>;
+  tvData?: Maybe<TvDataInput>;
+  filename?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+};
+
 export enum CacheControlScope {
   Public = 'PUBLIC',
   Private = 'PRIVATE',
@@ -56,17 +87,17 @@ export type Country = {
 export type Episode = {
   __typename?: 'Episode';
   id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  overview?: Maybe<Scalars['String']>;
-  episode_number?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  overview: Scalars['String'];
+  episode_number: Scalars['Int'];
   air_date?: Maybe<Scalars['String']>;
   production_code?: Maybe<Scalars['String']>;
   still_path?: Maybe<Scalars['String']>;
-  vote_average?: Maybe<Scalars['Float']>;
-  vote_count?: Maybe<Scalars['Int']>;
-  tmdbId?: Maybe<Scalars['Int']>;
-  seasonId?: Maybe<Scalars['ID']>;
-  season?: Maybe<Array<Maybe<Season>>>;
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
+  tmdbId: Scalars['Int'];
+  seasonId: Scalars['ID'];
+  season: Season;
 };
 
 export type Genre = {
@@ -97,51 +128,73 @@ export type LocalAuth = {
 export type Movie = {
   __typename?: 'Movie';
   id: Scalars['ID'];
-  adult?: Maybe<Scalars['Boolean']>;
+  adult: Scalars['Boolean'];
   backdrop_path?: Maybe<Scalars['String']>;
   belongs_to_collection?: Maybe<Collection>;
-  budget?: Maybe<Scalars['Int']>;
+  budget: Scalars['Int'];
   genre?: Maybe<Array<Maybe<Genre>>>;
   homepage?: Maybe<Scalars['String']>;
   imdb_id?: Maybe<Scalars['String']>;
   original_language?: Maybe<Scalars['String']>;
   original_title?: Maybe<Scalars['String']>;
-  overview?: Maybe<Scalars['String']>;
+  overview: Scalars['String'];
   popularity?: Maybe<Scalars['Float']>;
   poster_path?: Maybe<Scalars['String']>;
   production_companies?: Maybe<Array<Maybe<Company>>>;
   production_countries?: Maybe<Array<Maybe<Country>>>;
-  release_date?: Maybe<Scalars['String']>;
+  release_date: Scalars['String'];
   revenue?: Maybe<Scalars['Int']>;
   runtime?: Maybe<Scalars['Int']>;
   spoken_languages?: Maybe<Array<Maybe<Language>>>;
   status?: Maybe<Scalars['String']>;
   tagline?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
   video?: Maybe<Scalars['Boolean']>;
-  vote_average?: Maybe<Scalars['Float']>;
-  vote_count?: Maybe<Scalars['Int']>;
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
   tmdbId?: Maybe<Scalars['Int']>;
-  watched?: Maybe<Array<Maybe<Watched>>>;
+  watched: WatchedCursor;
+};
+
+export type MovieWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  filter?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   _?: Maybe<Scalars['Boolean']>;
   addWatched: Watched;
+  editWatched: Watched;
+  removeWatched: Scalars['ID'];
   register: LocalAuth;
   login: LocalAuth;
+  addAutoTracked: AutoTracked;
   setIsLoggedIn: Scalars['Boolean'];
   setUserData: User;
 };
 
 export type MutationAddWatchedArgs = {
   itemId: Scalars['ID'];
-  mediaType: TmdbMediaType;
+  itemType: ItemType;
   rating?: Maybe<RatingInput>;
   review?: Maybe<ReviewInput>;
-  tvData?: Maybe<TvDataInput>;
   createdAt?: Maybe<Scalars['Float']>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+};
+
+export type MutationEditWatchedArgs = {
+  id: Scalars['ID'];
+  createdAt?: Maybe<Scalars['Float']>;
+  rating?: Maybe<RatingInput>;
+  review?: Maybe<ReviewInput>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+};
+
+export type MutationRemoveWatchedArgs = {
+  itemId: Scalars['ID'];
 };
 
 export type MutationRegisterArgs = {
@@ -153,6 +206,15 @@ export type MutationRegisterArgs = {
 export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type MutationAddAutoTrackedArgs = {
+  meta: AutoTrackedMetaInput;
+  createdAt: Scalars['Float'];
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
 };
 
 export type MutationSetIsLoggedInArgs = {
@@ -174,16 +236,17 @@ export type Network = {
 export type Query = {
   __typename?: 'Query';
   _?: Maybe<Scalars['Boolean']>;
-  movie?: Maybe<Movie>;
-  tv?: Maybe<Tv>;
-  season?: Maybe<Season>;
-  episode?: Maybe<Episode>;
-  allWatched?: Maybe<Array<Watched>>;
-  watched?: Maybe<Watched>;
+  movie: Movie;
+  tv: Tv;
+  season: Season;
+  episode: Episode;
+  watches: WatchedCursor;
+  watched: Watched;
   users?: Maybe<Array<User>>;
-  user?: Maybe<User>;
-  me?: Maybe<User>;
-  searchContent?: Maybe<Array<Maybe<SearchItem>>>;
+  user: User;
+  me: User;
+  searchContent: Array<SearchItem>;
+  reviews: ReviewCursor;
   isLoggedIn: Scalars['Boolean'];
   userData: User;
 };
@@ -204,16 +267,35 @@ export type QueryEpisodeArgs = {
   id?: Maybe<Scalars['ID']>;
 };
 
+export type QueryWatchesArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+  cursor?: Maybe<Scalars['String']>;
+};
+
 export type QueryWatchedArgs = {
   id: Scalars['ID'];
 };
 
 export type QueryUserArgs = {
-  id: Scalars['ID'];
+  id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type QuerySearchContentArgs = {
   title: Scalars['String'];
+};
+
+export type QueryReviewsArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type Rating = {
@@ -226,10 +308,13 @@ export type Rating = {
   updatedAt: Scalars['Float'];
   user?: Maybe<User>;
   watched?: Maybe<Watched>;
-  tvData?: Maybe<TvData>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
 };
 
 export type RatingInput = {
+  id?: Maybe<Scalars['ID']>;
   value: Scalars['Float'];
 };
 
@@ -239,12 +324,22 @@ export type Review = {
   body: Scalars['String'];
   tmdbId: Scalars['Int'];
   userId: Scalars['ID'];
-  user?: Maybe<User>;
-  watched?: Maybe<Watched>;
-  tvData?: Maybe<TvData>;
+  user: User;
+  watched: Watched;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
+
+export type ReviewCursor = {
+  __typename?: 'ReviewCursor';
+  reviews: Array<Review>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
 };
 
 export type ReviewInput = {
+  id?: Maybe<Scalars['ID']>;
   body: Scalars['String'];
 };
 
@@ -268,16 +363,16 @@ export type SearchItem = {
 export type Season = {
   __typename?: 'Season';
   id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  overview?: Maybe<Scalars['String']>;
-  air_date?: Maybe<Scalars['String']>;
-  episode_count?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  overview: Scalars['String'];
+  air_date: Scalars['String'];
+  episode_count: Scalars['Int'];
   poster_path?: Maybe<Scalars['String']>;
-  season_number?: Maybe<Scalars['Int']>;
-  tmdbId?: Maybe<Scalars['Int']>;
-  tvId?: Maybe<Scalars['ID']>;
-  tv?: Maybe<Tv>;
-  episodes?: Maybe<Array<Maybe<Episode>>>;
+  season_number: Scalars['Int'];
+  tmdbId: Scalars['Int'];
+  tvId: Scalars['ID'];
+  tv: Tv;
+  episodes: Array<Episode>;
 };
 
 export type Subscription = {
@@ -347,45 +442,50 @@ export type Tv = {
   backdrop_path?: Maybe<Scalars['String']>;
   created_by?: Maybe<Array<Maybe<Author>>>;
   episode_run_time?: Maybe<Array<Maybe<Scalars['Int']>>>;
-  first_air_date?: Maybe<Scalars['String']>;
+  first_air_date: Scalars['String'];
   genres?: Maybe<Array<Maybe<Genre>>>;
-  homepage?: Maybe<Scalars['String']>;
-  in_production?: Maybe<Scalars['Boolean']>;
+  homepage: Scalars['String'];
+  in_production: Scalars['Boolean'];
   languages?: Maybe<Array<Maybe<Scalars['String']>>>;
-  last_air_date?: Maybe<Scalars['String']>;
+  last_air_date: Scalars['String'];
   last_episode_to_air?: Maybe<Episode>;
-  name?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
   next_episode_to_air?: Maybe<Episode>;
   networks?: Maybe<Array<Maybe<Network>>>;
-  number_of_episodes?: Maybe<Scalars['Int']>;
-  number_of_seasons?: Maybe<Scalars['Int']>;
+  number_of_episodes: Scalars['Int'];
+  number_of_seasons: Scalars['Int'];
   origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
-  original_language?: Maybe<Scalars['String']>;
-  original_name?: Maybe<Scalars['String']>;
-  overview?: Maybe<Scalars['String']>;
-  popularity?: Maybe<Scalars['Int']>;
+  original_language: Scalars['String'];
+  original_name: Scalars['String'];
+  overview: Scalars['String'];
+  popularity: Scalars['Int'];
   poster_path?: Maybe<Scalars['String']>;
   production_companies?: Maybe<Array<Maybe<Company>>>;
-  seasons?: Maybe<Array<Maybe<Season>>>;
-  status?: Maybe<Scalars['String']>;
-  type?: Maybe<Scalars['String']>;
-  vote_average?: Maybe<Scalars['Float']>;
-  vote_count?: Maybe<Scalars['Int']>;
+  seasons: Array<Season>;
+  status: Scalars['String'];
+  type: Scalars['String'];
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
   tmdbId?: Maybe<Scalars['Int']>;
-  season?: Maybe<Array<Maybe<Season>>>;
-  watched?: Maybe<Array<Maybe<Watched>>>;
+  watched: WatchedCursor;
 };
 
-export type TvData = {
-  __typename?: 'TvData';
-  season?: Maybe<Scalars['Int']>;
-  episode?: Maybe<Scalars['Int']>;
+export type TvWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  filter?: Maybe<Scalars['String']>;
 };
 
 export type TvDataInput = {
-  episode?: Maybe<Scalars['Int']>;
-  season?: Maybe<Scalars['Int']>;
+  season?: Maybe<Scalars['String']>;
+  episode?: Maybe<Scalars['String']>;
 };
+
+export type TvItem = Season | Episode;
+
+export enum TvItemType {
+  Season = 'Season',
+  Episode = 'Episode',
+}
 
 export type User = {
   __typename?: 'User';
@@ -394,7 +494,11 @@ export type User = {
   email: Scalars['String'];
   createdAt: Scalars['Float'];
   updatedAt: Scalars['Float'];
-  watched?: Maybe<Array<Watched>>;
+  watched: WatchedCursor;
+};
+
+export type UserWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type UserInput = {
@@ -411,12 +515,21 @@ export type Watched = {
   createdAt: Scalars['Float'];
   updatedAt: Scalars['Float'];
   userId: Scalars['ID'];
-  user?: Maybe<User>;
+  user: User;
   itemType: ItemType;
-  item?: Maybe<Item>;
+  item: Item;
   rating?: Maybe<Rating>;
   review?: Maybe<Review>;
-  tvData?: Maybe<TvData>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
+
+export type WatchedCursor = {
+  __typename?: 'WatchedCursor';
+  watched: Array<Watched>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
 };
 
 export type LoginMutationVariables = {
@@ -458,48 +571,53 @@ export type SetUserDataMutation = { __typename?: 'Mutation' } & {
 
 export type AddWatchedMutationVariables = {
   itemId: Scalars['ID'];
-  mediaType: TmdbMediaType;
+  itemType: ItemType;
   createdAt: Scalars['Float'];
   rating?: Maybe<RatingInput>;
   review?: Maybe<ReviewInput>;
-  tvData?: Maybe<TvDataInput>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
 };
 
 export type AddWatchedMutation = { __typename?: 'Mutation' } & {
   addWatched: { __typename?: 'Watched' } & Pick<Watched, 'id' | 'itemType' | 'createdAt'> & {
       rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
       review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
-      tvData: Maybe<{ __typename?: 'TvData' } & Pick<TvData, 'season' | 'episode'>>;
     };
 };
 
-export type WatchedQueryVariables = {};
+export type AddAutoTrackedMutationVariables = {
+  meta: AutoTrackedMetaInput;
+  createdAt: Scalars['Float'];
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+};
 
-export type WatchedQuery = { __typename?: 'Query' } & {
-  allWatched: Maybe<Array<{ __typename?: 'Watched' } & Pick<Watched, 'id' | 'tmdbId'>>>;
+export type AddAutoTrackedMutation = { __typename?: 'Mutation' } & {
+  addAutoTracked: { __typename?: 'AutoTracked' } & Pick<AutoTracked, 'id'>;
 };
 
 export type UserWatchedQueryVariables = {
   id: Scalars['ID'];
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type UserWatchedQuery = { __typename?: 'Query' } & {
-  user: Maybe<
-    { __typename?: 'User' } & Pick<User, 'id' | 'name'> & {
-        watched: Maybe<
-          Array<
+  user: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & {
+      watched: { __typename?: 'WatchedCursor' } & Pick<WatchedCursor, 'cursor' | 'hasMore'> & {
+          watched: Array<
             { __typename?: 'Watched' } & Pick<Watched, 'id' | 'tmdbId' | 'createdAt' | 'itemType'> & {
                 rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
                 review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
-                item: Maybe<
+                item:
                   | ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title' | 'release_date' | 'poster_path'>)
-                  | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'>)
-                >;
+                  | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'>);
               }
-          >
-        >;
-      }
-  >;
+          >;
+        };
+    };
 };
 
 export type IsUserLoggedInQueryVariables = {};
@@ -517,8 +635,8 @@ export type SearchContentQueryVariables = {
 };
 
 export type SearchContentQuery = { __typename?: 'Query' } & {
-  searchContent: Maybe<
-    Array<Maybe<{ __typename?: 'SearchItem' } & Pick<SearchItem, 'id' | 'tmdbId' | 'title' | 'release_date' | 'type'>>>
+  searchContent: Array<
+    { __typename?: 'SearchItem' } & Pick<SearchItem, 'id' | 'tmdbId' | 'title' | 'release_date' | 'type'>
   >;
 };
 
@@ -527,21 +645,13 @@ export type TvQueryVariables = {
 };
 
 export type TvQuery = { __typename?: 'Query' } & {
-  tv: Maybe<
-    { __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'> & {
-        seasons: Maybe<
-          Array<
-            Maybe<
-              { __typename?: 'Season' } & Pick<Season, 'id' | 'name' | 'season_number' | 'episode_count'> & {
-                  episodes: Maybe<
-                    Array<Maybe<{ __typename?: 'Episode' } & Pick<Episode, 'id' | 'name' | 'episode_number'>>>
-                  >;
-                }
-            >
-          >
-        >;
-      }
-  >;
+  tv: { __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'> & {
+      seasons: Array<
+        { __typename?: 'Season' } & Pick<Season, 'id' | 'name' | 'season_number' | 'episode_count'> & {
+            episodes: Array<{ __typename?: 'Episode' } & Pick<Episode, 'id' | 'name' | 'episode_number'>>;
+          }
+      >;
+    };
 };
 
 export type MovieQueryVariables = {
@@ -549,7 +659,7 @@ export type MovieQueryVariables = {
 };
 
 export type MovieQuery = { __typename?: 'Query' } & {
-  movie: Maybe<{ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title' | 'release_date' | 'poster_path'>>;
+  movie: { __typename?: 'Movie' } & Pick<Movie, 'id' | 'title' | 'release_date' | 'poster_path'>;
 };
 
 export const LoginDocument = gql`
@@ -854,19 +964,21 @@ export type SetUserDataMutationOptions = ApolloReactCommon.BaseMutationOptions<
 export const AddWatchedDocument = gql`
   mutation AddWatched(
     $itemId: ID!
-    $mediaType: TmdbMediaType!
+    $itemType: ItemType!
     $createdAt: Float!
     $rating: RatingInput
     $review: ReviewInput
-    $tvData: TvDataInput
+    $tvItemId: ID
+    $tvItemType: TvItemType
   ) {
     addWatched(
       itemId: $itemId
-      mediaType: $mediaType
+      itemType: $itemType
+      createdAt: $createdAt
       rating: $rating
       review: $review
-      createdAt: $createdAt
-      tvData: $tvData
+      tvItemId: $tvItemId
+      tvItemType: $tvItemType
     ) {
       id
       itemType
@@ -876,10 +988,6 @@ export const AddWatchedDocument = gql`
       }
       review {
         body
-      }
-      tvData {
-        season
-        episode
       }
     }
   }
@@ -935,11 +1043,12 @@ export function withAddWatched<TProps, TChildProps = {}>(
  * const [addWatchedMutation, { data, loading, error }] = useAddWatchedMutation({
  *   variables: {
  *      itemId: // value for 'itemId'
- *      mediaType: // value for 'mediaType'
+ *      itemType: // value for 'itemType'
  *      createdAt: // value for 'createdAt'
  *      rating: // value for 'rating'
  *      review: // value for 'review'
- *      tvData: // value for 'tvData'
+ *      tvItemId: // value for 'tvItemId'
+ *      tvItemType: // value for 'tvItemType'
  *   },
  * });
  */
@@ -954,96 +1063,135 @@ export type AddWatchedMutationOptions = ApolloReactCommon.BaseMutationOptions<
   AddWatchedMutation,
   AddWatchedMutationVariables
 >;
-export const WatchedDocument = gql`
-  query Watched {
-    allWatched {
+export const AddAutoTrackedDocument = gql`
+  mutation AddAutoTracked(
+    $meta: AutoTrackedMetaInput!
+    $createdAt: Float!
+    $itemId: ID
+    $itemType: ItemType
+    $tvItemId: ID
+    $tvItemType: TvItemType
+  ) {
+    addAutoTracked(
+      meta: $meta
+      createdAt: $createdAt
+      itemId: $itemId
+      itemType: $itemType
+      tvItemId: $tvItemId
+      tvItemType: $tvItemType
+    ) {
       id
-      tmdbId
     }
   }
 `;
-export type WatchedComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<WatchedQuery, WatchedQueryVariables>,
-  'query'
+export type AddAutoTrackedMutationFn = ApolloReactCommon.MutationFunction<
+  AddAutoTrackedMutation,
+  AddAutoTrackedMutationVariables
+>;
+export type AddAutoTrackedComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<AddAutoTrackedMutation, AddAutoTrackedMutationVariables>,
+  'mutation'
 >;
 
-export const WatchedComponent = (props: WatchedComponentProps) => (
-  <ApolloReactComponents.Query<WatchedQuery, WatchedQueryVariables> query={WatchedDocument} {...props} />
+export const AddAutoTrackedComponent = (props: AddAutoTrackedComponentProps) => (
+  <ApolloReactComponents.Mutation<AddAutoTrackedMutation, AddAutoTrackedMutationVariables>
+    mutation={AddAutoTrackedDocument}
+    {...props}
+  />
 );
 
-export type WatchedProps<TChildProps = {}> = ApolloReactHoc.DataProps<WatchedQuery, WatchedQueryVariables> &
+export type AddAutoTrackedProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  AddAutoTrackedMutation,
+  AddAutoTrackedMutationVariables
+> &
   TChildProps;
-export function withWatched<TProps, TChildProps = {}>(
+export function withAddAutoTracked<TProps, TChildProps = {}>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
-    WatchedQuery,
-    WatchedQueryVariables,
-    WatchedProps<TChildProps>
+    AddAutoTrackedMutation,
+    AddAutoTrackedMutationVariables,
+    AddAutoTrackedProps<TChildProps>
   >,
 ) {
-  return ApolloReactHoc.withQuery<TProps, WatchedQuery, WatchedQueryVariables, WatchedProps<TChildProps>>(
-    WatchedDocument,
-    {
-      alias: 'watched',
-      ...operationOptions,
-    },
-  );
+  return ApolloReactHoc.withMutation<
+    TProps,
+    AddAutoTrackedMutation,
+    AddAutoTrackedMutationVariables,
+    AddAutoTrackedProps<TChildProps>
+  >(AddAutoTrackedDocument, {
+    alias: 'addAutoTracked',
+    ...operationOptions,
+  });
 }
 
 /**
- * __useWatchedQuery__
+ * __useAddAutoTrackedMutation__
  *
- * To run a query within a React component, call `useWatchedQuery` and pass it any options that fit your needs.
- * When your component renders, `useWatchedQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useAddAutoTrackedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddAutoTrackedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useWatchedQuery({
+ * const [addAutoTrackedMutation, { data, loading, error }] = useAddAutoTrackedMutation({
  *   variables: {
+ *      meta: // value for 'meta'
+ *      createdAt: // value for 'createdAt'
+ *      itemId: // value for 'itemId'
+ *      itemType: // value for 'itemType'
+ *      tvItemId: // value for 'tvItemId'
+ *      tvItemType: // value for 'tvItemType'
  *   },
  * });
  */
-export function useWatchedQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<WatchedQuery, WatchedQueryVariables>) {
-  return ApolloReactHooks.useQuery<WatchedQuery, WatchedQueryVariables>(WatchedDocument, baseOptions);
-}
-export function useWatchedLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<WatchedQuery, WatchedQueryVariables>,
+export function useAddAutoTrackedMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<AddAutoTrackedMutation, AddAutoTrackedMutationVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<WatchedQuery, WatchedQueryVariables>(WatchedDocument, baseOptions);
+  return ApolloReactHooks.useMutation<AddAutoTrackedMutation, AddAutoTrackedMutationVariables>(
+    AddAutoTrackedDocument,
+    baseOptions,
+  );
 }
-export type WatchedQueryHookResult = ReturnType<typeof useWatchedQuery>;
-export type WatchedLazyQueryHookResult = ReturnType<typeof useWatchedLazyQuery>;
-export type WatchedQueryResult = ApolloReactCommon.QueryResult<WatchedQuery, WatchedQueryVariables>;
+export type AddAutoTrackedMutationHookResult = ReturnType<typeof useAddAutoTrackedMutation>;
+export type AddAutoTrackedMutationResult = ApolloReactCommon.MutationResult<AddAutoTrackedMutation>;
+export type AddAutoTrackedMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddAutoTrackedMutation,
+  AddAutoTrackedMutationVariables
+>;
 export const UserWatchedDocument = gql`
-  query UserWatched($id: ID!) {
+  query UserWatched($id: ID!, $cursor: String) {
     user(id: $id) {
       id
       name
-      watched {
-        id
-        tmdbId
-        createdAt
-        rating {
-          value
-        }
-        review {
-          body
-        }
-        itemType
-        item {
-          ... on Movie {
-            id
-            title
-            release_date
-            poster_path
+      watched(cursor: $cursor) {
+        cursor
+        hasMore
+        watched {
+          id
+          tmdbId
+          createdAt
+          rating {
+            value
           }
-          ... on Tv {
-            id
-            name
-            first_air_date
-            poster_path
+          review {
+            body
+          }
+          itemType
+          item {
+            ... on Movie {
+              id
+              title
+              release_date
+              poster_path
+            }
+            ... on Tv {
+              id
+              name
+              first_air_date
+              poster_path
+            }
           }
         }
       }
@@ -1092,6 +1240,7 @@ export function withUserWatched<TProps, TChildProps = {}>(
  * const { data, loading, error } = useUserWatchedQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */

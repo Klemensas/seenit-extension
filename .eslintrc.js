@@ -22,7 +22,9 @@ module.exports = {
   'rules': {
     '@typescript-eslint/indent': false,
     '@typescript-eslint/explicit-function-return-type': false,
-    "@typescript-eslint/camelcase": ["error", { "ignoreDestructuring": "true" }],
+    "@typescript-eslint/camelcase": ["error", {
+      "ignoreDestructuring": "true"
+    }],
     '@typescript-eslint/no-parameter-properties': false,
     '@typescript-eslint/explicit-member-accessibility': false,
 
@@ -31,8 +33,12 @@ module.exports = {
       'controlComponents': ['Flatpickr']
     }],
 
-    'react/jsx-filename-extension': [1, { 'extensions': ['.tsx'] }],
+    'react/jsx-filename-extension': [1, {
+      'extensions': ['.tsx']
+    }],
     'react/prop-types': false,
+
+    'import/prefer-default-export': 'off',
   },
   'settings': {
     'import/resolver': {

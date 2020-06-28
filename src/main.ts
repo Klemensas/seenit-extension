@@ -8,7 +8,7 @@ export interface Settings {
 
 export const settings: Settings = {
   debug: true,
-  popup: true,
+  popup: false,
   blacklist: [
     /* eslint-disable no-useless-escape */
     '^.*://.*facebook..*',

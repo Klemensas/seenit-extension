@@ -7,10 +7,30 @@ import { apolloClient } from '../apollo';
 import { settingPromise, settings } from '../main';
 import Content from './Content';
 import RenderService, { VideoData } from './renderService';
+import { AddAutoTrackedDocument } from '../graphql';
 
 const render = async (videoData: VideoData) => {
   await settingPromise;
+
   if (!settings.popup) {
+    apolloClient.mutate({
+      mutation: AddAutoTrackedDocument,
+      variables: {
+        createdAt: Date.now(),
+        meta: {
+          title: videoData.title.name,
+          tvData:
+            videoData.title.season || videoData.title.episode
+              ? {
+                  season: videoData.title.season,
+                  episode: videoData.title.episode,
+                }
+              : null,
+          url: window.location.href,
+          provider: 'extension',
+        },
+      },
+    });
     return;
   }
 

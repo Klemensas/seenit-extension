@@ -5,7 +5,7 @@ import Rating from 'react-rating';
 import { FormGroup, TextArea, Button, Intent } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 
-import { TmdbMediaType, MovieQuery, AddWatchedMutation, AddWatchedMutationVariables } from '../graphql';
+import { MovieQuery, AddWatchedMutation, AddWatchedMutationVariables, ItemType } from '../graphql';
 
 interface Props {
   item: MovieQuery['movie'];
@@ -36,7 +36,7 @@ const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
             variables: {
               ...values,
               itemId: item.id,
-              mediaType: TmdbMediaType.Movie,
+              itemType: ItemType.Movie,
               rating: values.rating
                 ? {
                     value: values.rating,

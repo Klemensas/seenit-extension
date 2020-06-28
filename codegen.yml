@@ -6,10 +6,10 @@ documents: src/**/*.graphql
 generates:
   src/graphql/index.tsx:
     plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
     config:
       withHooks: true
   src/graphql/fragments.ts:
-      - "fragment-matcher"
+    - 'fragment-matcher'

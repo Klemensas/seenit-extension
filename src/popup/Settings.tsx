@@ -1,24 +1,24 @@
 import * as React from 'react';
-import { Formik, FormikActions } from 'formik';
-import { Switch, Button } from '@blueprintjs/core';
+import { Formik, FormikHelpers } from 'formik';
+import { Switch, Button, H3 } from '@blueprintjs/core';
 
 import { settings, Settings as SettingModel } from '../main';
 import { updateStorage } from '../browserService';
 import InputList from './InputList';
 
-const submitForm = (values: SettingModel, actions: FormikActions<SettingModel>) =>
+const submitForm = (values: SettingModel, actions: FormikHelpers<SettingModel>) =>
   updateStorage({ settings: values }).then(() => actions.setSubmitting(false));
 
 const Settings = () => {
   return (
     <React.Fragment>
-      <h3 className="bp3-heading">Settings</h3>
+      <H3>Settings</H3>
       <Formik enableReinitialize initialValues={{ ...settings }} onSubmit={submitForm}>
         {({ values, handleSubmit, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
             <Switch
               id="popup-switch"
-              label="Show popup after finishing a video"
+              label="Automatically track finished videos without popup"
               checked={values.popup}
               onChange={() => setFieldValue('popup', !values.popup)}
             />

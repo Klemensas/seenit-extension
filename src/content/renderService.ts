@@ -208,7 +208,13 @@ export default class RenderService {
       return null;
     }
 
-    const name = title.textContent;
+    const name = title.textContent
+      .toLowerCase()
+      .replace(/[^\w\d\s]/g, '')
+      .replace(/s(eason|eries)?\s?(\d+)\s?e(p|pisode)?\s?(\d+)/m, '')
+      .slice(0, 100)
+      .trim();
+
     return {
       name,
       ...RenderService.extractSeasonFromElement(title),
@@ -236,7 +242,7 @@ export default class RenderService {
       titleParent = title;
     }
 
-    const match = titleParent.textContent.match(/(s(eason|eries)?\s?(\d+)).?(e(pisode)?\s?(\d+))/im);
+    const match = titleParent.textContent.match(/(s(eason|eries)?[^\w\d]*(\d+))[^\w\d]*(e(p|pisode)?[^\w\d]*(\d+))/im);
     if (!match) {
       return null;
     }
