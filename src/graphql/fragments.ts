@@ -26,6 +26,18 @@ const result: IntrospectionResultData = {
       },
       {
         kind: 'UNION',
+        name: 'TvItem',
+        possibleTypes: [
+          {
+            name: 'Season',
+          },
+          {
+            name: 'Episode',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
         name: 'TmdbMedia',
         possibleTypes: [
           {

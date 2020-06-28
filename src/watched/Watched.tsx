@@ -15,9 +15,10 @@ export default function Watched(): React.ReactElement {
   }
 
   const { watched } = data.user;
+
   return (
     <div className="watched-wrapper" style={{ display: 'flex' }}>
-      {watched.map(({ item }) => (
+      {watched.watched.map(({ item }) => (
         <div key={item.id} style={{ position: 'relative', minWidth: 154 }}>
           <div
             style={{
