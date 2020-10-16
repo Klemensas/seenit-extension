@@ -69,7 +69,7 @@
   "dependencies": {
     "@blueprintjs/core": "^3.21.0",
     "@blueprintjs/datetime": "^3.14.0",
-    "@blueprintjs/select": "^3.11.1",
+    "@blueprintjs/select": "^3.14.3",
     "@graphql-codegen/cli": "^1.8.3",
     "@types/graphql": "^14.5.0",
     "@types/react-select": "^3.0.8",
