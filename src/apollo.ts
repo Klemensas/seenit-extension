@@ -49,6 +49,7 @@ const errorLink = onError(({ graphQLErrors }) => {
             },
           });
           updateStorage({ token: null });
+          debugLog('unauthenticated');
           return;
         default:
           debugLog('uhh interesting error', err);
