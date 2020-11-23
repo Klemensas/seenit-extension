@@ -1,22 +1,22 @@
 import * as React from 'react';
 
-import { useAddWatchedMutation, useTvQuery, TmdbMediaType, useMovieQuery } from '../graphql';
+import { useAddWatchedMutation, useTvQuery, useMovieQuery, ItemType } from '../graphql';
 import WatchedMovieForm from './WatchedMovieForm';
 import WatchedTvForm from './WatchedTvForm';
 
 interface TypeParams {
-  [TmdbMediaType.Movie]: [typeof useMovieQuery, string, typeof WatchedMovieForm];
-  [TmdbMediaType.Tv]: [typeof useTvQuery, string, typeof WatchedTvForm];
+  [ItemType.Movie]: [typeof useMovieQuery, string, typeof WatchedMovieForm];
+  [ItemType.Tv]: [typeof useTvQuery, string, typeof WatchedTvForm];
 }
 
 const typeParams: TypeParams = {
-  [TmdbMediaType.Movie]: [useMovieQuery, 'movie', WatchedMovieForm],
-  [TmdbMediaType.Tv]: [useTvQuery, 'tv', WatchedTvForm],
+  [ItemType.Movie]: [useMovieQuery, 'movie', WatchedMovieForm],
+  [ItemType.Tv]: [useTvQuery, 'tv', WatchedTvForm],
 };
 
 const WatchedForm: React.FC<{
   id: string;
-  type: TmdbMediaType;
+  type: ItemType;
   season?: number;
   episode?: number;
   onSave?: () => void;

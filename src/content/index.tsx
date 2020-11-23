@@ -4,15 +4,15 @@ import * as ReactDOM from 'react-dom';
 import { MemoryRouter } from 'react-router';
 
 import { apolloClient } from '../apollo';
-import { settingPromise, settings } from '../main';
+import { getSettings } from '../main';
 import Content from './Content';
 import RenderService, { VideoData } from './renderService';
 import { AddAutoTrackedDocument } from '../graphql';
 
 const render = async (videoData: VideoData) => {
-  await settingPromise;
+  const settings = await getSettings();
 
-  if (!settings.popup) {
+  if (settings.extension.autoTrack) {
     apolloClient.mutate({
       mutation: AddAutoTrackedDocument,
       variables: {

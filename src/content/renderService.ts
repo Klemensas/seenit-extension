@@ -1,4 +1,4 @@
-import { debugLog, settings } from '../main';
+import { debugLog, getSettings } from '../main';
 
 export interface RenderServiceState {
   mutationObserver: MutationObserver;
@@ -121,16 +121,16 @@ export default class RenderService {
   private registerVideo(videoEl: HTMLVideoElement) {
     this.state.videoEl = videoEl;
 
-    videoEl.addEventListener('play', event => {
+    videoEl.addEventListener('play', (event) => {
       debugLog('play', event);
       this.onVideoPlay(this.state.videoEl, event);
     });
-    videoEl.addEventListener('pause', event => {
+    videoEl.addEventListener('pause', (event) => {
       debugLog('pause', event);
       this.onVideoPause(this.state.videoEl);
     });
     // Endedd triggers pause on netflix, does it everywhere?
-    videoEl.addEventListener('ended', event => {
+    videoEl.addEventListener('ended', (event) => {
       debugLog('ended', event);
       this.onVideoEnd(this.state.videoEl);
     });
@@ -190,9 +190,10 @@ export default class RenderService {
     };
   }
 
-  private triggerCb(videoData: VideoData) {
+  private async triggerCb(videoData: VideoData) {
+    const settings = await getSettings();
     debugLog('pause video');
-    if (settings.blacklist.every(item => !new RegExp(item, 'i').test(window.location.href))) {
+    if (settings.extension.blacklist.every((item) => !new RegExp(item, 'i').test(window.location.href))) {
       this.cb(videoData);
     }
   }
@@ -201,7 +202,7 @@ export default class RenderService {
     const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
     const potentialTitles = Array.from(headings)
       .sort((a, b) => +a.tagName.slice(1) - +b.tagName.slice(1))
-      .filter(node => RenderService.isValidNode(node));
+      .filter((node) => RenderService.isValidNode(node));
     const title = potentialTitles[0];
 
     if (!title) {

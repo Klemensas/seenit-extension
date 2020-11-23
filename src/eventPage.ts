@@ -11,16 +11,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return isResponseAsync;
 });
 
-const state = {
-  token: null,
-};
-const tokenLoadPromise = new Promise(resolve => {
-  chrome.storage.sync.get(['token'], token => {
-    state.token = token;
-    resolve(token);
-  });
-});
-
 const eventList = [
   'onBeforeNavigate',
   'onCreatedNavigationTarget',
@@ -33,16 +23,13 @@ const eventList = [
   'onHistoryStateUpdated',
 ];
 
-// const state = {
-//   tabChangeCallbacks: [],
-// }
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   // Listen only to complete status
   if (!changeInfo || changeInfo.status !== 'complete') {
     return;
   }
 
-  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (!tabs || !tabs.length) {
       return;
     }
@@ -56,12 +43,12 @@ function setupVideoContentPort(port: chrome.runtime.Port) {
 }
 
 function setupIframeContentPort(port: chrome.runtime.Port) {
-  port.onMessage.addListener(message => {
+  port.onMessage.addListener((message) => {
     chrome.tabs.sendMessage(port.sender.tab.id, message);
   });
 }
 
-chrome.runtime.onConnect.addListener(port => {
+chrome.runtime.onConnect.addListener((port) => {
   switch (port.name) {
     case 'videoContent': {
       setupVideoContentPort(port);

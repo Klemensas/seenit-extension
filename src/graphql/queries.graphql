@@ -45,6 +45,16 @@ query UserData {
     name
     email
     createdAt
+    settings {
+      general {
+        autoConvert
+      }
+      extension {
+        autoTrack
+        minLengthSeconds
+        blacklist
+      }
+    }
   }
 }
 
@@ -84,5 +94,37 @@ query Movie($id: ID!) {
     title
     release_date
     poster_path
+  }
+}
+
+query Settings {
+  settings {
+    general {
+      autoConvert
+    }
+    extension {
+      autoTrack
+      minLengthSeconds
+      blacklist
+    }
+  }
+}
+
+query Me {
+  me {
+    id
+    name
+    email
+    createdAt
+    settings {
+      general {
+        autoConvert
+      }
+      extension {
+        autoTrack
+        minLengthSeconds
+        blacklist
+      }
+    }
   }
 }
