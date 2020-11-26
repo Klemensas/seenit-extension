@@ -44,8 +44,8 @@ mutation Register($name: String!, $email: String!, $password: String!) {
   }
 }
 
-mutation SetIsLoggedIn($isLoggedIn: Boolean!) {
-  setIsLoggedIn(isLoggedIn: $isLoggedIn) @client
+mutation Logout {
+  logout @client
 }
 
 mutation SetUserData($userData: UserInput!) {
@@ -104,6 +104,27 @@ mutation AddAutoTracked(
     tvItemType: $tvItemType
   ) {
     id
+    tvItem {
+      ... on Season {
+        season_number
+      }
+      ... on Episode {
+        episode_number
+        season {
+          season_number
+        }
+      }
+    }
+    item {
+      ... on Movie {
+        id
+        title
+      }
+      ... on Tv {
+        id
+        name
+      }
+    }
   }
 }
 

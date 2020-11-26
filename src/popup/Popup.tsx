@@ -4,15 +4,14 @@ import { NavLink, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { Navbar, Alignment, Button } from '@blueprintjs/core';
 
-import { useSetIsLoggedInMutation } from '../graphql';
+import { useLogoutMutation } from '../graphql';
 import Login from '../auth/Login';
 import AuthRoute from '../components/AuthRoute';
 import RecentWatched from './RecentWatched';
 import Settings from './Settings';
-
-import '../styles/main.scss';
-import './Popup.scss';
 import { isProduction } from '../utils/helpers';
+
+import './Popup.scss';
 
 export function Logo() {
   return (
@@ -27,9 +26,7 @@ export function Logo() {
 }
 
 export default function Popup() {
-  const [setLoggedIn] = useSetIsLoggedInMutation({
-    variables: { isLoggedIn: false },
-  });
+  const [logout] = useLogoutMutation();
 
   return (
     <React.Fragment>
@@ -50,7 +47,7 @@ export default function Popup() {
           <Navbar.Group align={Alignment.RIGHT}>
             <Navbar.Divider />
             {!isProduction && <Button minimal icon="refresh" onClick={() => chrome.runtime.reload()} />}
-            <Button minimal icon="log-out" onClick={() => setLoggedIn()} />
+            <Button minimal icon="log-out" onClick={() => logout()} />
           </Navbar.Group>
         </Navbar>
       </div>

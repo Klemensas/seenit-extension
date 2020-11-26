@@ -49,6 +49,7 @@ const errorLink = onError(({ graphQLErrors }) => {
             },
           });
           updateStorage({ token: null, userData: null });
+          chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
 
           debugLog('unauthenticated');
           return;

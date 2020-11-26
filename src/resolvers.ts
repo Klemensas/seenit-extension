@@ -11,10 +11,13 @@ export const typeDefs = gql`
 
 export const resolvers: Resolvers = {
   Mutation: {
-    setIsLoggedIn: (root, { isLoggedIn }, { cache }) => {
-      updateStorage({ token: null });
-      cache.writeData({ data: { isLoggedIn } });
-      return isLoggedIn;
+    logout: (root, variables, { cache }) => {
+      updateStorage({ token: null, userData: null });
+      cache.writeData({ data: { isLoggedIn: false, userData: null } });
+
+      chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
+
+      return true;
     },
   },
   // Query: {

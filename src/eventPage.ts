@@ -1,14 +1,23 @@
+import { getStorageValue } from './browserService';
 import { debugLog } from './main';
 
 // Listen to messages sent from other parts of the extension.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // onMessage must return "true" if response is async.
   const isResponseAsync = false;
-  if (request.popupMounted) {
-    debugLog('eventPage notified that Popup.tsx has mounted.');
-  }
+  if (request.popupMounted) debugLog('eventPage notified that Popup.tsx has mounted.');
+
+  if (request.loggedIn) chrome.browserAction.setIcon({ path: 'icon48.png' });
 
   return isResponseAsync;
+});
+
+chrome.runtime.onInstalled.addListener(async (event) => {
+  // chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
+
+  const { token } = await getStorageValue<{ token: string | null }>('token');
+
+  if (!token) chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
 });
 
 const eventList = [
@@ -64,12 +73,3 @@ chrome.runtime.onConnect.addListener((port) => {
       break;
   }
 });
-
-// eventList.forEach(function(e) {
-//   chrome.webNavigation[e].addListener(function(data) {
-//     if (typeof data)
-//       debugLog(chrome.i18n.getMessage('inHandler'), e, data);
-//     else
-//       debugLog(chrome.i18n.getMessage('inHandlerError'), e);
-//   });
-// });

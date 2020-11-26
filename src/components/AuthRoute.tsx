@@ -16,5 +16,5 @@ export default function AuthRoute({
         return <Route {...rest} render={() => (data.isLoggedIn ? <Component /> : <Redirect to="/login" />)} />;
       }}
     </IsUserLoggedInComponent>
-  )
+  );
 }
