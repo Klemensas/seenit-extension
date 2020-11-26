@@ -1,6 +1,9 @@
 @import '~@blueprintjs/core/src/common/variables';
 
 #seenit-container {
+  @import '../styles/main';
+  @import '../styles/blueprint-overrides';
+
   &.popup-container {
     position: fixed;
     bottom: 5vmin;

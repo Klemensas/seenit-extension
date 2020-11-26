@@ -1,102 +1,98 @@
-#seenit-container {
-  @import '~@blueprintjs/core/src/common/variables';
-  @import '~@blueprintjs/core/src/common/colors';
+@import '~@blueprintjs/core/src/blueprint';
 
-  @import '~@blueprintjs/core/src/reset';
-  @import '~@blueprintjs/core/src/typography';
-  @import '~@blueprintjs/core/src/accessibility';
-  @import '~@blueprintjs/core/src/components/index';
+@import '~@blueprintjs/datetime/lib/css/blueprint-datetime.css';
+@import '~@blueprintjs/select/lib/css/blueprint-select.css';
 
-  @import '~@blueprintjs/datetime/lib/css/blueprint-datetime.css';
-  @import '~@blueprintjs/select/lib/css/blueprint-select.css';
+.seenit-logo {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 700;
 
-  @import 'blueprint-overrides';
+  .logo-eyes {
+    display: inline-flex;
+    font-size: 15px;
+    margin-top: -2px;
+    transform: rotateY(180deg);
+  }
+}
 
-  .seenit-logo {
-    display: flex;
+.select-popover-centered {
+  position: relative;
+
+  .bp3-transition-container,
+  .bp3-select-popover {
+    width: 100%;
+  }
+}
+
+.bp3-progress-bar {
+  color: red;
+
+  &--custom {
+    height: 4px;
+
+    .bp3-progress-meter {
+      transition: auto;
+    }
+  }
+}
+
+.flex {
+  display: flex;
+
+  &-between {
+    justify-content: space-between;
+  }
+
+  &-direction-column {
+    flex-direction: column;
+  }
+
+  &-align-items-center {
     align-items: center;
-    font-size: 18px;
-    font-weight: 700;
+  }
+}
 
-    .logo-eyes {
-      display: inline-flex;
-      font-size: 15px;
-      margin-top: -2px;
-      transform: rotateY(180deg);
-    }
+$spacing-unit: 4px;
+.pb {
+  &-1 {
+    padding-bottom: $spacing-unit;
   }
 
-  .select-popover-centered {
-    position: relative;
-
-    .bp3-transition-container,
-    .bp3-select-popover {
-      width: 100%;
-    }
+  &-2 {
+    padding-bottom: $spacing-unit * 2;
   }
 
-  .bp3-progress-bar {
-    color: red;
-
-    &--custom {
-      height: 4px;
-
-      .bp3-progress-meter {
-        transition: auto;
-      }
-    }
+  &-3 {
+    padding-bottom: $spacing-unit * 4;
   }
 
-  .flex {
-    display: flex;
+  &-4 {
+    padding-bottom: $spacing-unit * 8;
+  }
+}
 
-    &-between {
-      justify-content: space-between;
-    }
-
-    &-direction-column {
-      flex-direction: column;
-    }
-
-    &-align-items-center {
-      align-items: center;
-    }
+.mb {
+  &-1 {
+    margin-bottom: $spacing-unit;
   }
 
-  $spacing-unit: 4px;
-  .pb {
-    &-1 {
-      padding-bottom: $spacing-unit;
-    }
-
-    &-2 {
-      padding-bottom: $spacing-unit * 2;
-    }
-
-    &-3 {
-      padding-bottom: $spacing-unit * 4;
-    }
-
-    &-4 {
-      padding-bottom: $spacing-unit * 8;
-    }
+  &-2 {
+    margin-bottom: $spacing-unit * 2;
   }
 
-  .mb {
-    &-1 {
-      margin-bottom: $spacing-unit;
-    }
-
-    &-2 {
-      margin-bottom: $spacing-unit * 2;
-    }
-
-    &-3 {
-      margin-bottom: $spacing-unit * 4;
-    }
-
-    &-4 {
-      margin-bottom: $spacing-unit * 8;
-    }
+  &-3 {
+    margin-bottom: $spacing-unit * 4;
   }
+
+  &-4 {
+    margin-bottom: $spacing-unit * 8;
+  }
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

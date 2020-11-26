@@ -4,6 +4,9 @@ $primary-color: darkblue;
 $background-color: #fefefe;
 
 #seenit-container {
+  @import '../styles/main';
+  @import '../styles/blueprint-overrides';
+
   margin: 0;
   min-width: 400px;
 

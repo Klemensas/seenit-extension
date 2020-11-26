@@ -5,6 +5,7 @@ import * as ApolloReactComponents from '@apollo/react-components';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -17,154 +18,86 @@ export type Scalars = {
   Upload: any;
 };
 
-export type Author = {
-  __typename?: 'Author';
-  id?: Maybe<Scalars['Int']>;
-  credit_id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  gender?: Maybe<Scalars['Int']>;
-  profile_path?: Maybe<Scalars['String']>;
-};
-
-export type AutoTracked = {
-  __typename?: 'AutoTracked';
-  id: Scalars['ID'];
-  userId: Scalars['ID'];
-  user: User;
-  itemType?: Maybe<ItemType>;
-  item?: Maybe<Item>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-  meta: AutoTrackedMeta;
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-};
-
-export type AutoTrackedCursor = {
-  __typename?: 'AutoTrackedCursor';
-  autoTracked: Array<AutoTracked>;
-  cursor?: Maybe<Scalars['String']>;
-  hasMore: Scalars['Boolean'];
-};
-
-export type AutoTrackedMeta = {
-  __typename?: 'AutoTrackedMeta';
-  title?: Maybe<Scalars['String']>;
-  tvData?: Maybe<AutoTrackedMetaTvData>;
-  filename?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  provider: Scalars['String'];
-};
-
-export type AutoTrackedMetaInput = {
-  title?: Maybe<Scalars['String']>;
-  tvData?: Maybe<TvDataInput>;
-  filename?: Maybe<Scalars['String']>;
-  url?: Maybe<Scalars['String']>;
-  provider: Scalars['String'];
-};
-
-export type AutoTrackedMetaTvData = {
-  __typename?: 'AutoTrackedMetaTvData';
-  season?: Maybe<Scalars['String']>;
-  episode?: Maybe<Scalars['String']>;
-};
-
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
-}
-
-export type Collection = {
-  __typename?: 'Collection';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  poster_path?: Maybe<Scalars['String']>;
-  backdrop_path?: Maybe<Scalars['String']>;
-};
-
-export type Company = {
-  __typename?: 'Company';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  logo_path?: Maybe<Scalars['String']>;
-  origin_country?: Maybe<Scalars['String']>;
-};
-
-export type ConvertedAutoTracked = {
-  __typename?: 'ConvertedAutoTracked';
-  removedIds: Array<Scalars['ID']>;
-  watched: Array<Watched>;
-};
-
-export type Country = {
-  __typename?: 'Country';
-  iso_3166_1?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type Episode = {
-  __typename?: 'Episode';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  overview: Scalars['String'];
-  episode_number: Scalars['Int'];
-  air_date?: Maybe<Scalars['String']>;
-  production_code?: Maybe<Scalars['String']>;
-  still_path?: Maybe<Scalars['String']>;
-  vote_average: Scalars['Float'];
-  vote_count: Scalars['Int'];
-  tmdbId: Scalars['Int'];
-  seasonId: Scalars['ID'];
+export type Query = {
+  __typename?: 'Query';
+  _?: Maybe<Scalars['Boolean']>;
+  autoTracked: AutoTracked;
+  autoTrackedList: AutoTrackedCursor;
+  episode: Episode;
+  isLoggedIn: Scalars['Boolean'];
+  me: User;
+  movie: Movie;
+  reviews: ReviewCursor;
+  searchContent: Array<SearchItem>;
   season: Season;
-};
-
-export type ExtensionSettings = {
-  __typename?: 'ExtensionSettings';
-  autoTrack: Scalars['Boolean'];
-  minLengthSeconds: Scalars['Int'];
-  blacklist: Array<Scalars['String']>;
-};
-
-export type ExtensionSettingsInput = {
-  autoTrack: Scalars['Boolean'];
-  minLengthSeconds: Scalars['Int'];
-  blacklist: Array<Scalars['String']>;
-};
-
-export type GeneralSettings = {
-  __typename?: 'GeneralSettings';
-  autoConvert: Scalars['Boolean'];
-};
-
-export type GeneralSettingsInput = {
-  autoConvert: Scalars['Boolean'];
-};
-
-export type Genre = {
-  __typename?: 'Genre';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type Item = Movie | Tv;
-
-export enum ItemType {
-  Movie = 'Movie',
-  Tv = 'Tv',
-}
-
-export type Language = {
-  __typename?: 'Language';
-  iso_639_1?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-};
-
-export type LocalAuth = {
-  __typename?: 'LocalAuth';
+  seasons: Array<Season>;
+  settings?: Maybe<Settings>;
+  tv: Tv;
   user: User;
-  token: Scalars['String'];
+  userData: User;
+  users?: Maybe<Array<User>>;
+  watched: Watched;
+  watches: WatchedCursor;
+};
+
+export type QueryAutoTrackedArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryAutoTrackedListArgs = {
+  userId: Scalars['ID'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
+export type QueryEpisodeArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QueryMovieArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QueryReviewsArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+  cursor?: Maybe<Scalars['String']>;
+};
+
+export type QuerySearchContentArgs = {
+  title: Scalars['String'];
+};
+
+export type QuerySeasonArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QuerySeasonsArgs = {
+  itemId: Scalars['ID'];
+};
+
+export type QueryTvArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+export type QueryUserArgs = {
+  id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type QueryWatchedArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryWatchesArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type Movie = {
@@ -203,252 +136,77 @@ export type MovieWatchedArgs = {
   filter?: Maybe<Scalars['String']>;
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  _?: Maybe<Scalars['Boolean']>;
-  addWatched: Watched;
-  editWatched: Watched;
-  removeWatched: Scalars['ID'];
-  register: LocalAuth;
-  login: LocalAuth;
-  addAutoTracked: AutoTracked;
-  removeAutoTracked: Array<Scalars['ID']>;
-  convertAutoTracked: ConvertedAutoTracked;
-  updateSettings: Settings;
-  setIsLoggedIn: Scalars['Boolean'];
-  setUserData: User;
+export type Collection = {
+  __typename?: 'Collection';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  poster_path?: Maybe<Scalars['String']>;
+  backdrop_path?: Maybe<Scalars['String']>;
 };
 
-export type MutationAddWatchedArgs = {
-  itemId: Scalars['ID'];
-  itemType: ItemType;
-  rating?: Maybe<RatingInput>;
-  review?: Maybe<ReviewInput>;
-  createdAt?: Maybe<Scalars['Float']>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItemType?: Maybe<TvItemType>;
-  autoTrackedId?: Maybe<Scalars['ID']>;
+export type Genre = {
+  __typename?: 'Genre';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
 };
 
-export type MutationEditWatchedArgs = {
-  id: Scalars['ID'];
-  createdAt?: Maybe<Scalars['Float']>;
-  rating?: Maybe<RatingInput>;
-  review?: Maybe<ReviewInput>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItemType?: Maybe<TvItemType>;
-};
-
-export type MutationRemoveWatchedArgs = {
-  itemId: Scalars['ID'];
-};
-
-export type MutationRegisterArgs = {
-  name: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type MutationLoginArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type MutationAddAutoTrackedArgs = {
-  meta: AutoTrackedMetaInput;
-  createdAt: Scalars['Float'];
-  itemId?: Maybe<Scalars['ID']>;
-  itemType?: Maybe<ItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItemType?: Maybe<TvItemType>;
-};
-
-export type MutationRemoveAutoTrackedArgs = {
-  ids: Array<Scalars['ID']>;
-};
-
-export type MutationConvertAutoTrackedArgs = {
-  ids: Array<Scalars['ID']>;
-};
-
-export type MutationUpdateSettingsArgs = {
-  general: GeneralSettingsInput;
-  extension: ExtensionSettingsInput;
-};
-
-export type MutationSetIsLoggedInArgs = {
-  isLoggedIn: Scalars['Boolean'];
-};
-
-export type MutationSetUserDataArgs = {
-  userData: UserInput;
-};
-
-export type Network = {
-  __typename?: 'Network';
+export type Company = {
+  __typename?: 'Company';
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
   logo_path?: Maybe<Scalars['String']>;
   origin_country?: Maybe<Scalars['String']>;
 };
 
-export type Query = {
-  __typename?: 'Query';
-  _?: Maybe<Scalars['Boolean']>;
-  movie: Movie;
-  tv: Tv;
-  season: Season;
-  seasons: Array<Season>;
-  episode: Episode;
-  watches: WatchedCursor;
-  watched: Watched;
-  users?: Maybe<Array<User>>;
-  user: User;
-  me: User;
-  searchContent: Array<SearchItem>;
-  reviews: ReviewCursor;
-  autoTrackedList: AutoTrackedCursor;
-  autoTracked: AutoTracked;
-  settings?: Maybe<Settings>;
-  isLoggedIn: Scalars['Boolean'];
-  userData: User;
-};
-
-export type QueryMovieArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type QueryTvArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type QuerySeasonArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type QuerySeasonsArgs = {
-  itemId: Scalars['ID'];
-};
-
-export type QueryEpisodeArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-export type QueryWatchesArgs = {
-  userId?: Maybe<Scalars['ID']>;
-  itemId?: Maybe<Scalars['ID']>;
-  itemType?: Maybe<ItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItemType?: Maybe<TvItemType>;
-  cursor?: Maybe<Scalars['String']>;
-};
-
-export type QueryWatchedArgs = {
-  id: Scalars['ID'];
-};
-
-export type QueryUserArgs = {
-  id?: Maybe<Scalars['ID']>;
+export type Country = {
+  __typename?: 'Country';
+  iso_3166_1?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
 };
 
-export type QuerySearchContentArgs = {
-  title: Scalars['String'];
+export type Language = {
+  __typename?: 'Language';
+  iso_639_1?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
 };
 
-export type QueryReviewsArgs = {
-  userId?: Maybe<Scalars['ID']>;
-  itemId?: Maybe<Scalars['ID']>;
-  itemType?: Maybe<ItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItemType?: Maybe<TvItemType>;
-  cursor?: Maybe<Scalars['String']>;
-};
-
-export type QueryAutoTrackedListArgs = {
-  userId: Scalars['ID'];
-  cursor?: Maybe<Scalars['String']>;
-};
-
-export type QueryAutoTrackedArgs = {
-  id: Scalars['ID'];
-};
-
-export type Rating = {
-  __typename?: 'Rating';
-  id: Scalars['ID'];
-  value: Scalars['Float'];
-  tmdbId: Scalars['Int'];
-  userId: Scalars['ID'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  user?: Maybe<User>;
-  watched?: Maybe<Watched>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
-export type RatingInput = {
-  id?: Maybe<Scalars['ID']>;
-  value: Scalars['Float'];
-};
-
-export type Review = {
-  __typename?: 'Review';
-  id: Scalars['ID'];
-  body: Scalars['String'];
-  tmdbId: Scalars['Int'];
-  userId: Scalars['ID'];
-  user: User;
-  watched: Watched;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
-export type ReviewCursor = {
-  __typename?: 'ReviewCursor';
-  reviews: Array<Review>;
+export type WatchedCursor = {
+  __typename?: 'WatchedCursor';
+  watched: Array<Watched>;
   cursor?: Maybe<Scalars['String']>;
   hasMore: Scalars['Boolean'];
 };
 
-export type ReviewInput = {
-  id?: Maybe<Scalars['ID']>;
-  body: Scalars['String'];
-};
-
-export type Search = {
-  __typename?: 'Search';
-  results?: Maybe<Array<TmdbMedia>>;
-  page: Scalars['Int'];
-  total_pages: Scalars['Int'];
-  total_results: Scalars['Int'];
-};
-
-export type SearchItem = {
-  __typename?: 'SearchItem';
-  id: Scalars['String'];
+export type Watched = {
+  __typename?: 'Watched';
+  id: Scalars['ID'];
   tmdbId: Scalars['Int'];
-  title: Scalars['String'];
-  release_date?: Maybe<Scalars['String']>;
-  type?: Maybe<ItemType>;
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  userId: Scalars['ID'];
+  user: User;
+  itemType: ItemType;
+  item: Item;
+  rating?: Maybe<Rating>;
+  review?: Maybe<Review>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
 };
 
-export type Season = {
-  __typename?: 'Season';
+export type User = {
+  __typename?: 'User';
   id: Scalars['ID'];
   name: Scalars['String'];
-  overview: Scalars['String'];
-  air_date: Scalars['String'];
-  episode_count: Scalars['Int'];
-  poster_path?: Maybe<Scalars['String']>;
-  season_number: Scalars['Int'];
-  tmdbId: Scalars['Int'];
-  tvId: Scalars['ID'];
-  tv: Tv;
-  episodes: Array<Episode>;
+  email: Scalars['String'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  watched: WatchedCursor;
+  settings: Settings;
+};
+
+export type UserWatchedArgs = {
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type Settings = {
@@ -459,66 +217,24 @@ export type Settings = {
   user: User;
 };
 
-export type Subscription = {
-  __typename?: 'Subscription';
-  _?: Maybe<Scalars['Boolean']>;
+export type GeneralSettings = {
+  __typename?: 'GeneralSettings';
+  autoConvert: Scalars['Boolean'];
 };
 
-export type TmdbMedia = TmdbMovie | TmdbTv;
+export type ExtensionSettings = {
+  __typename?: 'ExtensionSettings';
+  autoTrack: Scalars['Boolean'];
+  minLengthSeconds: Scalars['Int'];
+  blacklist: Array<Scalars['String']>;
+};
 
-export enum TmdbMediaType {
+export enum ItemType {
   Movie = 'Movie',
   Tv = 'Tv',
 }
 
-export type TmdbMovie = {
-  __typename?: 'TmdbMovie';
-  id?: Maybe<Scalars['Int']>;
-  title?: Maybe<Scalars['String']>;
-  overview?: Maybe<Scalars['String']>;
-  original_title?: Maybe<Scalars['String']>;
-  original_language?: Maybe<Scalars['String']>;
-  poster_path?: Maybe<Scalars['String']>;
-  genre_ids?: Maybe<Array<Maybe<Scalars['Int']>>>;
-  adult?: Maybe<Scalars['Boolean']>;
-  release_date?: Maybe<Scalars['String']>;
-  backdrop_path?: Maybe<Scalars['String']>;
-  video?: Maybe<Scalars['Boolean']>;
-  vote_count?: Maybe<Scalars['Int']>;
-  vote_average?: Maybe<Scalars['Float']>;
-  popularity?: Maybe<Scalars['Int']>;
-  media_type?: Maybe<TmdbMediaType>;
-};
-
-export type TmdbPerson = {
-  __typename?: 'TmdbPerson';
-  popularity?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
-  vote_average?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  profile_path?: Maybe<Scalars['String']>;
-  adult?: Maybe<Scalars['String']>;
-  known_for?: Maybe<TmdbMedia>;
-  media_type?: Maybe<TmdbMediaType>;
-};
-
-export type TmdbTv = {
-  __typename?: 'TmdbTv';
-  id?: Maybe<Scalars['Int']>;
-  name?: Maybe<Scalars['String']>;
-  overview?: Maybe<Scalars['String']>;
-  original_name?: Maybe<Scalars['String']>;
-  original_language?: Maybe<Scalars['String']>;
-  poster_path?: Maybe<Scalars['String']>;
-  genre_ids?: Maybe<Array<Maybe<Scalars['Int']>>>;
-  backdrop_path?: Maybe<Scalars['String']>;
-  first_air_date?: Maybe<Scalars['String']>;
-  origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
-  vote_count?: Maybe<Scalars['Int']>;
-  vote_average?: Maybe<Scalars['Float']>;
-  popularity?: Maybe<Scalars['Int']>;
-  media_type?: Maybe<TmdbMediaType>;
-};
+export type Item = Movie | Tv;
 
 export type Tv = {
   __typename?: 'Tv';
@@ -559,32 +275,337 @@ export type TvWatchedArgs = {
   filter?: Maybe<Scalars['String']>;
 };
 
-export type TvDataInput = {
-  season?: Maybe<Scalars['String']>;
-  episode?: Maybe<Scalars['String']>;
+export type Author = {
+  __typename?: 'Author';
+  id?: Maybe<Scalars['Int']>;
+  credit_id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  gender?: Maybe<Scalars['Int']>;
+  profile_path?: Maybe<Scalars['String']>;
 };
 
-export type TvItem = Season | Episode;
+export type Episode = {
+  __typename?: 'Episode';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  overview: Scalars['String'];
+  episode_number: Scalars['Int'];
+  air_date?: Maybe<Scalars['String']>;
+  production_code?: Maybe<Scalars['String']>;
+  still_path?: Maybe<Scalars['String']>;
+  vote_average: Scalars['Float'];
+  vote_count: Scalars['Int'];
+  tmdbId: Scalars['Int'];
+  seasonId: Scalars['ID'];
+  season: Season;
+};
+
+export type Season = {
+  __typename?: 'Season';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  overview: Scalars['String'];
+  air_date?: Maybe<Scalars['String']>;
+  episode_count: Scalars['Int'];
+  poster_path?: Maybe<Scalars['String']>;
+  season_number: Scalars['Int'];
+  tmdbId: Scalars['Int'];
+  tvId: Scalars['ID'];
+  tv: Tv;
+  episodes: Array<Episode>;
+};
+
+export type Network = {
+  __typename?: 'Network';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  logo_path?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Scalars['String']>;
+};
+
+export type Rating = {
+  __typename?: 'Rating';
+  id: Scalars['ID'];
+  value: Scalars['Float'];
+  tmdbId: Scalars['Int'];
+  userId: Scalars['ID'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+  user?: Maybe<User>;
+  watched?: Maybe<Watched>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+};
 
 export enum TvItemType {
   Season = 'Season',
   Episode = 'Episode',
 }
 
-export type User = {
-  __typename?: 'User';
+export type TvItem = Season | Episode;
+
+export type Review = {
+  __typename?: 'Review';
   id: Scalars['ID'];
-  name: Scalars['String'];
-  email: Scalars['String'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  watched: WatchedCursor;
-  settings: Settings;
+  body: Scalars['String'];
+  tmdbId: Scalars['Int'];
+  userId: Scalars['ID'];
+  user: User;
+  watched: Watched;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
 };
 
-export type UserWatchedArgs = {
-  cursor?: Maybe<Scalars['String']>;
+export type SearchItem = {
+  __typename?: 'SearchItem';
+  id: Scalars['String'];
+  tmdbId: Scalars['Int'];
+  title: Scalars['String'];
+  release_date?: Maybe<Scalars['String']>;
+  type?: Maybe<ItemType>;
 };
+
+export type ReviewCursor = {
+  __typename?: 'ReviewCursor';
+  reviews: Array<Review>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type AutoTrackedCursor = {
+  __typename?: 'AutoTrackedCursor';
+  autoTracked: Array<AutoTracked>;
+  cursor?: Maybe<Scalars['String']>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type AutoTracked = {
+  __typename?: 'AutoTracked';
+  id: Scalars['ID'];
+  userId: Scalars['ID'];
+  user: User;
+  itemType?: Maybe<ItemType>;
+  item?: Maybe<Item>;
+  tvItemType?: Maybe<TvItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItem?: Maybe<TvItem>;
+  meta: AutoTrackedMeta;
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+};
+
+export type AutoTrackedMeta = {
+  __typename?: 'AutoTrackedMeta';
+  title?: Maybe<Scalars['String']>;
+  tvData?: Maybe<AutoTrackedMetaTvData>;
+  filename?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+};
+
+export type AutoTrackedMetaTvData = {
+  __typename?: 'AutoTrackedMetaTvData';
+  season?: Maybe<Scalars['String']>;
+  episode?: Maybe<Scalars['String']>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  _?: Maybe<Scalars['Boolean']>;
+  addAutoTracked: AutoTracked;
+  addWatched: Watched;
+  convertAutoTracked: ConvertedAutoTracked;
+  editWatched: Watched;
+  login: LocalAuth;
+  logout: Scalars['Boolean'];
+  register: LocalAuth;
+  removeAutoTracked: Array<Scalars['ID']>;
+  removeWatched: Scalars['ID'];
+  setUserData: User;
+  updateSettings: Settings;
+};
+
+export type MutationAddAutoTrackedArgs = {
+  meta: AutoTrackedMetaInput;
+  createdAt: Scalars['Float'];
+  itemId?: Maybe<Scalars['ID']>;
+  itemType?: Maybe<ItemType>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+};
+
+export type MutationAddWatchedArgs = {
+  itemId: Scalars['ID'];
+  itemType: ItemType;
+  rating?: Maybe<RatingInput>;
+  review?: Maybe<ReviewInput>;
+  createdAt?: Maybe<Scalars['Float']>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+  autoTrackedId?: Maybe<Scalars['ID']>;
+};
+
+export type MutationConvertAutoTrackedArgs = {
+  ids: Array<Scalars['ID']>;
+};
+
+export type MutationEditWatchedArgs = {
+  id: Scalars['ID'];
+  createdAt?: Maybe<Scalars['Float']>;
+  rating?: Maybe<RatingInput>;
+  review?: Maybe<ReviewInput>;
+  tvItemId?: Maybe<Scalars['ID']>;
+  tvItemType?: Maybe<TvItemType>;
+};
+
+export type MutationLoginArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type MutationRegisterArgs = {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type MutationRemoveAutoTrackedArgs = {
+  ids: Array<Scalars['ID']>;
+};
+
+export type MutationRemoveWatchedArgs = {
+  itemId: Scalars['ID'];
+};
+
+export type MutationSetUserDataArgs = {
+  userData: UserInput;
+};
+
+export type MutationUpdateSettingsArgs = {
+  general: GeneralSettingsInput;
+  extension: ExtensionSettingsInput;
+};
+
+export type RatingInput = {
+  id?: Maybe<Scalars['ID']>;
+  value: Scalars['Float'];
+};
+
+export type ReviewInput = {
+  id?: Maybe<Scalars['ID']>;
+  body: Scalars['String'];
+};
+
+export type LocalAuth = {
+  __typename?: 'LocalAuth';
+  user: User;
+  token: Scalars['String'];
+};
+
+export type AutoTrackedMetaInput = {
+  title?: Maybe<Scalars['String']>;
+  tvData?: Maybe<TvDataInput>;
+  filename?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+};
+
+export type TvDataInput = {
+  season?: Maybe<Scalars['String']>;
+  episode?: Maybe<Scalars['String']>;
+};
+
+export type ConvertedAutoTracked = {
+  __typename?: 'ConvertedAutoTracked';
+  removedIds: Array<Scalars['ID']>;
+  watched: Array<Watched>;
+};
+
+export type GeneralSettingsInput = {
+  autoConvert: Scalars['Boolean'];
+};
+
+export type ExtensionSettingsInput = {
+  autoTrack: Scalars['Boolean'];
+  minLengthSeconds: Scalars['Int'];
+  blacklist: Array<Scalars['String']>;
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  _?: Maybe<Scalars['Boolean']>;
+};
+
+export type TmdbMovie = {
+  __typename?: 'TmdbMovie';
+  id?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']>;
+  overview?: Maybe<Scalars['String']>;
+  original_title?: Maybe<Scalars['String']>;
+  original_language?: Maybe<Scalars['String']>;
+  poster_path?: Maybe<Scalars['String']>;
+  genre_ids?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  adult?: Maybe<Scalars['Boolean']>;
+  release_date?: Maybe<Scalars['String']>;
+  backdrop_path?: Maybe<Scalars['String']>;
+  video?: Maybe<Scalars['Boolean']>;
+  vote_count?: Maybe<Scalars['Int']>;
+  vote_average?: Maybe<Scalars['Float']>;
+  popularity?: Maybe<Scalars['Int']>;
+  media_type?: Maybe<TmdbMediaType>;
+};
+
+export enum TmdbMediaType {
+  Movie = 'Movie',
+  Tv = 'Tv',
+}
+
+export type TmdbTv = {
+  __typename?: 'TmdbTv';
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  overview?: Maybe<Scalars['String']>;
+  original_name?: Maybe<Scalars['String']>;
+  original_language?: Maybe<Scalars['String']>;
+  poster_path?: Maybe<Scalars['String']>;
+  genre_ids?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  backdrop_path?: Maybe<Scalars['String']>;
+  first_air_date?: Maybe<Scalars['String']>;
+  origin_country?: Maybe<Array<Maybe<Scalars['String']>>>;
+  vote_count?: Maybe<Scalars['Int']>;
+  vote_average?: Maybe<Scalars['Float']>;
+  popularity?: Maybe<Scalars['Int']>;
+  media_type?: Maybe<TmdbMediaType>;
+};
+
+export type TmdbPerson = {
+  __typename?: 'TmdbPerson';
+  popularity?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
+  vote_average?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  profile_path?: Maybe<Scalars['String']>;
+  adult?: Maybe<Scalars['String']>;
+  known_for?: Maybe<TmdbMedia>;
+  media_type?: Maybe<TmdbMediaType>;
+};
+
+export type TmdbMedia = TmdbMovie | TmdbTv;
+
+export type Search = {
+  __typename?: 'Search';
+  results?: Maybe<Array<TmdbMedia>>;
+  page: Scalars['Int'];
+  total_pages: Scalars['Int'];
+  total_results: Scalars['Int'];
+};
+
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE',
+}
 
 export type UserInput = {
   id: Scalars['ID'];
@@ -593,34 +614,10 @@ export type UserInput = {
   updatedAt?: Maybe<Scalars['Float']>;
 };
 
-export type Watched = {
-  __typename?: 'Watched';
-  id: Scalars['ID'];
-  tmdbId: Scalars['Int'];
-  createdAt: Scalars['Float'];
-  updatedAt: Scalars['Float'];
-  userId: Scalars['ID'];
-  user: User;
-  itemType: ItemType;
-  item: Item;
-  rating?: Maybe<Rating>;
-  review?: Maybe<Review>;
-  tvItemType?: Maybe<TvItemType>;
-  tvItemId?: Maybe<Scalars['ID']>;
-  tvItem?: Maybe<TvItem>;
-};
-
-export type WatchedCursor = {
-  __typename?: 'WatchedCursor';
-  watched: Array<Watched>;
-  cursor?: Maybe<Scalars['String']>;
-  hasMore: Scalars['Boolean'];
-};
-
-export type LoginMutationVariables = {
+export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
-};
+}>;
 
 export type LoginMutation = { __typename?: 'Mutation' } & {
   login: { __typename?: 'LocalAuth' } & Pick<LocalAuth, 'token'> & {
@@ -636,11 +633,11 @@ export type LoginMutation = { __typename?: 'Mutation' } & {
     };
 };
 
-export type RegisterMutationVariables = {
+export type RegisterMutationVariables = Exact<{
   name: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
-};
+}>;
 
 export type RegisterMutation = { __typename?: 'Mutation' } & {
   register: { __typename?: 'LocalAuth' } & Pick<LocalAuth, 'token'> & {
@@ -656,21 +653,19 @@ export type RegisterMutation = { __typename?: 'Mutation' } & {
     };
 };
 
-export type SetIsLoggedInMutationVariables = {
-  isLoggedIn: Scalars['Boolean'];
-};
+export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
 
-export type SetIsLoggedInMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'setIsLoggedIn'>;
+export type LogoutMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'logout'>;
 
-export type SetUserDataMutationVariables = {
+export type SetUserDataMutationVariables = Exact<{
   userData: UserInput;
-};
+}>;
 
 export type SetUserDataMutation = { __typename?: 'Mutation' } & {
   setUserData: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email' | 'createdAt'>;
 };
 
-export type AddWatchedMutationVariables = {
+export type AddWatchedMutationVariables = Exact<{
   itemId: Scalars['ID'];
   itemType: ItemType;
   createdAt: Scalars['Float'];
@@ -678,32 +673,42 @@ export type AddWatchedMutationVariables = {
   review?: Maybe<ReviewInput>;
   tvItemId?: Maybe<Scalars['ID']>;
   tvItemType?: Maybe<TvItemType>;
-};
+}>;
 
 export type AddWatchedMutation = { __typename?: 'Mutation' } & {
   addWatched: { __typename?: 'Watched' } & Pick<Watched, 'id' | 'itemType' | 'createdAt'> & {
-      rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
-      review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
+      rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
+      review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
     };
 };
 
-export type AddAutoTrackedMutationVariables = {
+export type AddAutoTrackedMutationVariables = Exact<{
   meta: AutoTrackedMetaInput;
   createdAt: Scalars['Float'];
   itemId?: Maybe<Scalars['ID']>;
   itemType?: Maybe<ItemType>;
   tvItemId?: Maybe<Scalars['ID']>;
   tvItemType?: Maybe<TvItemType>;
-};
+}>;
 
 export type AddAutoTrackedMutation = { __typename?: 'Mutation' } & {
-  addAutoTracked: { __typename?: 'AutoTracked' } & Pick<AutoTracked, 'id'>;
+  addAutoTracked: { __typename?: 'AutoTracked' } & Pick<AutoTracked, 'id'> & {
+      tvItem?: Maybe<
+        | ({ __typename?: 'Season' } & Pick<Season, 'season_number'>)
+        | ({ __typename?: 'Episode' } & Pick<Episode, 'episode_number'> & {
+              season: { __typename?: 'Season' } & Pick<Season, 'season_number'>;
+            })
+      >;
+      item?: Maybe<
+        ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title'>) | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name'>)
+      >;
+    };
 };
 
-export type UpdateSettingsMutationVariables = {
+export type UpdateSettingsMutationVariables = Exact<{
   general: GeneralSettingsInput;
   extension: ExtensionSettingsInput;
-};
+}>;
 
 export type UpdateSettingsMutation = { __typename?: 'Mutation' } & {
   updateSettings: { __typename?: 'Settings' } & {
@@ -715,18 +720,18 @@ export type UpdateSettingsMutation = { __typename?: 'Mutation' } & {
   };
 };
 
-export type UserWatchedQueryVariables = {
+export type UserWatchedQueryVariables = Exact<{
   id: Scalars['ID'];
   cursor?: Maybe<Scalars['String']>;
-};
+}>;
 
 export type UserWatchedQuery = { __typename?: 'Query' } & {
   user: { __typename?: 'User' } & Pick<User, 'id' | 'name'> & {
       watched: { __typename?: 'WatchedCursor' } & Pick<WatchedCursor, 'cursor' | 'hasMore'> & {
           watched: Array<
             { __typename?: 'Watched' } & Pick<Watched, 'id' | 'tmdbId' | 'createdAt' | 'itemType'> & {
-                rating: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
-                review: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
+                rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
+                review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
                 item:
                   | ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title' | 'release_date' | 'poster_path'>)
                   | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'>);
@@ -736,11 +741,11 @@ export type UserWatchedQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type IsUserLoggedInQueryVariables = {};
+export type IsUserLoggedInQueryVariables = Exact<{ [key: string]: never }>;
 
 export type IsUserLoggedInQuery = { __typename?: 'Query' } & Pick<Query, 'isLoggedIn'>;
 
-export type UserDataQueryVariables = {};
+export type UserDataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserDataQuery = { __typename?: 'Query' } & {
   userData: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email' | 'createdAt'> & {
@@ -754,9 +759,9 @@ export type UserDataQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type SearchContentQueryVariables = {
+export type SearchContentQueryVariables = Exact<{
   title: Scalars['String'];
-};
+}>;
 
 export type SearchContentQuery = { __typename?: 'Query' } & {
   searchContent: Array<
@@ -764,9 +769,9 @@ export type SearchContentQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export type TvQueryVariables = {
+export type TvQueryVariables = Exact<{
   id: Scalars['ID'];
-};
+}>;
 
 export type TvQuery = { __typename?: 'Query' } & {
   tv: { __typename?: 'Tv' } & Pick<Tv, 'id' | 'name' | 'first_air_date' | 'poster_path'> & {
@@ -778,18 +783,18 @@ export type TvQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type MovieQueryVariables = {
+export type MovieQueryVariables = Exact<{
   id: Scalars['ID'];
-};
+}>;
 
 export type MovieQuery = { __typename?: 'Query' } & {
   movie: { __typename?: 'Movie' } & Pick<Movie, 'id' | 'title' | 'release_date' | 'poster_path'>;
 };
 
-export type SettingsQueryVariables = {};
+export type SettingsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SettingsQuery = { __typename?: 'Query' } & {
-  settings: Maybe<
+  settings?: Maybe<
     { __typename?: 'Settings' } & {
       general: { __typename?: 'GeneralSettings' } & Pick<GeneralSettings, 'autoConvert'>;
       extension: { __typename?: 'ExtensionSettings' } & Pick<
@@ -800,7 +805,7 @@ export type SettingsQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export type MeQueryVariables = {};
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = { __typename?: 'Query' } & {
   me: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'email' | 'createdAt'> & {
@@ -848,17 +853,19 @@ export const LoginComponent = (props: LoginComponentProps) => (
   <ApolloReactComponents.Mutation<LoginMutation, LoginMutationVariables> mutation={LoginDocument} {...props} />
 );
 
-export type LoginProps<TChildProps = {}> = ApolloReactHoc.MutateProps<LoginMutation, LoginMutationVariables> &
+export type LoginProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+  [key in TDataName]: ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>;
+} &
   TChildProps;
-export function withLogin<TProps, TChildProps = {}>(
+export function withLogin<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     LoginMutation,
     LoginMutationVariables,
-    LoginProps<TChildProps>
+    LoginProps<TChildProps, TDataName>
   >,
 ) {
-  return ApolloReactHoc.withMutation<TProps, LoginMutation, LoginMutationVariables, LoginProps<TChildProps>>(
+  return ApolloReactHoc.withMutation<TProps, LoginMutation, LoginMutationVariables, LoginProps<TChildProps, TDataName>>(
     LoginDocument,
     {
       alias: 'login',
@@ -927,23 +934,27 @@ export const RegisterComponent = (props: RegisterComponentProps) => (
   <ApolloReactComponents.Mutation<RegisterMutation, RegisterMutationVariables> mutation={RegisterDocument} {...props} />
 );
 
-export type RegisterProps<TChildProps = {}> = ApolloReactHoc.MutateProps<RegisterMutation, RegisterMutationVariables> &
+export type RegisterProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+  [key in TDataName]: ApolloReactCommon.MutationFunction<RegisterMutation, RegisterMutationVariables>;
+} &
   TChildProps;
-export function withRegister<TProps, TChildProps = {}>(
+export function withRegister<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     RegisterMutation,
     RegisterMutationVariables,
-    RegisterProps<TChildProps>
+    RegisterProps<TChildProps, TDataName>
   >,
 ) {
-  return ApolloReactHoc.withMutation<TProps, RegisterMutation, RegisterMutationVariables, RegisterProps<TChildProps>>(
-    RegisterDocument,
-    {
-      alias: 'register',
-      ...operationOptions,
-    },
-  );
+  return ApolloReactHoc.withMutation<
+    TProps,
+    RegisterMutation,
+    RegisterMutationVariables,
+    RegisterProps<TChildProps, TDataName>
+  >(RegisterDocument, {
+    alias: 'register',
+    ...operationOptions,
+  });
 }
 
 /**
@@ -976,82 +987,68 @@ export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
 >;
-export const SetIsLoggedInDocument = gql`
-  mutation SetIsLoggedIn($isLoggedIn: Boolean!) {
-    setIsLoggedIn(isLoggedIn: $isLoggedIn) @client
+export const LogoutDocument = gql`
+  mutation Logout {
+    logout @client
   }
 `;
-export type SetIsLoggedInMutationFn = ApolloReactCommon.MutationFunction<
-  SetIsLoggedInMutation,
-  SetIsLoggedInMutationVariables
->;
-export type SetIsLoggedInComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>,
+export type LogoutMutationFn = ApolloReactCommon.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+export type LogoutComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<LogoutMutation, LogoutMutationVariables>,
   'mutation'
 >;
 
-export const SetIsLoggedInComponent = (props: SetIsLoggedInComponentProps) => (
-  <ApolloReactComponents.Mutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>
-    mutation={SetIsLoggedInDocument}
-    {...props}
-  />
+export const LogoutComponent = (props: LogoutComponentProps) => (
+  <ApolloReactComponents.Mutation<LogoutMutation, LogoutMutationVariables> mutation={LogoutDocument} {...props} />
 );
 
-export type SetIsLoggedInProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  SetIsLoggedInMutation,
-  SetIsLoggedInMutationVariables
-> &
+export type LogoutProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+  [key in TDataName]: ApolloReactCommon.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+} &
   TChildProps;
-export function withSetIsLoggedIn<TProps, TChildProps = {}>(
+export function withLogout<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
-    SetIsLoggedInMutation,
-    SetIsLoggedInMutationVariables,
-    SetIsLoggedInProps<TChildProps>
+    LogoutMutation,
+    LogoutMutationVariables,
+    LogoutProps<TChildProps, TDataName>
   >,
 ) {
   return ApolloReactHoc.withMutation<
     TProps,
-    SetIsLoggedInMutation,
-    SetIsLoggedInMutationVariables,
-    SetIsLoggedInProps<TChildProps>
-  >(SetIsLoggedInDocument, {
-    alias: 'setIsLoggedIn',
+    LogoutMutation,
+    LogoutMutationVariables,
+    LogoutProps<TChildProps, TDataName>
+  >(LogoutDocument, {
+    alias: 'logout',
     ...operationOptions,
   });
 }
 
 /**
- * __useSetIsLoggedInMutation__
+ * __useLogoutMutation__
  *
- * To run a mutation, you first call `useSetIsLoggedInMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSetIsLoggedInMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [setIsLoggedInMutation, { data, loading, error }] = useSetIsLoggedInMutation({
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
  *   variables: {
- *      isLoggedIn: // value for 'isLoggedIn'
  *   },
  * });
  */
-export function useSetIsLoggedInMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>,
+export function useLogoutMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<LogoutMutation, LogoutMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<SetIsLoggedInMutation, SetIsLoggedInMutationVariables>(
-    SetIsLoggedInDocument,
-    baseOptions,
-  );
+  return ApolloReactHooks.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, baseOptions);
 }
-export type SetIsLoggedInMutationHookResult = ReturnType<typeof useSetIsLoggedInMutation>;
-export type SetIsLoggedInMutationResult = ApolloReactCommon.MutationResult<SetIsLoggedInMutation>;
-export type SetIsLoggedInMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  SetIsLoggedInMutation,
-  SetIsLoggedInMutationVariables
->;
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const SetUserDataDocument = gql`
   mutation SetUserData($userData: UserInput!) {
     setUserData(userData: $userData) @client {
@@ -1078,24 +1075,23 @@ export const SetUserDataComponent = (props: SetUserDataComponentProps) => (
   />
 );
 
-export type SetUserDataProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  SetUserDataMutation,
-  SetUserDataMutationVariables
-> &
+export type SetUserDataProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+  [key in TDataName]: ApolloReactCommon.MutationFunction<SetUserDataMutation, SetUserDataMutationVariables>;
+} &
   TChildProps;
-export function withSetUserData<TProps, TChildProps = {}>(
+export function withSetUserData<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     SetUserDataMutation,
     SetUserDataMutationVariables,
-    SetUserDataProps<TChildProps>
+    SetUserDataProps<TChildProps, TDataName>
   >,
 ) {
   return ApolloReactHoc.withMutation<
     TProps,
     SetUserDataMutation,
     SetUserDataMutationVariables,
-    SetUserDataProps<TChildProps>
+    SetUserDataProps<TChildProps, TDataName>
   >(SetUserDataDocument, {
     alias: 'setUserData',
     ...operationOptions,
@@ -1177,24 +1173,23 @@ export const AddWatchedComponent = (props: AddWatchedComponentProps) => (
   />
 );
 
-export type AddWatchedProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  AddWatchedMutation,
-  AddWatchedMutationVariables
-> &
+export type AddWatchedProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+  [key in TDataName]: ApolloReactCommon.MutationFunction<AddWatchedMutation, AddWatchedMutationVariables>;
+} &
   TChildProps;
-export function withAddWatched<TProps, TChildProps = {}>(
+export function withAddWatched<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     AddWatchedMutation,
     AddWatchedMutationVariables,
-    AddWatchedProps<TChildProps>
+    AddWatchedProps<TChildProps, TDataName>
   >,
 ) {
   return ApolloReactHoc.withMutation<
     TProps,
     AddWatchedMutation,
     AddWatchedMutationVariables,
-    AddWatchedProps<TChildProps>
+    AddWatchedProps<TChildProps, TDataName>
   >(AddWatchedDocument, {
     alias: 'addWatched',
     ...operationOptions,
@@ -1253,6 +1248,27 @@ export const AddAutoTrackedDocument = gql`
       tvItemType: $tvItemType
     ) {
       id
+      tvItem {
+        ... on Season {
+          season_number
+        }
+        ... on Episode {
+          episode_number
+          season {
+            season_number
+          }
+        }
+      }
+      item {
+        ... on Movie {
+          id
+          title
+        }
+        ... on Tv {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -1272,24 +1288,23 @@ export const AddAutoTrackedComponent = (props: AddAutoTrackedComponentProps) => 
   />
 );
 
-export type AddAutoTrackedProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  AddAutoTrackedMutation,
-  AddAutoTrackedMutationVariables
-> &
+export type AddAutoTrackedProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+  [key in TDataName]: ApolloReactCommon.MutationFunction<AddAutoTrackedMutation, AddAutoTrackedMutationVariables>;
+} &
   TChildProps;
-export function withAddAutoTracked<TProps, TChildProps = {}>(
+export function withAddAutoTracked<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     AddAutoTrackedMutation,
     AddAutoTrackedMutationVariables,
-    AddAutoTrackedProps<TChildProps>
+    AddAutoTrackedProps<TChildProps, TDataName>
   >,
 ) {
   return ApolloReactHoc.withMutation<
     TProps,
     AddAutoTrackedMutation,
     AddAutoTrackedMutationVariables,
-    AddAutoTrackedProps<TChildProps>
+    AddAutoTrackedProps<TChildProps, TDataName>
   >(AddAutoTrackedDocument, {
     alias: 'addAutoTracked',
     ...operationOptions,
@@ -1362,24 +1377,23 @@ export const UpdateSettingsComponent = (props: UpdateSettingsComponentProps) => 
   />
 );
 
-export type UpdateSettingsProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  UpdateSettingsMutation,
-  UpdateSettingsMutationVariables
-> &
+export type UpdateSettingsProps<TChildProps = {}, TDataName extends string = 'mutate'> = {
+  [key in TDataName]: ApolloReactCommon.MutationFunction<UpdateSettingsMutation, UpdateSettingsMutationVariables>;
+} &
   TChildProps;
-export function withUpdateSettings<TProps, TChildProps = {}>(
+export function withUpdateSettings<TProps, TChildProps = {}, TDataName extends string = 'mutate'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     UpdateSettingsMutation,
     UpdateSettingsMutationVariables,
-    UpdateSettingsProps<TChildProps>
+    UpdateSettingsProps<TChildProps, TDataName>
   >,
 ) {
   return ApolloReactHoc.withMutation<
     TProps,
     UpdateSettingsMutation,
     UpdateSettingsMutationVariables,
-    UpdateSettingsProps<TChildProps>
+    UpdateSettingsProps<TChildProps, TDataName>
   >(UpdateSettingsDocument, {
     alias: 'updateSettings',
     ...operationOptions,
@@ -1466,23 +1480,27 @@ export const UserWatchedComponent = (props: UserWatchedComponentProps) => (
   <ApolloReactComponents.Query<UserWatchedQuery, UserWatchedQueryVariables> query={UserWatchedDocument} {...props} />
 );
 
-export type UserWatchedProps<TChildProps = {}> = ApolloReactHoc.DataProps<UserWatchedQuery, UserWatchedQueryVariables> &
+export type UserWatchedProps<TChildProps = {}, TDataName extends string = 'data'> = {
+  [key in TDataName]: ApolloReactHoc.DataValue<UserWatchedQuery, UserWatchedQueryVariables>;
+} &
   TChildProps;
-export function withUserWatched<TProps, TChildProps = {}>(
+export function withUserWatched<TProps, TChildProps = {}, TDataName extends string = 'data'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     UserWatchedQuery,
     UserWatchedQueryVariables,
-    UserWatchedProps<TChildProps>
+    UserWatchedProps<TChildProps, TDataName>
   >,
 ) {
-  return ApolloReactHoc.withQuery<TProps, UserWatchedQuery, UserWatchedQueryVariables, UserWatchedProps<TChildProps>>(
-    UserWatchedDocument,
-    {
-      alias: 'userWatched',
-      ...operationOptions,
-    },
-  );
+  return ApolloReactHoc.withQuery<
+    TProps,
+    UserWatchedQuery,
+    UserWatchedQueryVariables,
+    UserWatchedProps<TChildProps, TDataName>
+  >(UserWatchedDocument, {
+    alias: 'userWatched',
+    ...operationOptions,
+  });
 }
 
 /**
@@ -1532,24 +1550,23 @@ export const IsUserLoggedInComponent = (props: IsUserLoggedInComponentProps) => 
   />
 );
 
-export type IsUserLoggedInProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  IsUserLoggedInQuery,
-  IsUserLoggedInQueryVariables
-> &
+export type IsUserLoggedInProps<TChildProps = {}, TDataName extends string = 'data'> = {
+  [key in TDataName]: ApolloReactHoc.DataValue<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>;
+} &
   TChildProps;
-export function withIsUserLoggedIn<TProps, TChildProps = {}>(
+export function withIsUserLoggedIn<TProps, TChildProps = {}, TDataName extends string = 'data'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     IsUserLoggedInQuery,
     IsUserLoggedInQueryVariables,
-    IsUserLoggedInProps<TChildProps>
+    IsUserLoggedInProps<TChildProps, TDataName>
   >,
 ) {
   return ApolloReactHoc.withQuery<
     TProps,
     IsUserLoggedInQuery,
     IsUserLoggedInQueryVariables,
-    IsUserLoggedInProps<TChildProps>
+    IsUserLoggedInProps<TChildProps, TDataName>
   >(IsUserLoggedInDocument, {
     alias: 'isUserLoggedIn',
     ...operationOptions,
@@ -1622,17 +1639,19 @@ export const UserDataComponent = (props: UserDataComponentProps) => (
   <ApolloReactComponents.Query<UserDataQuery, UserDataQueryVariables> query={UserDataDocument} {...props} />
 );
 
-export type UserDataProps<TChildProps = {}> = ApolloReactHoc.DataProps<UserDataQuery, UserDataQueryVariables> &
+export type UserDataProps<TChildProps = {}, TDataName extends string = 'data'> = {
+  [key in TDataName]: ApolloReactHoc.DataValue<UserDataQuery, UserDataQueryVariables>;
+} &
   TChildProps;
-export function withUserData<TProps, TChildProps = {}>(
+export function withUserData<TProps, TChildProps = {}, TDataName extends string = 'data'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     UserDataQuery,
     UserDataQueryVariables,
-    UserDataProps<TChildProps>
+    UserDataProps<TChildProps, TDataName>
   >,
 ) {
-  return ApolloReactHoc.withQuery<TProps, UserDataQuery, UserDataQueryVariables, UserDataProps<TChildProps>>(
+  return ApolloReactHoc.withQuery<TProps, UserDataQuery, UserDataQueryVariables, UserDataProps<TChildProps, TDataName>>(
     UserDataDocument,
     {
       alias: 'userData',
@@ -1693,24 +1712,23 @@ export const SearchContentComponent = (props: SearchContentComponentProps) => (
   />
 );
 
-export type SearchContentProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  SearchContentQuery,
-  SearchContentQueryVariables
-> &
+export type SearchContentProps<TChildProps = {}, TDataName extends string = 'data'> = {
+  [key in TDataName]: ApolloReactHoc.DataValue<SearchContentQuery, SearchContentQueryVariables>;
+} &
   TChildProps;
-export function withSearchContent<TProps, TChildProps = {}>(
+export function withSearchContent<TProps, TChildProps = {}, TDataName extends string = 'data'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     SearchContentQuery,
     SearchContentQueryVariables,
-    SearchContentProps<TChildProps>
+    SearchContentProps<TChildProps, TDataName>
   >,
 ) {
   return ApolloReactHoc.withQuery<
     TProps,
     SearchContentQuery,
     SearchContentQueryVariables,
-    SearchContentProps<TChildProps>
+    SearchContentProps<TChildProps, TDataName>
   >(SearchContentDocument, {
     alias: 'searchContent',
     ...operationOptions,
@@ -1777,11 +1795,14 @@ export const TvComponent = (props: TvComponentProps) => (
   <ApolloReactComponents.Query<TvQuery, TvQueryVariables> query={TvDocument} {...props} />
 );
 
-export type TvProps<TChildProps = {}> = ApolloReactHoc.DataProps<TvQuery, TvQueryVariables> & TChildProps;
-export function withTv<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps>>,
+export type TvProps<TChildProps = {}, TDataName extends string = 'data'> = {
+  [key in TDataName]: ApolloReactHoc.DataValue<TvQuery, TvQueryVariables>;
+} &
+  TChildProps;
+export function withTv<TProps, TChildProps = {}, TDataName extends string = 'data'>(
+  operationOptions?: ApolloReactHoc.OperationOption<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps, TDataName>>,
 ) {
-  return ApolloReactHoc.withQuery<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps>>(TvDocument, {
+  return ApolloReactHoc.withQuery<TProps, TvQuery, TvQueryVariables, TvProps<TChildProps, TDataName>>(TvDocument, {
     alias: 'tv',
     ...operationOptions,
   });
@@ -1832,14 +1853,25 @@ export const MovieComponent = (props: MovieComponentProps) => (
   <ApolloReactComponents.Query<MovieQuery, MovieQueryVariables> query={MovieDocument} {...props} />
 );
 
-export type MovieProps<TChildProps = {}> = ApolloReactHoc.DataProps<MovieQuery, MovieQueryVariables> & TChildProps;
-export function withMovie<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<TProps, MovieQuery, MovieQueryVariables, MovieProps<TChildProps>>,
+export type MovieProps<TChildProps = {}, TDataName extends string = 'data'> = {
+  [key in TDataName]: ApolloReactHoc.DataValue<MovieQuery, MovieQueryVariables>;
+} &
+  TChildProps;
+export function withMovie<TProps, TChildProps = {}, TDataName extends string = 'data'>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    MovieQuery,
+    MovieQueryVariables,
+    MovieProps<TChildProps, TDataName>
+  >,
 ) {
-  return ApolloReactHoc.withQuery<TProps, MovieQuery, MovieQueryVariables, MovieProps<TChildProps>>(MovieDocument, {
-    alias: 'movie',
-    ...operationOptions,
-  });
+  return ApolloReactHoc.withQuery<TProps, MovieQuery, MovieQueryVariables, MovieProps<TChildProps, TDataName>>(
+    MovieDocument,
+    {
+      alias: 'movie',
+      ...operationOptions,
+    },
+  );
 }
 
 /**
@@ -1892,17 +1924,19 @@ export const SettingsComponent = (props: SettingsComponentProps) => (
   <ApolloReactComponents.Query<SettingsQuery, SettingsQueryVariables> query={SettingsDocument} {...props} />
 );
 
-export type SettingsProps<TChildProps = {}> = ApolloReactHoc.DataProps<SettingsQuery, SettingsQueryVariables> &
+export type SettingsProps<TChildProps = {}, TDataName extends string = 'data'> = {
+  [key in TDataName]: ApolloReactHoc.DataValue<SettingsQuery, SettingsQueryVariables>;
+} &
   TChildProps;
-export function withSettings<TProps, TChildProps = {}>(
+export function withSettings<TProps, TChildProps = {}, TDataName extends string = 'data'>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
     SettingsQuery,
     SettingsQueryVariables,
-    SettingsProps<TChildProps>
+    SettingsProps<TChildProps, TDataName>
   >,
 ) {
-  return ApolloReactHoc.withQuery<TProps, SettingsQuery, SettingsQueryVariables, SettingsProps<TChildProps>>(
+  return ApolloReactHoc.withQuery<TProps, SettingsQuery, SettingsQueryVariables, SettingsProps<TChildProps, TDataName>>(
     SettingsDocument,
     {
       alias: 'settings',
@@ -1965,11 +1999,14 @@ export const MeComponent = (props: MeComponentProps) => (
   <ApolloReactComponents.Query<MeQuery, MeQueryVariables> query={MeDocument} {...props} />
 );
 
-export type MeProps<TChildProps = {}> = ApolloReactHoc.DataProps<MeQuery, MeQueryVariables> & TChildProps;
-export function withMe<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<TProps, MeQuery, MeQueryVariables, MeProps<TChildProps>>,
+export type MeProps<TChildProps = {}, TDataName extends string = 'data'> = {
+  [key in TDataName]: ApolloReactHoc.DataValue<MeQuery, MeQueryVariables>;
+} &
+  TChildProps;
+export function withMe<TProps, TChildProps = {}, TDataName extends string = 'data'>(
+  operationOptions?: ApolloReactHoc.OperationOption<TProps, MeQuery, MeQueryVariables, MeProps<TChildProps, TDataName>>,
 ) {
-  return ApolloReactHoc.withQuery<TProps, MeQuery, MeQueryVariables, MeProps<TChildProps>>(MeDocument, {
+  return ApolloReactHoc.withQuery<TProps, MeQuery, MeQueryVariables, MeProps<TChildProps, TDataName>>(MeDocument, {
     alias: 'me',
     ...operationOptions,
   });

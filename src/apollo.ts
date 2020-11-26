@@ -39,7 +39,7 @@ const authLink = setContext((request, { headers }) =>
 
 const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors) {
-    graphQLErrors.forEach(err => {
+    graphQLErrors.forEach((err) => {
       switch (err.extensions.code) {
         case 'UNAUTHENTICATED':
           cache.writeData({
@@ -48,7 +48,9 @@ const errorLink = onError(({ graphQLErrors }) => {
               userData: null,
             },
           });
-          updateStorage({ token: null });
+          updateStorage({ token: null, userData: null });
+          chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
+
           debugLog('unauthenticated');
           return;
         default:
