@@ -7,7 +7,6 @@ import VideoEnd from '../watched/VideoEnd';
 import CloseContent from './CloseContent';
 import { VideoData } from './renderService';
 
-import '../styles/main.scss';
 import './Content.scss';
 
 export const VideoContext = React.createContext<VideoData>(null);
