@@ -4,7 +4,7 @@ import { Switch, Spinner, Button, H3, FormGroup, H4, NumericInput } from '@bluep
 
 import Blacklist from './Blacklist';
 import { useUserDataQuery, useUpdateSettingsMutation, useSettingsQuery } from '../graphql';
-import { updateUserSettings } from '../graphql/helpers';
+import { updateUserSettings } from '../common/apollo/helpers';
 
 const Settings = () => {
   const { data: settingsData, loading } = useSettingsQuery();
