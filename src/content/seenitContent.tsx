@@ -6,6 +6,4 @@ document.addEventListener('seenit-login', (event) => {
   updateStorage({
     token,
   });
-
-  chrome.runtime.sendMessage({ loggedIn: true });
 });

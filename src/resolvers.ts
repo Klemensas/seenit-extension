@@ -15,8 +15,6 @@ export const resolvers: Resolvers = {
       updateStorage({ token: null, user: null });
       cache.writeData({ data: { isLoggedIn: false, userData: null } });
 
-      chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
-
       return true;
     },
   },

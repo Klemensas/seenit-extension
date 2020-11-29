@@ -1,16 +1,5 @@
-import { getStorageValue } from '../common/storage';
+import { addStoreChangeListener, getStorageValue } from '../common/storage';
 import { debugLog } from '../main';
-
-// Listen to messages sent from other parts of the extension.
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  // onMessage must return "true" if response is async.
-  const isResponseAsync = false;
-  if (request.popupMounted) debugLog('eventPage notified that Popup.tsx has mounted.');
-
-  if (request.loggedIn) chrome.browserAction.setIcon({ path: 'icon48.png' });
-
-  return isResponseAsync;
-});
 
 chrome.runtime.onInstalled.addListener(async (event) => {
   // chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
@@ -19,6 +8,13 @@ chrome.runtime.onInstalled.addListener(async (event) => {
 
   if (!token) chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
 });
+
+addStoreChangeListener(({ newValue }) => {
+  const isActive = !!newValue;
+  const iconPath = `icon48${isActive ? '' : '-inactive'}.png`;
+
+  chrome.browserAction.setIcon({ path: iconPath });
+}, 'token');
 
 // Listen for when tab updates?
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
