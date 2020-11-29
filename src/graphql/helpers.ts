@@ -1,6 +1,6 @@
 import { DataProxy } from 'apollo-cache';
 
-import { updateStorage } from '../browserService';
+import { updateStorage } from '../common/storage';
 import { UserDataQuery, SettingsDocument } from '.';
 
 export const updateUserSettings = (cache: DataProxy, user: NonNullable<UserDataQuery['userData']>) => {

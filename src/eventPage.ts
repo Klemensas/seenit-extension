@@ -1,4 +1,4 @@
-import { getStorageValue } from './browserService';
+import { getStorageValue } from './common/storage';
 import { debugLog } from './main';
 
 // Listen to messages sent from other parts of the extension.
@@ -20,28 +20,13 @@ chrome.runtime.onInstalled.addListener(async (event) => {
   if (!token) chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
 });
 
-const eventList = [
-  'onBeforeNavigate',
-  'onCreatedNavigationTarget',
-  'onCommitted',
-  'onCompleted',
-  'onDOMContentLoaded',
-  'onErrorOccurred',
-  'onReferenceFragmentUpdated',
-  'onTabReplaced',
-  'onHistoryStateUpdated',
-];
-
+// Listen for when tab updates?
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  // Listen only to complete status
-  if (!changeInfo || changeInfo.status !== 'complete') {
-    return;
-  }
+  // Ignroe pending updates
+  if (!changeInfo || changeInfo.status !== 'complete') return;
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (!tabs || !tabs.length) {
-      return;
-    }
+    if (!tabs?.length) return;
 
     chrome.tabs.sendMessage(tabs[0].id, { type: 'tabUpdate', changeInfo, tab });
   });

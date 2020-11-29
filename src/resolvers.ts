@@ -1,7 +1,7 @@
 import { Resolvers } from 'apollo-client';
 import gql from 'graphql-tag';
 
-import { updateStorage } from './browserService';
+import { updateStorage } from './common/storage';
 
 export const typeDefs = gql`
   extend type Query {
@@ -12,7 +12,7 @@ export const typeDefs = gql`
 export const resolvers: Resolvers = {
   Mutation: {
     logout: (root, variables, { cache }) => {
-      updateStorage({ token: null, userData: null });
+      updateStorage({ token: null, user: null });
       cache.writeData({ data: { isLoggedIn: false, userData: null } });
 
       chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });

@@ -1,4 +1,4 @@
-import browserService, { getStorageValue, updateStorage } from './browserService';
+import { getStorageValue, updateStorage } from './common/storage';
 import { Settings as UserSettings, UserDataQuery, MeDocument, MeQuery } from './graphql';
 import { apolloClient } from './apollo';
 
