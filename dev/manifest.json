@@ -42,7 +42,7 @@
   ],
   "background": {
     "scripts": [
-      "js/eventPage.js"
+      "js/background.js"
     ],
     "persistent": false
   },

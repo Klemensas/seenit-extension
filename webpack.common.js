@@ -14,7 +14,7 @@ module.exports = {
   ],
   entry: {
     popup: path.join(__dirname, 'src/popup/index.tsx'),
-    eventPage: path.join(__dirname, 'src/eventPage.ts'),
+    background: path.join(__dirname, 'src/background/index.ts'),
     content: path.join(__dirname, 'src/content/index.tsx'),
     seenitContent: path.join(__dirname, 'src/content/seenitContent.tsx'),
     iframeContent: path.join(__dirname, 'src/content/iframeContent.ts'),
