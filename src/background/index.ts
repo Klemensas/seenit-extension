@@ -1,16 +1,5 @@
-import { getStorageValue } from './browserService';
-import { debugLog } from './main';
-
-// Listen to messages sent from other parts of the extension.
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  // onMessage must return "true" if response is async.
-  const isResponseAsync = false;
-  if (request.popupMounted) debugLog('eventPage notified that Popup.tsx has mounted.');
-
-  if (request.loggedIn) chrome.browserAction.setIcon({ path: 'icon48.png' });
-
-  return isResponseAsync;
-});
+import { addStoreChangeListener, getStorageValue } from '../common/storage';
+import { debugLog } from '../main';
 
 chrome.runtime.onInstalled.addListener(async (event) => {
   // chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
@@ -20,28 +9,20 @@ chrome.runtime.onInstalled.addListener(async (event) => {
   if (!token) chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
 });
 
-const eventList = [
-  'onBeforeNavigate',
-  'onCreatedNavigationTarget',
-  'onCommitted',
-  'onCompleted',
-  'onDOMContentLoaded',
-  'onErrorOccurred',
-  'onReferenceFragmentUpdated',
-  'onTabReplaced',
-  'onHistoryStateUpdated',
-];
+addStoreChangeListener(({ newValue }) => {
+  const isActive = !!newValue;
+  const iconPath = `icon48${isActive ? '' : '-inactive'}.png`;
 
+  chrome.browserAction.setIcon({ path: iconPath });
+}, 'token');
+
+// Listen for when tab updates?
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  // Listen only to complete status
-  if (!changeInfo || changeInfo.status !== 'complete') {
-    return;
-  }
+  // Ignroe pending updates
+  if (!changeInfo || changeInfo.status !== 'complete') return;
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (!tabs || !tabs.length) {
-      return;
-    }
+    if (!tabs?.length) return;
 
     chrome.tabs.sendMessage(tabs[0].id, { type: 'tabUpdate', changeInfo, tab });
   });

@@ -2,5 +2,5 @@
 
 export const closeContent = () => {
   const container = document.getElementById('seenit-container');
-  container.parentNode.removeChild(container);
+  container?.parentNode?.removeChild(container);
 };

@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 import { FormGroup, InputGroup, Button, Intent } from '@blueprintjs/core';
 
 import { useLoginMutation, useRegisterMutation } from '../graphql';
-import { updateStorage } from '../browserService';
+import { updateStorage } from '../common/storage';
 
 export default withRouter(function Login({ history }) {
   const [form, setForm] = React.useState({
@@ -23,9 +23,6 @@ export default withRouter(function Login({ history }) {
           userData: user,
         },
       });
-
-      chrome.browserAction.setIcon({ path: 'icon48.png' });
-
       // TODO: consider moving this to completed since update might be called multiple times. Moved here since omplete isn't available on the 3rd party hook lib
     },
   };

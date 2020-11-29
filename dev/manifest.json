@@ -24,10 +24,10 @@
     },
     {
       "matches": [
-        "https://seenit.show/*"
+        "*://localhost/*"
       ],
       "js": [
-        "js/content.js"
+        "js/seenitContent.js"
       ]
     },
     {

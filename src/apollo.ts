@@ -5,7 +5,7 @@ import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
 
-import { getStorageValue, updateStorage } from './browserService';
+import { getStorageValue, updateStorage } from './common/storage';
 import introspectionQueryResultData from './graphql/fragments';
 import { debugLog } from './main';
 import { resolvers, typeDefs } from './resolvers';
@@ -40,7 +40,7 @@ const authLink = setContext((request, { headers }) =>
 const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach((err) => {
-      switch (err.extensions.code) {
+      switch (err.extensions?.code) {
         case 'UNAUTHENTICATED':
           cache.writeData({
             data: {
@@ -48,8 +48,7 @@ const errorLink = onError(({ graphQLErrors }) => {
               userData: null,
             },
           });
-          updateStorage({ token: null, userData: null });
-          chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
+          updateStorage({ token: null, user: null });
 
           debugLog('unauthenticated');
           return;

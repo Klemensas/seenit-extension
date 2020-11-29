@@ -39,6 +39,14 @@ module.exports = {
     'react/prop-types': false,
 
     'import/prefer-default-export': 'off',
+    'import/extensions': ['error', 'ignorePackages', {
+      js: 'never',
+      mjs: 'never',
+      jsx: 'never',
+      ts: 'never',
+      tsx: 'never',
+    }],
+
   },
   'settings': {
     'import/resolver': {
