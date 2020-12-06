@@ -5,13 +5,15 @@ import WatchedMovieForm from './WatchedMovieForm';
 import WatchedTvForm from './WatchedTvForm';
 
 interface TypeParams {
-  [ItemType.Movie]: [typeof useMovieQuery, string, typeof WatchedMovieForm];
-  [ItemType.Tv]: [typeof useTvQuery, string, typeof WatchedTvForm];
+  [ItemType.Movie]: [typeof useMovieQuery, typeof WatchedMovieForm];
+  [ItemType.Tv]: [typeof useTvQuery, typeof WatchedTvForm];
+  // [ItemType.Movie]: [typeof useMovieQuery, 'movie', typeof WatchedMovieForm];
+  // [ItemType.Tv]: [typeof useTvQuery, 'tv', typeof WatchedTvForm];
 }
 
 const typeParams: TypeParams = {
-  [ItemType.Movie]: [useMovieQuery, 'movie', WatchedMovieForm],
-  [ItemType.Tv]: [useTvQuery, 'tv', WatchedTvForm],
+  [ItemType.Movie]: [useMovieQuery, WatchedMovieForm],
+  [ItemType.Tv]: [useTvQuery, WatchedTvForm],
 };
 
 const WatchedForm: React.FC<{
@@ -27,26 +29,25 @@ const WatchedForm: React.FC<{
     onSave();
   }
 
-  const [query, param, Form] = typeParams[type];
+  const query = type === ItemType.Movie ? useMovieQuery : useTvQuery;
   const { data, loading } = query({
     variables: { id },
   });
 
-  if (loading) {
+  if (loading || !data) {
     return <div>Loading...</div>;
   }
 
-  const item = data[param];
-
-  const props = {
+  const partialProps = {
     season,
     episode,
-    item,
     onSubmit: addWatched,
     isLoading: loadingWatched,
   };
 
-  return <Form {...props} />;
+  if ('movie' in data) return <WatchedMovieForm {...partialProps} item={data.movie} />;
+
+  return <WatchedTvForm {...partialProps} item={data.tv} />;
 };
 
 export default WatchedForm;

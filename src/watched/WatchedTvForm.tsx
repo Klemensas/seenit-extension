@@ -25,13 +25,13 @@ interface EpisodeSelection {
   lastSeasonEpisode: boolean;
   lastSeason: boolean;
 }
-interface ItemSelection {
-  id: string;
-  name: string;
-  seasonName: string;
-  lastSeasonEpisode: boolean;
-  lastSeason: boolean;
-}
+// interface ItemSelection {
+//   id: string;
+//   name: string;
+//   seasonName: string;
+//   lastSeasonEpisode: boolean;
+//   lastSeason: boolean;
+// }
 
 const renderEpisode: ItemRenderer<EpisodeSelection> = (episode, { handleClick, modifiers, query }) => {
   if (!modifiers.matchesPredicate) {
@@ -50,7 +50,8 @@ const itemFilter = (query: string, items: EpisodeSelection[]) =>
   items.filter(({ name, seasonName }) => `${name} ${seasonName}`.toLowerCase().includes(query.toLowerCase()));
 
 const getSelectOptions = (seasons: TvQuery['tv']['seasons']) =>
-  seasons.reduce((acc: ItemSelection[], { season_number: season, episodes }, seasonIndex) => {
+  // seasons.reduce((acc: ItemSelection[], { season_number: season, episodes }, seasonIndex) => {
+  seasons.reduce((acc: EpisodeSelection[], { season_number: season, episodes }, seasonIndex) => {
     acc.push(
       ...episodes.map(({ id, name, episode_number: episode }, episodeIndex) => ({
         id,
@@ -94,7 +95,8 @@ const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoa
         ) : null}
         <div style={{ padding: '0 0.5em' }}>Did you enjoy watching {item.name}?</div>
       </div>
-      <Formik
+      <Formik<{ review: string; rating: number | null; createdAt: number; tvData: typeof tvData; tvItemId: string }>
+        // <Formik
         initialValues={{
           review: '',
           rating: null,
@@ -131,10 +133,10 @@ const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoa
                 popoverProps={{
                   fill: true,
                 }}
-                formatDate={date => date.toLocaleString()}
-                parseDate={str => new Date(str)}
+                formatDate={(date) => date.toLocaleString()}
+                parseDate={(str) => new Date(str)}
                 placeholder="M/D/YYYY"
-                onChange={date => setFieldValue('createdAt', +new Date(date))}
+                onChange={(date) => setFieldValue('createdAt', +new Date(date))}
                 value={new Date(values.createdAt)}
               />
             </FormGroup>
@@ -167,7 +169,11 @@ const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoa
               <TextArea fill growVertically large name="review" onChange={handleChange} value={values.review} />
             </FormGroup>
             <FormGroup label="Rating" labelFor="rating">
-              <Rating initialRating={values.rating} fractions={2} onChange={value => setFieldValue('rating', value)} />
+              <Rating
+                initialRating={values.rating || undefined}
+                fractions={2}
+                onChange={(value) => setFieldValue('rating', value)}
+              />
             </FormGroup>
             <Button type="submit" large fill intent={Intent.PRIMARY} loading={isLoading}>
               Add

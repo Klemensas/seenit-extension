@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, MenuItem, PopoverPosition } from '@blueprintjs/core';
-import { Select } from '@blueprintjs/select';
+import { ItemRenderer, Select } from '@blueprintjs/select';
 
 import { useSearchContentQuery, SearchItem } from '../graphql';
 
@@ -10,46 +10,36 @@ export interface SearchOption {
   item: SearchItem;
 }
 
+const renderOption: ItemRenderer<SearchOption> = ({ label, item }, { handleClick, modifiers }) => {
+  if (!modifiers.matchesPredicate) {
+    return null;
+  }
 
-const renderOption = ({ label, item }, { handleClick, modifiers }) => {
-  if (!modifiers.matchesPredicate) { return null; }
-
-  return (
-    <MenuItem
-      active={modifiers.active}
-      key={item.id}
-      text={label}
-      onClick={handleClick}
-    />
-  );
+  return <MenuItem active={modifiers.active} key={item.id} text={label} onClick={handleClick} />;
 };
 
 const Search: React.FC<{
-  selected?: SearchItem,
-  setSelected: React.Dispatch<React.SetStateAction<SearchItem>>,
-}> = ({
-  selected,
-  setSelected,
-}) => {
+  selected?: SearchItem;
+  setSelected: React.Dispatch<React.SetStateAction<SearchItem | null>>;
+}> = ({ selected, setSelected }) => {
   const [query, setQuery] = React.useState('');
 
   const searchQuery = useSearchContentQuery({
     variables: { title: query },
     skip: !query,
   });
-  const options = searchQuery.data && searchQuery.data.searchContent
-    ? searchQuery.data.searchContent.reduce(
-        (acc: SearchOption[], item) =>
-          acc.concat({
-            label: `${item.title} (${
-              (item.release_date || '?').split('-')[0]
-            })`,
-            value: item.id,
-            item,
-          }),
-        [],
-      )
-    : [];
+  const options =
+    searchQuery.data && searchQuery.data.searchContent
+      ? searchQuery.data.searchContent.reduce(
+          (acc: SearchOption[], item) =>
+            acc.concat({
+              label: `${item.title} (${(item.release_date || '?').split('-')[0]})`,
+              value: item.id,
+              item,
+            }),
+          [],
+        )
+      : [];
 
   return (
     <Select<SearchOption>
@@ -71,7 +61,7 @@ const Search: React.FC<{
         loading={searchQuery.loading}
         large
         minimal
-        text={selected ? selected.title : "Search..."}
+        text={selected ? selected.title : 'Search...'}
         className="bp3-fill"
       />
     </Select>

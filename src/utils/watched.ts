@@ -6,4 +6,6 @@ export const getSeasonEpisode = (seasons: Season[], episodeId: string) => {
 
     if (episode) return episode;
   }
+
+  return undefined;
 };

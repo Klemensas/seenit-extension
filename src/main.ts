@@ -31,7 +31,7 @@ export const getSettings = async () => {
   return newUser.settings;
 };
 
-export async function debugLog(...data) {
+export async function debugLog(...data: unknown[]) {
   // TODO: ADd debugging setting and check setttings. Is it really effective to fetch from storage every time?
   if (isProduction) return;
 

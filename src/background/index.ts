@@ -22,7 +22,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!changeInfo || changeInfo.status !== 'complete') return;
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (!tabs?.length) return;
+    if (!tabs?.[0].id) return;
 
     chrome.tabs.sendMessage(tabs[0].id, { type: 'tabUpdate', changeInfo, tab });
   });
@@ -33,8 +33,12 @@ function setupVideoContentPort(port: chrome.runtime.Port) {
 }
 
 function setupIframeContentPort(port: chrome.runtime.Port) {
+  const tabId = port.sender?.tab?.id;
+
+  if (!tabId) return;
+
   port.onMessage.addListener((message) => {
-    chrome.tabs.sendMessage(port.sender.tab.id, message);
+    chrome.tabs.sendMessage(tabId, message);
   });
 }
 

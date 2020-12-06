@@ -3,14 +3,17 @@ import * as React from 'react';
 import { useUserDataQuery, useUserWatchedQuery, Movie, Tv } from '../graphql';
 
 export default function Watched(): React.ReactElement {
-  const {
-    data: { userData },
-  } = useUserDataQuery();
+  // const {
+  //   data: { userData },
+  // } = useUserDataQuery();
+  const { data: userDataQuery } = useUserDataQuery();
+
   const { data, loading } = useUserWatchedQuery({
-    variables: { id: userData.id },
+    variables: { id: userDataQuery?.userData.id || '' },
+    skip: !userDataQuery,
   });
 
-  if (loading) {
+  if (loading || !data) {
     return <div>Loading...</div>;
   }
 

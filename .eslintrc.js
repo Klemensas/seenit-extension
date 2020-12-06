@@ -46,7 +46,11 @@ module.exports = {
       ts: 'never',
       tsx: 'never',
     }],
+    'react/require-default-props': false,
+    'react/no-unescaped-entities': false,
 
+    // TODO: this is deprecated and should be dropped on eslint update, remove and check other rules
+    'jsx-a11y/accessible-emoji': false,
   },
   'settings': {
     'import/resolver': {

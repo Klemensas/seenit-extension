@@ -12,7 +12,7 @@ const Settings = () => {
   const currentSettings = settingsData?.settings;
   const [updateSettings] = useUpdateSettingsMutation({
     update: (cache, { data }) => {
-      if (!data) return;
+      if (!data || !localUser) return;
 
       updateUserSettings(cache, {
         ...localUser.userData,
