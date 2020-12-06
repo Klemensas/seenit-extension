@@ -1,9 +1,9 @@
 import { debugLog, getSettings } from '../main';
 
 export interface RenderServiceState {
-  mutationObserver: MutationObserver;
-  videoEl: HTMLVideoElement;
-  videoData: VideoData;
+  mutationObserver: MutationObserver | null;
+  videoEl: HTMLVideoElement | null;
+  videoData: VideoData | null;
 }
 
 export interface TvData {
@@ -17,7 +17,7 @@ export interface Title extends Partial<TvData> {
 
 // TODO: consider if we want to fetch multiple title candidates
 export interface VideoData {
-  title: Title;
+  title: Title | null;
   isPlaying: boolean;
   startTimestamp: number;
   lastTimestamp: number;
@@ -27,6 +27,11 @@ export interface VideoData {
 
 export enum RenderAction {
   iframeVideoCb = 'iframe video callback',
+}
+
+export interface IframeVideoCallback {
+  type: RenderAction.iframeVideoCb;
+  payload: VideoData;
 }
 
 export default class RenderService {
@@ -66,18 +71,27 @@ export default class RenderService {
     this.getVideoElement();
   }
 
-  public handleIframeUpdate(message) {
-    if (this.isIframe) return;
+  public isValidVideoContentMessage(message: unknown): message is IframeVideoCallback {
+    if (this.isIframe) return false;
+    if (typeof message !== 'object') return false;
+    if (!message) return false;
+    if ('type' in message) return true;
+
+    return false;
+  }
+
+  public handleIframeUpdate(message: unknown) {
+    if (!this.isValidVideoContentMessage(message)) return;
 
     debugLog('msg', message);
+
     switch (message.type) {
       case RenderAction.iframeVideoCb: {
-        // Ignore iframe titles
-        // if (!message.payload.title) {
-        message.payload.title = RenderService.getTitlesFromHeading();
-        // }
-
-        this.triggerCb(message.payload);
+        this.triggerCb({
+          ...message.payload,
+          // Ignore iframe titles
+          title: RenderService.getTitlesFromHeading(),
+        });
         break;
       }
       default:
@@ -105,7 +119,7 @@ export default class RenderService {
         return;
       }
 
-      this.state.mutationObserver.disconnect();
+      this.state.mutationObserver?.disconnect();
       this.registerVideo(vEl);
     });
     this.state.mutationObserver.observe(document.body, {
@@ -122,15 +136,21 @@ export default class RenderService {
     this.state.videoEl = videoEl;
 
     videoEl.addEventListener('play', (event) => {
+      if (!this.state.videoEl) return;
+
       debugLog('play', event);
       this.onVideoPlay(this.state.videoEl, event);
     });
     videoEl.addEventListener('pause', (event) => {
+      if (!this.state.videoEl) return;
+
       debugLog('pause', event);
       this.onVideoPause(this.state.videoEl);
     });
     // Endedd triggers pause on netflix, does it everywhere?
     videoEl.addEventListener('ended', (event) => {
+      if (!this.state.videoEl) return;
+
       debugLog('ended', event);
       this.onVideoEnd(this.state.videoEl);
     });
@@ -144,12 +164,11 @@ export default class RenderService {
 
   private onVideoPlay(videoEl: HTMLVideoElement, event?: Event) {
     const timeTs = videoEl.currentTime;
-    if (!this.state.videoData) {
-      this.onStartVideo(videoEl);
-    }
+
+    if (!this.state.videoData) this.onStartVideo(videoEl);
 
     this.state.videoData = {
-      ...this.state.videoData,
+      ...(this.state.videoData as VideoData),
       isPlaying: true,
       startTimestamp: timeTs,
       lastTimestamp: timeTs,
@@ -162,8 +181,8 @@ export default class RenderService {
         ? this.state.videoData.title
         : RenderService.getTitlesFromHeading();
     this.state.videoData = {
-      ...this.state.videoData,
-      title,
+      ...(this.state.videoData as VideoData),
+      title: { name: 'adas-324-sdsa-das-dsa-d' },
       isPlaying: false,
       lastTimestamp: videoEl.currentTime,
     };
@@ -174,7 +193,7 @@ export default class RenderService {
 
   private onVideoEnd(videoEl: HTMLVideoElement) {
     this.state.videoData = {
-      ...this.state.videoData,
+      ...(this.state.videoData as VideoData),
       isPlaying: false,
       lastTimestamp: videoEl.currentTime,
     };
@@ -182,7 +201,7 @@ export default class RenderService {
 
   private onStartVideo(videoEl: HTMLVideoElement) {
     this.state.videoData = {
-      ...this.state.videoData,
+      ...(this.state.videoData as VideoData),
       playbackStartTime: Date.now(),
       duration: videoEl.duration,
       startTimestamp: videoEl.currentTime,
@@ -193,21 +212,19 @@ export default class RenderService {
   private async triggerCb(videoData: VideoData) {
     const settings = await getSettings();
     debugLog('pause video');
-    if (settings.extension.blacklist.every((item) => !new RegExp(item, 'i').test(window.location.href))) {
+    if (settings?.extension.blacklist.every((item) => !new RegExp(item, 'i').test(window.location.href))) {
       this.cb(videoData);
     }
   }
 
-  public static getTitlesFromHeading(): Title {
+  public static getTitlesFromHeading(): Title | null {
     const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
     const potentialTitles = Array.from(headings)
       .sort((a, b) => +a.tagName.slice(1) - +b.tagName.slice(1))
       .filter((node) => RenderService.isValidNode(node));
     const title = potentialTitles[0];
 
-    if (!title) {
-      return null;
-    }
+    if (!title?.textContent) return null;
 
     const name = title.textContent
       .toLowerCase()
@@ -235,18 +252,12 @@ export default class RenderService {
     return true;
   }
 
-  public static extractSeasonFromElement(title: Element): TvData {
-    let titleParent: Element;
-    try {
-      titleParent = title.parentElement.parentElement.parentElement;
-    } catch {
-      titleParent = title;
-    }
+  public static extractSeasonFromElement(title: Element): TvData | null {
+    const titleParent = title.parentElement?.parentElement?.parentElement || title;
 
-    const match = titleParent.textContent.match(/(s(eason|eries)?[^\w\d]*(\d+))[^\w\d]*(e(p|pisode)?[^\w\d]*(\d+))/im);
-    if (!match) {
-      return null;
-    }
+    const match = titleParent.textContent?.match(/(s(eason|eries)?[^\w\d]*(\d+))[^\w\d]*(e(p|pisode)?[^\w\d]*(\d+))/im);
+
+    if (!match) return null;
 
     return {
       season: match[3],
@@ -255,9 +266,9 @@ export default class RenderService {
   }
 
   private removeMutationObserver() {
-    if (this.state.mutationObserver) {
-      this.state.mutationObserver.disconnect();
-      this.state.mutationObserver = null;
-    }
+    if (!this.state.mutationObserver) return;
+
+    this.state.mutationObserver.disconnect();
+    this.state.mutationObserver = null;
   }
 }

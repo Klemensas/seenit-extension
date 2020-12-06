@@ -13,7 +13,7 @@ export default function AuthRoute({
   return (
     <IsUserLoggedInComponent client={apolloClient}>
       {({ data }) => {
-        return <Route {...rest} render={() => (data.isLoggedIn ? <Component /> : <Redirect to="/login" />)} />;
+        return <Route {...rest} render={() => (data?.isLoggedIn ? <Component /> : <Redirect to="/login" />)} />;
       }}
     </IsUserLoggedInComponent>
   );

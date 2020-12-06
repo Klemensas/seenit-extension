@@ -13,6 +13,8 @@ import { AddAutoTrackedDocument, AddAutoTrackedMutation } from '../graphql';
 const render = async (videoData: VideoData) => {
   const settings = await getSettings();
 
+  if (!settings) return;
+
   let container = document.getElementById('seenit-container');
   if (!container) {
     container = document.createElement('div');
@@ -29,9 +31,9 @@ const render = async (videoData: VideoData) => {
       variables: {
         createdAt: Date.now(),
         meta: {
-          title: videoData.title.name,
+          title: videoData.title?.name,
           tvData:
-            videoData.title.season || videoData.title.episode
+            videoData.title?.season || videoData.title?.episode
               ? {
                   season: videoData.title.season,
                   episode: videoData.title.episode,
@@ -62,12 +64,12 @@ const render = async (videoData: VideoData) => {
           text: 'Retry',
         },
       });
-    } else {
+    } else if (autoTrackedMutation?.data?.addAutoTracked) {
       const autoTrackedData = autoTrackedMutation.data.addAutoTracked;
       const autoTrackedItem = autoTrackedData.item;
       const tvData = autoTrackedData.tvItem;
 
-      if (!autoTrackedItem && !tvData) {
+      if (!autoTrackedItem) {
         Toaster.create(
           {
             position: 'top-right',
@@ -91,10 +93,11 @@ const render = async (videoData: VideoData) => {
       const name = 'name' in autoTrackedItem ? autoTrackedItem.name : autoTrackedItem.title;
 
       let tvMeta = '';
-      if ('episode_number' in tvData) {
-        tvMeta = `S${tvData.season.season_number}E${tvData.episode_number}`;
-      } else if ('season_number' in tvData) {
-        tvMeta = `S${tvData.season_number}`;
+      if (tvData) {
+        tvMeta =
+          'episode_number' in tvData
+            ? `S${tvData.season.season_number}E${tvData.episode_number}`
+            : `S${tvData.season_number}`;
       }
 
       Toaster.create(

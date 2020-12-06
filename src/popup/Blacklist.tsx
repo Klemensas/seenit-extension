@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import * as React from 'react';
 import { InputGroup, Button, FormGroup, Intent, Callout, Colors } from '@blueprintjs/core';
 

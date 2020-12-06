@@ -9,7 +9,7 @@ import { VideoData } from './renderService';
 
 import './Content.scss';
 
-export const VideoContext = React.createContext<VideoData>(null);
+export const VideoContext = React.createContext<VideoData | null>(null);
 
 const Content: React.FC<{ videoData: VideoData }> = ({ videoData }) => {
   return (

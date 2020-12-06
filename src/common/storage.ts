@@ -1,5 +1,5 @@
 export function getStorageValue<T = object>(...keys: string[]) {
-  return new Promise<T>((resolve) => chrome.storage.sync.get(keys, resolve));
+  return new Promise<T>((resolve) => chrome.storage.sync.get(keys, (value) => resolve(value as T)));
 }
 
 export function updateStorage<T = object>(value: T) {

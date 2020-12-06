@@ -364,7 +364,7 @@ export type SearchItem = {
   tmdbId: Scalars['Int'];
   title: Scalars['String'];
   release_date?: Maybe<Scalars['String']>;
-  type?: Maybe<ItemType>;
+  type: ItemType;
 };
 
 export type ReviewCursor = {

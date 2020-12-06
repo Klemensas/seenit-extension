@@ -1,8 +1,8 @@
 import { updateStorage } from '../common/storage';
 
-document.addEventListener('seenit-login', (event) => {
+document.addEventListener('seenit-login', () => {
   // TODO: user might be already logged, are we sure we want to override?
-  const token = JSON.parse(localStorage.getItem('seenit-web-token'));
+  const token = JSON.parse(localStorage.getItem('seenit-web-token') || '');
 
   updateStorage({
     token,

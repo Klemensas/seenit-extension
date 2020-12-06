@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { withRouter } from 'react-router';
 import { FormGroup, InputGroup, Button, Intent } from '@blueprintjs/core';
+import { FetchResult } from 'apollo-link';
+import { DataProxy } from 'apollo-cache';
 
-import { useLoginMutation, useRegisterMutation } from '../graphql';
+import { LoginMutation, RegisterMutation, useLoginMutation, useRegisterMutation } from '../graphql';
 import { updateStorage } from '../common/storage';
 
 export default withRouter(function Login({ history }) {
@@ -14,8 +16,11 @@ export default withRouter(function Login({ history }) {
   const [isLogin, setLogin] = React.useState(true);
   const mutationParams = {
     variables: form,
-    update: (cache, { data }) => {
-      const { token, user } = data.login ? data.login : data.register;
+    update: (cache: DataProxy, { data }: FetchResult<LoginMutation | RegisterMutation>) => {
+      if (!data) return;
+
+      const { token, user } = 'login' in data ? data.login : data.register;
+
       updateStorage({ token, user });
       cache.writeData({
         data: {
@@ -26,23 +31,18 @@ export default withRouter(function Login({ history }) {
       // TODO: consider moving this to completed since update might be called multiple times. Moved here since omplete isn't available on the 3rd party hook lib
     },
   };
-  // const {
-  //   data: { isLoggedIn },
-  // } = useIsUserLoggedInQuery();
 
-  let auth;
-  if (isLogin) {
-    [auth] = useLoginMutation(mutationParams);
-  } else {
-    [auth] = useRegisterMutation(mutationParams);
-  }
+  const targetMutation = isLogin ? useLoginMutation : useRegisterMutation;
+  const [auth] = targetMutation(mutationParams);
 
   return (
     <React.Fragment>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          auth().then(() => history.push('/'));
+        onSubmit={async (event) => {
+          event.preventDefault();
+
+          await auth();
+          history.push('/');
         }}
       >
         {!isLogin && (
@@ -51,7 +51,7 @@ export default withRouter(function Login({ history }) {
               id="name-input"
               large
               leftIcon="user"
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, name: event.target.value })}
               placeholder="John Doe"
               value={form.name}
             />
@@ -63,7 +63,7 @@ export default withRouter(function Login({ history }) {
             large
             type="email"
             leftIcon="envelope"
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, email: event.target.value })}
             placeholder="you@mail.com"
             value={form.email}
           />
@@ -74,7 +74,9 @@ export default withRouter(function Login({ history }) {
             large
             type="password"
             leftIcon="lock"
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setForm({ ...form, password: event.target.value })
+            }
             placeholder="Your password"
             value={form.password}
           />

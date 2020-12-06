@@ -24,7 +24,7 @@ const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
         ) : null}
         <div style={{ padding: '0 0.5em' }}>Did you enjoy watching {item.title}?</div>
       </div>
-      <Formik
+      <Formik<{ review: string; rating: number | null; createdAt: number }>
         enableReinitialize
         initialValues={{
           review: '',
@@ -58,10 +58,10 @@ const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
                 popoverProps={{
                   fill: true,
                 }}
-                formatDate={date => date.toLocaleString()}
-                parseDate={str => new Date(str)}
+                formatDate={(date) => date.toLocaleString()}
+                parseDate={(str) => new Date(str)}
                 placeholder="M/D/YYYY"
-                onChange={date => setFieldValue('createdAt', +new Date(date))}
+                onChange={(date) => setFieldValue('createdAt', +new Date(date))}
                 value={new Date(values.createdAt)}
               />
             </FormGroup>
@@ -69,7 +69,11 @@ const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
               <TextArea fill growVertically large name="review" onChange={handleChange} value={values.review} />
             </FormGroup>
             <FormGroup label="Rating" labelFor="rating">
-              <Rating initialRating={values.rating} fractions={2} onChange={value => setFieldValue('rating', value)} />
+              <Rating
+                initialRating={values.rating || undefined}
+                fractions={2}
+                onChange={(value) => setFieldValue('rating', value)}
+              />
             </FormGroup>
             <Button type="submit" large fill intent={Intent.PRIMARY} loading={isLoading}>
               Add

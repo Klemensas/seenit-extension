@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, Icon, Text } from '@blueprintjs/core';
 
-import { useSearchContentQuery, SearchItem } from '../graphql';
+import { useSearchContentQuery, SearchItem, SearchContentQuery } from '../graphql';
 import { VideoContext } from '../content/Content';
 import Search from './Search';
 import WatchedForm from './WatchedForm';
@@ -9,7 +9,7 @@ import ProgressBar from '../components/ProgressBar';
 import { closeContent } from '../utils/close';
 
 function renderSearch(
-  setSelected: React.Dispatch<React.SetStateAction<SearchItem>>,
+  setSelected: React.Dispatch<React.SetStateAction<SearchItem | null>>,
   prefix: React.ReactNode = <div>Couldn&apos;t find your watched title</div>,
 ) {
   return (
@@ -22,12 +22,13 @@ function renderSearch(
 
 const VideoEnd = () => {
   const videoData = React.useContext(VideoContext);
-  const [selected, setSelected] = React.useState<SearchItem>(null);
+  const [selected, setSelected] = React.useState<SearchItem | null>(null);
   const [searching, setSearching] = React.useState<boolean>(false);
   const [isSaved, setIsSaved] = React.useState<boolean>(false);
-  const title = videoData.title || null;
+  const title = videoData?.title || null;
   const { data, loading, error } = useSearchContentQuery({
-    variables: { title: title ? title.name : null },
+    // TODO: this is needed because title type says it can be undefined, but skip prevents that. See if this can be changed
+    variables: { title: title?.name || '' },
     skip: !title,
   });
 
@@ -35,7 +36,7 @@ const VideoEnd = () => {
     return renderSearch(setSelected);
   }
 
-  let items = [];
+  let items: SearchContentQuery['searchContent'] = [];
   if (data && data.searchContent) {
     const { searchContent } = data;
     items = searchContent;
@@ -70,8 +71,8 @@ const VideoEnd = () => {
 
   const target = selected || item;
 
-  const season = Number.isNaN(parseInt(title.season, 10)) ? undefined : parseInt(title.season, 10);
-  const episode = Number.isNaN(parseInt(title.episode, 10)) ? undefined : parseInt(title.episode, 10);
+  const season = (title?.season && parseInt(title.season, 10)) || undefined;
+  const episode = (title?.episode && parseInt(title.episode, 10)) || undefined;
   const props = {
     id: target.id,
     type: target.type,
