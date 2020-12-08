@@ -1,4 +1,4 @@
-import { Resolvers, gql } from '@apollo/client';
+import { Resolvers, gql, ApolloCache } from '@apollo/client';
 
 import { updateStorage } from './common/storage';
 
@@ -10,9 +10,20 @@ export const typeDefs = gql`
 
 export const resolvers: Resolvers = {
   Mutation: {
-    logout: (root, variables, { cache }) => {
+    logout: (root, variables, { cache }: { cache: ApolloCache<unknown> }) => {
       updateStorage({ token: null, user: null });
-      cache.writeData({ data: { isLoggedIn: false, userData: null } });
+      cache.writeQuery({
+        query: gql`
+          {
+            isLoggedIn
+            userData
+          }
+        `,
+        data: {
+          isLoggedIn: false,
+          userData: null,
+        },
+      });
 
       return true;
     },

@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloLink, gql, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { createHttpLink } from '@apollo/client/link/http';
@@ -11,7 +11,13 @@ import { resolvers, typeDefs } from './resolvers';
 export const cache = new InMemoryCache({ possibleTypes: introspectionQueryResultData.possibleTypes });
 
 getStorageValue<{ token?: string; user?: object }>('token', 'user').then(({ token, user }) => {
-  cache.writeData({
+  cache.writeQuery({
+    query: gql`
+      {
+        isLoggedIn
+        userData
+      }
+    `,
     data: {
       isLoggedIn: !!token,
       userData: user || null,
@@ -37,7 +43,13 @@ const errorLink = onError(({ graphQLErrors }) => {
     graphQLErrors.forEach((err) => {
       switch (err.extensions?.code) {
         case 'UNAUTHENTICATED':
-          cache.writeData({
+          cache.writeQuery({
+            query: gql`
+              {
+                isLoggedIn
+                userData
+              }
+            `,
             data: {
               isLoggedIn: false,
               userData: null,
