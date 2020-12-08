@@ -1,5 +1,4 @@
-import { Resolvers } from 'apollo-client';
-import gql from 'graphql-tag';
+import { Resolvers, gql } from '@apollo/client';
 
 import { updateStorage } from './common/storage';
 

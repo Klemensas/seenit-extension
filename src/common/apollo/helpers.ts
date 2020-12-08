@@ -1,4 +1,4 @@
-import { DataProxy } from 'apollo-cache';
+import { DataProxy } from '@apollo/client';
 
 import { updateStorage } from '../storage';
 import { UserDataQuery, SettingsDocument } from '../../graphql';

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/client';
 import * as ReactDOM from 'react-dom';
 import { MemoryRouter } from 'react-router';
 

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router';
 import { FormGroup, InputGroup, Button, Intent } from '@blueprintjs/core';
-import { FetchResult } from 'apollo-link';
-import { DataProxy } from 'apollo-cache';
+import { DataProxy, FetchResult } from '@apollo/client';
 
 import { LoginMutation, RegisterMutation, useLoginMutation, useRegisterMutation } from '../graphql';
 import { updateStorage } from '../common/storage';

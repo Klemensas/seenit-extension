@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MutationFunction } from 'react-apollo';
+import { MutationFunction } from '@apollo/client';
 import { Formik } from 'formik';
 import Rating from 'react-rating';
 import {

@@ -10,6 +10,16 @@ generates:
       - 'typescript-operations'
       - 'typescript-react-apollo'
     config:
+      withComponent: true
+      withHOC: false
       withHooks: true
-  src/graphql/fragments.ts:
-    - 'fragment-matcher'
+      reactApolloVersion: 3
+      gqlImport: '@apollo/client#gql'
+  src/graphql/introspection.ts:
+    plugins:
+      - 'fragment-matcher'
+    config:
+      apolloClientVersion: 3
+hooks:
+  afterAllFileWrite:
+    - prettier --write
