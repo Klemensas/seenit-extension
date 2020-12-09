@@ -21,5 +21,5 @@ export function addStoreChangeListener(callback: StoreChangeCallback, target: st
 chrome.storage.onChanged.addListener((changes) => {
   if (!Object.keys(registeredCallbacks).length) return;
 
-  Object.entries(changes).forEach(([key, value]) => registeredCallbacks[key].forEach((cb) => cb(value)));
+  Object.entries(changes).forEach(([key, value]) => registeredCallbacks[key]?.forEach((cb) => cb(value)));
 });
