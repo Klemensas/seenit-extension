@@ -24,12 +24,10 @@ export default withRouter(function Login({ history }) {
       cache.writeQuery({
         query: gql`
           {
-            isLoggedIn
             userData
           }
         `,
         data: {
-          isLoggedIn: true,
           userData: user,
         },
       });

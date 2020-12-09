@@ -6,7 +6,7 @@ import { createHttpLink } from '@apollo/client/link/http';
 import { getStorageValue, updateStorage } from './common/storage';
 import introspectionQueryResultData from './graphql/introspection';
 import { debugLog } from './main';
-import { resolvers, typeDefs } from './resolvers';
+import { resolvers } from './resolvers';
 
 export const cache = new InMemoryCache({ possibleTypes: introspectionQueryResultData.possibleTypes });
 
@@ -14,13 +14,11 @@ getStorageValue<{ token?: string; user?: object }>('token', 'user').then(({ toke
   cache.writeQuery({
     query: gql`
       {
-        isLoggedIn
         userData
       }
     `,
     data: {
-      isLoggedIn: !!token,
-      userData: user || null,
+      userData: (token && user) || null,
     },
   });
 });
@@ -46,12 +44,10 @@ const errorLink = onError(({ graphQLErrors }) => {
           cache.writeQuery({
             query: gql`
               {
-                isLoggedIn
                 userData
               }
             `,
             data: {
-              isLoggedIn: false,
               userData: null,
             },
           });
@@ -71,5 +67,4 @@ export const apolloClient = new ApolloClient({
   resolvers,
   connectToDevTools: true,
   link: ApolloLink.from([errorLink, authLink, httpLink]),
-  typeDefs,
 });

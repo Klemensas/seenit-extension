@@ -24,7 +24,6 @@ export type Query = {
   autoTracked: AutoTracked;
   autoTrackedList: AutoTrackedCursor;
   episode: Episode;
-  isLoggedIn: Scalars['Boolean'];
   me: User;
   movie: Movie;
   reviews: ReviewCursor;
@@ -741,10 +740,6 @@ export type UserWatchedQuery = { __typename?: 'Query' } & {
     };
 };
 
-export type IsUserLoggedInQueryVariables = Exact<{ [key: string]: never }>;
-
-export type IsUserLoggedInQuery = { __typename?: 'Query' } & Pick<Query, 'isLoggedIn'>;
-
 export type UserDataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserDataQuery = { __typename?: 'Query' } & {
@@ -1324,51 +1319,6 @@ export function useUserWatchedLazyQuery(
 export type UserWatchedQueryHookResult = ReturnType<typeof useUserWatchedQuery>;
 export type UserWatchedLazyQueryHookResult = ReturnType<typeof useUserWatchedLazyQuery>;
 export type UserWatchedQueryResult = Apollo.QueryResult<UserWatchedQuery, UserWatchedQueryVariables>;
-export const IsUserLoggedInDocument = gql`
-  query IsUserLoggedIn {
-    isLoggedIn @client
-  }
-`;
-export type IsUserLoggedInComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>,
-  'query'
->;
-
-export const IsUserLoggedInComponent = (props: IsUserLoggedInComponentProps) => (
-  <ApolloReactComponents.Query<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>
-    query={IsUserLoggedInDocument}
-    {...props}
-  />
-);
-
-/**
- * __useIsUserLoggedInQuery__
- *
- * To run a query within a React component, call `useIsUserLoggedInQuery` and pass it any options that fit your needs.
- * When your component renders, `useIsUserLoggedInQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useIsUserLoggedInQuery({
- *   variables: {
- *   },
- * });
- */
-export function useIsUserLoggedInQuery(
-  baseOptions?: Apollo.QueryHookOptions<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>,
-) {
-  return Apollo.useQuery<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>(IsUserLoggedInDocument, baseOptions);
-}
-export function useIsUserLoggedInLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>,
-) {
-  return Apollo.useLazyQuery<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>(IsUserLoggedInDocument, baseOptions);
-}
-export type IsUserLoggedInQueryHookResult = ReturnType<typeof useIsUserLoggedInQuery>;
-export type IsUserLoggedInLazyQueryHookResult = ReturnType<typeof useIsUserLoggedInLazyQuery>;
-export type IsUserLoggedInQueryResult = Apollo.QueryResult<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>;
 export const UserDataDocument = gql`
   query UserData {
     userData @client {

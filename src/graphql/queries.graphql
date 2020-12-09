@@ -35,10 +35,6 @@ query UserWatched($id: ID!, $cursor: String) {
   }
 }
 
-query IsUserLoggedIn {
-  isLoggedIn @client
-}
-
 query UserData {
   userData @client {
     id
