@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router';
 import { FormGroup, InputGroup, Button, Intent } from '@blueprintjs/core';
-import { FetchResult } from 'apollo-link';
-import { DataProxy } from 'apollo-cache';
+import { DataProxy, FetchResult, gql } from '@apollo/client';
 
 import { LoginMutation, RegisterMutation, useLoginMutation, useRegisterMutation } from '../graphql';
 import { updateStorage } from '../common/storage';
@@ -22,9 +21,13 @@ export default withRouter(function Login({ history }) {
       const { token, user } = 'login' in data ? data.login : data.register;
 
       updateStorage({ token, user });
-      cache.writeData({
+      cache.writeQuery({
+        query: gql`
+          {
+            userData
+          }
+        `,
         data: {
-          isLoggedIn: true,
           userData: user,
         },
       });

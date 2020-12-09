@@ -1,25 +1,24 @@
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import ApolloClient from 'apollo-client';
-import { ApolloLink } from 'apollo-link';
-import { setContext } from 'apollo-link-context';
-import { onError } from 'apollo-link-error';
-import { createHttpLink } from 'apollo-link-http';
+import { ApolloClient, ApolloLink, gql, InMemoryCache } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+import { onError } from '@apollo/client/link/error';
+import { createHttpLink } from '@apollo/client/link/http';
 
 import { getStorageValue, updateStorage } from './common/storage';
-import introspectionQueryResultData from './graphql/fragments';
+import introspectionQueryResultData from './graphql/introspection';
 import { debugLog } from './main';
-import { resolvers, typeDefs } from './resolvers';
+import { resolvers } from './resolvers';
 
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData,
-});
-export const cache = new InMemoryCache({ fragmentMatcher });
+export const cache = new InMemoryCache({ possibleTypes: introspectionQueryResultData.possibleTypes });
 
 getStorageValue<{ token?: string; user?: object }>('token', 'user').then(({ token, user }) => {
-  cache.writeData({
+  cache.writeQuery({
+    query: gql`
+      {
+        userData
+      }
+    `,
     data: {
-      isLoggedIn: !!token,
-      userData: user || null,
+      userData: (token && user) || null,
     },
   });
 });
@@ -42,9 +41,13 @@ const errorLink = onError(({ graphQLErrors }) => {
     graphQLErrors.forEach((err) => {
       switch (err.extensions?.code) {
         case 'UNAUTHENTICATED':
-          cache.writeData({
+          cache.writeQuery({
+            query: gql`
+              {
+                userData
+              }
+            `,
             data: {
-              isLoggedIn: false,
               userData: null,
             },
           });
@@ -64,5 +67,4 @@ export const apolloClient = new ApolloClient({
   resolvers,
   connectToDevTools: true,
   link: ApolloLink.from([errorLink, authLink, httpLink]),
-  typeDefs,
 });
