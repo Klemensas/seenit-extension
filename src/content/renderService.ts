@@ -182,7 +182,7 @@ export default class RenderService {
         : RenderService.getTitlesFromHeading();
     this.state.videoData = {
       ...(this.state.videoData as VideoData),
-      title: { name: 'adas-324-sdsa-das-dsa-d' },
+      title,
       isPlaying: false,
       lastTimestamp: videoEl.currentTime,
     };

@@ -6,6 +6,7 @@ import { closeContent } from '../utils/close';
 export default function CloseContent() {
   return (
     <Button
+      className="close-content"
       style={{
         position: 'absolute',
         right: 0,
