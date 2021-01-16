@@ -124,3 +124,30 @@ query Me {
     }
   }
 }
+
+query AutoTracked($id: ID!) {
+  autoTracked(id: $id) {
+    id
+    tvItem {
+      ... on Season {
+        season_number
+      }
+      ... on Episode {
+        episode_number
+        season {
+          season_number
+        }
+      }
+    }
+    item {
+      ... on Movie {
+        id
+        title
+      }
+      ... on Tv {
+        id
+        name
+      }
+    }
+  }
+}

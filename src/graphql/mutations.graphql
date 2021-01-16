@@ -140,3 +140,9 @@ mutation UpdateSettings($general: GeneralSettingsInput!, $extension: ExtensionSe
     }
   }
 }
+
+mutation ConvertAutoTracked($ids: [ID!]!) {
+  convertAutoTracked(ids: $ids) {
+    removedIds
+  }
+}

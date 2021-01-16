@@ -30,7 +30,7 @@ export type Query = {
   searchContent: Array<SearchItem>;
   season: Season;
   seasons: Array<Season>;
-  settings?: Maybe<Settings>;
+  settings: Settings;
   tv: Tv;
   user: User;
   userData: User;
@@ -719,6 +719,14 @@ export type UpdateSettingsMutation = { __typename?: 'Mutation' } & {
   };
 };
 
+export type ConvertAutoTrackedMutationVariables = Exact<{
+  ids: Array<Scalars['ID']>;
+}>;
+
+export type ConvertAutoTrackedMutation = { __typename?: 'Mutation' } & {
+  convertAutoTracked: { __typename?: 'ConvertedAutoTracked' } & Pick<ConvertedAutoTracked, 'removedIds'>;
+};
+
 export type UserWatchedQueryVariables = Exact<{
   id: Scalars['ID'];
   cursor?: Maybe<Scalars['String']>;
@@ -789,15 +797,13 @@ export type MovieQuery = { __typename?: 'Query' } & {
 export type SettingsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SettingsQuery = { __typename?: 'Query' } & {
-  settings?: Maybe<
-    { __typename?: 'Settings' } & {
-      general: { __typename?: 'GeneralSettings' } & Pick<GeneralSettings, 'autoConvert'>;
-      extension: { __typename?: 'ExtensionSettings' } & Pick<
-        ExtensionSettings,
-        'autoTrack' | 'minLengthSeconds' | 'blacklist'
-      >;
-    }
-  >;
+  settings: { __typename?: 'Settings' } & {
+    general: { __typename?: 'GeneralSettings' } & Pick<GeneralSettings, 'autoConvert'>;
+    extension: { __typename?: 'ExtensionSettings' } & Pick<
+      ExtensionSettings,
+      'autoTrack' | 'minLengthSeconds' | 'blacklist'
+    >;
+  };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -811,6 +817,24 @@ export type MeQuery = { __typename?: 'Query' } & {
           'autoTrack' | 'minLengthSeconds' | 'blacklist'
         >;
       };
+    };
+};
+
+export type AutoTrackedQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type AutoTrackedQuery = { __typename?: 'Query' } & {
+  autoTracked: { __typename?: 'AutoTracked' } & Pick<AutoTracked, 'id'> & {
+      tvItem?: Maybe<
+        | ({ __typename?: 'Season' } & Pick<Season, 'season_number'>)
+        | ({ __typename?: 'Episode' } & Pick<Episode, 'episode_number'> & {
+              season: { __typename?: 'Season' } & Pick<Season, 'season_number'>;
+            })
+      >;
+      item?: Maybe<
+        ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title'>) | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name'>)
+      >;
     };
 };
 
@@ -1243,6 +1267,60 @@ export type UpdateSettingsMutationOptions = Apollo.BaseMutationOptions<
   UpdateSettingsMutation,
   UpdateSettingsMutationVariables
 >;
+export const ConvertAutoTrackedDocument = gql`
+  mutation ConvertAutoTracked($ids: [ID!]!) {
+    convertAutoTracked(ids: $ids) {
+      removedIds
+    }
+  }
+`;
+export type ConvertAutoTrackedMutationFn = Apollo.MutationFunction<
+  ConvertAutoTrackedMutation,
+  ConvertAutoTrackedMutationVariables
+>;
+export type ConvertAutoTrackedComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<ConvertAutoTrackedMutation, ConvertAutoTrackedMutationVariables>,
+  'mutation'
+>;
+
+export const ConvertAutoTrackedComponent = (props: ConvertAutoTrackedComponentProps) => (
+  <ApolloReactComponents.Mutation<ConvertAutoTrackedMutation, ConvertAutoTrackedMutationVariables>
+    mutation={ConvertAutoTrackedDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useConvertAutoTrackedMutation__
+ *
+ * To run a mutation, you first call `useConvertAutoTrackedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConvertAutoTrackedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [convertAutoTrackedMutation, { data, loading, error }] = useConvertAutoTrackedMutation({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useConvertAutoTrackedMutation(
+  baseOptions?: Apollo.MutationHookOptions<ConvertAutoTrackedMutation, ConvertAutoTrackedMutationVariables>,
+) {
+  return Apollo.useMutation<ConvertAutoTrackedMutation, ConvertAutoTrackedMutationVariables>(
+    ConvertAutoTrackedDocument,
+    baseOptions,
+  );
+}
+export type ConvertAutoTrackedMutationHookResult = ReturnType<typeof useConvertAutoTrackedMutation>;
+export type ConvertAutoTrackedMutationResult = Apollo.MutationResult<ConvertAutoTrackedMutation>;
+export type ConvertAutoTrackedMutationOptions = Apollo.BaseMutationOptions<
+  ConvertAutoTrackedMutation,
+  ConvertAutoTrackedMutationVariables
+>;
 export const UserWatchedDocument = gql`
   query UserWatched($id: ID!, $cursor: String) {
     user(id: $id) {
@@ -1620,3 +1698,68 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const AutoTrackedDocument = gql`
+  query AutoTracked($id: ID!) {
+    autoTracked(id: $id) {
+      id
+      tvItem {
+        ... on Season {
+          season_number
+        }
+        ... on Episode {
+          episode_number
+          season {
+            season_number
+          }
+        }
+      }
+      item {
+        ... on Movie {
+          id
+          title
+        }
+        ... on Tv {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+export type AutoTrackedComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<AutoTrackedQuery, AutoTrackedQueryVariables>,
+  'query'
+> &
+  ({ variables: AutoTrackedQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const AutoTrackedComponent = (props: AutoTrackedComponentProps) => (
+  <ApolloReactComponents.Query<AutoTrackedQuery, AutoTrackedQueryVariables> query={AutoTrackedDocument} {...props} />
+);
+
+/**
+ * __useAutoTrackedQuery__
+ *
+ * To run a query within a React component, call `useAutoTrackedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAutoTrackedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAutoTrackedQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAutoTrackedQuery(baseOptions: Apollo.QueryHookOptions<AutoTrackedQuery, AutoTrackedQueryVariables>) {
+  return Apollo.useQuery<AutoTrackedQuery, AutoTrackedQueryVariables>(AutoTrackedDocument, baseOptions);
+}
+export function useAutoTrackedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<AutoTrackedQuery, AutoTrackedQueryVariables>,
+) {
+  return Apollo.useLazyQuery<AutoTrackedQuery, AutoTrackedQueryVariables>(AutoTrackedDocument, baseOptions);
+}
+export type AutoTrackedQueryHookResult = ReturnType<typeof useAutoTrackedQuery>;
+export type AutoTrackedLazyQueryHookResult = ReturnType<typeof useAutoTrackedLazyQuery>;
+export type AutoTrackedQueryResult = Apollo.QueryResult<AutoTrackedQuery, AutoTrackedQueryVariables>;
