@@ -54,40 +54,62 @@
   }
 }
 
-$spacing-unit: 4px;
-.pb {
-  &-1 {
-    padding-bottom: $spacing-unit;
-  }
+$baseSize: 4px;
+$sizes: (
+  '0': 0,
+  '1': $baseSize * 1,
+  '2': $baseSize * 2,
+  '3': $baseSize * 4,
+  '4': $baseSize * 8,
+) !default;
 
-  &-2 {
-    padding-bottom: $spacing-unit * 2;
-  }
+$spacings: (
+  'm': 'margin',
+  'p': 'padding',
+);
 
-  &-3 {
-    padding-bottom: $spacing-unit * 4;
-  }
+$directions: (
+  'y': (
+    'top',
+    'bottom',
+  ),
+  'x': (
+    'left',
+    'right',
+  ),
+  't': (
+    'top',
+  ),
+  'r': (
+    'right',
+  ),
+  'b': (
+    'bottom',
+  ),
+  'l': (
+    'left',
+  ),
+);
 
-  &-4 {
-    padding-bottom: $spacing-unit * 8;
-  }
-}
+@each $shorthand, $property in $spacings {
+  .#{$shorthand} {
+    @each $size, $value in $sizes {
+      &-#{$size} {
+        #{$property}: $value;
+      }
+    }
 
-.mb {
-  &-1 {
-    margin-bottom: $spacing-unit;
-  }
-
-  &-2 {
-    margin-bottom: $spacing-unit * 2;
-  }
-
-  &-3 {
-    margin-bottom: $spacing-unit * 4;
-  }
-
-  &-4 {
-    margin-bottom: $spacing-unit * 8;
+    @each $direction, $modifiers in $directions {
+      &#{$direction} {
+        @each $size, $value in $sizes {
+          &-#{$size} {
+            @each $modifier in $modifiers {
+              #{$property}-#{$modifier}: $value;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
