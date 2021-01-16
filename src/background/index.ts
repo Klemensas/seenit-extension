@@ -4,7 +4,7 @@ import { debugLog } from '../main';
 chrome.runtime.onInstalled.addListener(async (event) => {
   // chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
 
-  const { token } = await getStorageValue<{ token: string | null }>('token');
+  const { token } = await getStorageValue('token');
 
   if (!token) chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
 });

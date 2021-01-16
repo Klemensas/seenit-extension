@@ -1,5 +1,5 @@
-import { getStorageValue, updateStorage } from './common/storage';
-import { UserDataQuery, MeDocument, MeQuery } from './graphql';
+import { getStorageValue, hasUserData, updateStorage } from './common/storage';
+import { MeDocument, MeQuery } from './graphql';
 import { apolloClient } from './apollo';
 import { isProduction } from './utils/helpers';
 
@@ -15,13 +15,11 @@ async function getUserData() {
 }
 
 export const getSettings = async () => {
-  const { user, lastUserSync } = await getStorageValue<{
-    user: UserDataQuery['userData'] | null;
-    lastUserSync: number;
-  }>('user', 'lastUserSync');
+  const { user, lastUserSync } = await getStorageValue('user', 'lastUserSync');
 
-  const nextSync = lastUserSync + syncInterval - Date.now();
-  if (nextSync > 0) return user?.settings;
+  const lastSyncTime = typeof lastUserSync === 'number' ? lastUserSync : 0;
+  const nextSync = lastSyncTime + syncInterval - Date.now();
+  if (nextSync > 0 && hasUserData(user)) return user.settings;
 
   const newUser = await getUserData();
   const syncTime = Date.now();

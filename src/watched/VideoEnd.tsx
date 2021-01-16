@@ -32,9 +32,7 @@ const VideoEnd = () => {
     skip: !title,
   });
 
-  if (!title && !selected) {
-    return renderSearch(setSelected);
-  }
+  if (!title && !selected) return renderSearch(setSelected);
 
   let items: SearchContentQuery['searchContent'] = [];
   if (data && data.searchContent) {
@@ -44,17 +42,9 @@ const VideoEnd = () => {
 
   const item = items[0];
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Unexpected error!</div>;
-  }
-
-  if (!items.length && !selected) {
-    return renderSearch(setSelected);
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Unexpected error!</div>;
+  if (!items.length && !selected) return renderSearch(setSelected);
 
   if (isSaved) {
     return (
