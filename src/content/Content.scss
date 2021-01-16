@@ -4,17 +4,56 @@
   @import '../styles/main';
   @import '../styles/blueprint-overrides';
 
-  &.popup-container {
+  .notification-layout,
+  .dialog-layout {
     position: fixed;
     bottom: 5vmin;
     right: 5vmin;
+    z-index: 999999999;
+  }
+
+  .dialog-layout {
     width: 320px;
     min-height: 400px;
     background: white;
     color: black;
-    z-index: 999999999;
     border: 1px solid rgba($black, 0.25);
     padding: 24px 12px 12px;
     box-shadow: 0 0 4px 1px rgba($dark-gray2, 0.25);
+  }
+
+  .notification-layout {
+    .card-intent-danger {
+      background-color: $pt-intent-danger;
+    }
+
+    .card-intent-warning {
+      background-color: $pt-intent-warning;
+    }
+
+    .card-intent-success {
+      background-color: $pt-intent-success;
+    }
+
+    .bp3-text-muted {
+      color: rgba($pt-dark-text-color, 0.7);
+    }
+
+    .card-intent-danger,
+    .card-intent-warning,
+    .card-intent-success {
+      color: $pt-dark-text-color;
+      padding: 8px;
+
+      .bp3-icon,
+      .bp3-button {
+        color: rgba($pt-dark-text-color, 0.7);
+
+        &:active,
+        &:hover {
+          color: $pt-dark-text-color;
+        }
+      }
+    }
   }
 }
