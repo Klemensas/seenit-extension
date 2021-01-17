@@ -18,7 +18,6 @@ const render = async (videoData: VideoData) => {
   let container = document.getElementById('seenit-container');
   if (!container) {
     container = document.createElement('div');
-    container.setAttribute('class', 'popup-container');
     container.setAttribute('id', 'seenit-container');
   }
 

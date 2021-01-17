@@ -18,14 +18,18 @@ const Content: React.FC<{ videoData: VideoData }> = ({ videoData }) => {
   return (
     <VideoContext.Provider value={videoData}>
       <Switch>
-        <DialogLayout>
-          <Route exact path="/login" component={Login} />
-          <AuthRoute exact path="/edit-auto-tracked/:id" component={EditAutoTracked} />
-          <AuthRoute exact path="/" component={VideoEnd} />
-        </DialogLayout>
-        <NotificationLayout>
-          <AuthRoute exact path="/tracked" component={TrackResult} />
-        </NotificationLayout>
+        <Route exact path={['/login', '/edit-auto-tracked/:id', '/']}>
+          <DialogLayout>
+            <Route exact path="/login" component={Login} />
+            <AuthRoute exact path="/edit-auto-tracked/:id" component={EditAutoTracked} />
+            <AuthRoute exact path="/" component={VideoEnd} />
+          </DialogLayout>
+        </Route>
+        <Route exact path={['/tracked']}>
+          <NotificationLayout>
+            <AuthRoute exact path="/tracked" component={TrackResult} />
+          </NotificationLayout>
+        </Route>
       </Switch>
     </VideoContext.Provider>
   );
