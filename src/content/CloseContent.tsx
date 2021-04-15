@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button } from '@blueprintjs/core';
 
-import { closeContent } from '../utils/close';
+import { closeContent } from '../utils/helpers';
 
 export default function CloseContent() {
   return (

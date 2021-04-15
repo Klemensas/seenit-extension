@@ -27,8 +27,6 @@
 }
 
 .bp3-progress-bar {
-  color: red;
-
   &--custom {
     height: 4px;
 
@@ -43,6 +41,10 @@
 
   &-between {
     justify-content: space-between;
+  }
+
+  &-end {
+    justify-content: flex-end;
   }
 
   &-direction-column {

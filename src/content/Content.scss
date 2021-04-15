@@ -23,16 +23,32 @@
   }
 
   .notification-layout {
+    .card-notification {
+      overflow: hidden;
+      position: relative;
+      color: $pt-dark-text-color;
+      // Add to bottom padding height of progressbar
+      padding: 8px 8px 12px;
+    }
+
     .card-intent-danger {
       background-color: $pt-intent-danger;
     }
-
     .card-intent-warning {
       background-color: $pt-intent-warning;
     }
-
     .card-intent-success {
       background-color: $pt-intent-success;
+    }
+
+    .bp3-intent-danger .bp3-progress-meter {
+      background-color: darken($pt-intent-danger, 20%);
+    }
+    .bp3-intent-warning .bp3-progress-meter {
+      background-color: darken($pt-intent-warning, 20%);
+    }
+    .bp3-intent-success .bp3-progress-meter {
+      background-color: darken($pt-intent-success, 20%);
     }
 
     .bp3-text-muted {
@@ -42,9 +58,6 @@
     .card-intent-danger,
     .card-intent-warning,
     .card-intent-success {
-      color: $pt-dark-text-color;
-      padding: 8px;
-
       .bp3-icon,
       .bp3-button {
         color: rgba($pt-dark-text-color, 0.7);
@@ -54,6 +67,13 @@
           color: $pt-dark-text-color;
         }
       }
+    }
+
+    .card-progressbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      border-radius: 0;
     }
   }
 }

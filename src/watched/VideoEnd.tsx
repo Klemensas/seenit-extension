@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Button, Icon, Text } from '@blueprintjs/core';
+import { Button, Icon, Intent, Text } from '@blueprintjs/core';
 
 import { useSearchContentQuery, SearchItem, SearchContentQuery } from '../graphql';
 import { VideoContext } from '../content/Content';
 import Search from './Search';
 import WatchedForm from './WatchedForm';
 import ProgressBar from '../components/ProgressBar';
-import { closeContent } from '../utils/close';
+import { closeContent } from '../utils/helpers';
 
 function renderSearch(
   setSelected: React.Dispatch<React.SetStateAction<SearchItem | null>>,
@@ -54,7 +54,7 @@ const VideoEnd = () => {
         <Text tagName="p" className="mb-4">
           The show was added to your watched item list
         </Text>
-        <ProgressBar duration={2500} onRest={closeContent} />
+        <ProgressBar duration={2500} intent={Intent.SUCCESS} onRest={closeContent} />
       </div>
     );
   }

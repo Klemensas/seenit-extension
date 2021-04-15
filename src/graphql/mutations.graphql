@@ -87,6 +87,47 @@ mutation AddWatched(
   }
 }
 
+fragment ItemData on Item {
+  ... on Movie {
+    id
+    title
+  }
+  ... on Tv {
+    id
+    name
+  }
+}
+
+fragment TvItemData on TvItem {
+  ... on Season {
+    season_number
+  }
+  ... on Episode {
+    episode_number
+    season {
+      season_number
+    }
+  }
+}
+
+fragment EditableWatched on Watched {
+  id
+  itemType
+  createdAt
+  tvItem {
+    ...TvItemData
+  }
+  item {
+    ...ItemData
+  }
+  rating {
+    value
+  }
+  review {
+    body
+  }
+}
+
 mutation AddAutoTracked(
   $meta: AutoTrackedMetaInput!
   $createdAt: Float!
@@ -95,7 +136,7 @@ mutation AddAutoTracked(
   $tvItemId: ID
   $tvItemType: TvItemType
 ) {
-  addAutoTracked(
+  autoTracked: addAutoTracked(
     meta: $meta
     createdAt: $createdAt
     itemId: $itemId
@@ -103,27 +144,17 @@ mutation AddAutoTracked(
     tvItemId: $tvItemId
     tvItemType: $tvItemType
   ) {
-    id
-    tvItem {
-      ... on Season {
-        season_number
+    ... on AutoTracked {
+      id
+      tvItem {
+        ...TvItemData
       }
-      ... on Episode {
-        episode_number
-        season {
-          season_number
-        }
+      trackedItem: item {
+        ...ItemData
       }
     }
-    item {
-      ... on Movie {
-        id
-        title
-      }
-      ... on Tv {
-        id
-        name
-      }
+    ... on Watched {
+      ...EditableWatched
     }
   }
 }
@@ -144,5 +175,16 @@ mutation UpdateSettings($general: GeneralSettingsInput!, $extension: ExtensionSe
 mutation ConvertAutoTracked($ids: [ID!]!) {
   convertAutoTracked(ids: $ids) {
     removedIds
+    watched {
+      ...EditableWatched
+    }
   }
+}
+
+mutation RemoveAutoTracked($ids: [ID!]!) {
+  removeAutoTracked(ids: $ids)
+}
+
+mutation RemoveWatched($itemId: ID!) {
+  removeWatched(itemId: $itemId)
 }
