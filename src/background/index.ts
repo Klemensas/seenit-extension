@@ -1,5 +1,4 @@
 import { addStoreChangeListener, getStorageValue } from '../common/storage';
-import { debugLog } from '../main';
 
 chrome.runtime.onInstalled.addListener(async (event) => {
   // chrome.browserAction.setIcon({ path: 'icon48-inactive.png' });
@@ -57,4 +56,9 @@ chrome.runtime.onConnect.addListener((port) => {
     default:
       break;
   }
+});
+
+// Listen and respond to site availability check
+chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+  if (typeof message === 'string' && message === 'ping') return sendResponse('pong');
 });
