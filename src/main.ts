@@ -1,5 +1,5 @@
-import { getStorageValue, updateStorage } from './common/storage';
-import { UserDataQuery, MeDocument, MeQuery } from './graphql';
+import { getStorageValue, hasUserData, updateStorage } from './common/storage';
+import { MeDocument, MeQuery } from './graphql';
 import { apolloClient } from './apollo';
 import { isProduction } from './utils/helpers';
 
@@ -14,21 +14,25 @@ async function getUserData() {
   return data.me;
 }
 
-export const getSettings = async () => {
-  const { user, lastUserSync } = await getStorageValue<{
-    user: UserDataQuery['userData'] | null;
-    lastUserSync: number;
-  }>('user', 'lastUserSync');
+export const getStorageUser = async () => {
+  const { user, lastUserSync } = await getStorageValue('user', 'lastUserSync');
 
-  const nextSync = lastUserSync + syncInterval - Date.now();
-  if (nextSync > 0) return user?.settings;
+  const lastSyncTime = typeof lastUserSync === 'number' ? lastUserSync : 0;
+  const nextSync = lastSyncTime + syncInterval - Date.now();
+  if (nextSync > 0 && hasUserData(user)) return user;
 
   const newUser = await getUserData();
   const syncTime = Date.now();
 
   await updateStorage({ user: newUser, lastUserSync: syncTime });
 
-  return newUser.settings;
+  return newUser;
+};
+
+export const getStorageSettings = async () => {
+  const user = await getStorageUser();
+
+  return user.settings;
 };
 
 export async function debugLog(...data: unknown[]) {

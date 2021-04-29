@@ -1,42 +1,30 @@
+import { Spinner } from '@blueprintjs/core';
 import * as React from 'react';
 
-import { useAddWatchedMutation, useTvQuery, useMovieQuery, ItemType } from '../graphql';
+import { useAddWatchedMutation, useTvQuery, useMovieQuery, ItemType, EditableWatchedFragment } from '../graphql';
 import WatchedMovieForm from './WatchedMovieForm';
 import WatchedTvForm from './WatchedTvForm';
 
-interface TypeParams {
-  [ItemType.Movie]: [typeof useMovieQuery, typeof WatchedMovieForm];
-  [ItemType.Tv]: [typeof useTvQuery, typeof WatchedTvForm];
-  // [ItemType.Movie]: [typeof useMovieQuery, 'movie', typeof WatchedMovieForm];
-  // [ItemType.Tv]: [typeof useTvQuery, 'tv', typeof WatchedTvForm];
-}
-
-const typeParams: TypeParams = {
-  [ItemType.Movie]: [useMovieQuery, WatchedMovieForm],
-  [ItemType.Tv]: [useTvQuery, WatchedTvForm],
-};
-
-const WatchedForm: React.FC<{
+interface WatchedFormProps {
   id: string;
   type: ItemType;
   season?: number;
   episode?: number;
-  onSave?: () => void;
-}> = ({ id, type, season, episode, onSave }) => {
-  const [addWatched, { loading: loadingWatched, data: mutationResult }] = useAddWatchedMutation();
+  onSave?: (watched: EditableWatchedFragment) => void;
+}
 
-  if (mutationResult && onSave) {
-    onSave();
-  }
+const WatchedForm = ({ id, type, season, episode, onSave }: WatchedFormProps) => {
+  const [addWatched, { loading: loadingWatched }] = useAddWatchedMutation({
+    onCompleted: (data) => onSave?.(data.addWatched),
+  });
 
   const query = type === ItemType.Movie ? useMovieQuery : useTvQuery;
   const { data, loading } = query({
     variables: { id },
   });
 
-  if (loading || !data) {
-    return <div>Loading...</div>;
-  }
+  // TODO: need to handle errors here, both mutation and fetching.
+  if (loading || !data) return <Spinner />;
 
   const partialProps = {
     season,

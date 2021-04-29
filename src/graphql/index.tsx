@@ -30,7 +30,7 @@ export type Query = {
   searchContent: Array<SearchItem>;
   season: Season;
   seasons: Array<Season>;
-  settings?: Maybe<Settings>;
+  settings: Settings;
   tv: Tv;
   user: User;
   userData: User;
@@ -413,7 +413,7 @@ export type AutoTrackedMetaTvData = {
 export type Mutation = {
   __typename?: 'Mutation';
   _?: Maybe<Scalars['Boolean']>;
-  addAutoTracked: AutoTracked;
+  addAutoTracked: AutoTrackedResult;
   addWatched: Watched;
   convertAutoTracked: ConvertedAutoTracked;
   editWatched: Watched;
@@ -515,6 +515,8 @@ export type TvDataInput = {
   season?: Maybe<Scalars['String']>;
   episode?: Maybe<Scalars['String']>;
 };
+
+export type AutoTrackedResult = AutoTracked | Watched;
 
 export type ConvertedAutoTracked = {
   __typename?: 'ConvertedAutoTracked';
@@ -675,11 +677,32 @@ export type AddWatchedMutationVariables = Exact<{
 }>;
 
 export type AddWatchedMutation = { __typename?: 'Mutation' } & {
-  addWatched: { __typename?: 'Watched' } & Pick<Watched, 'id' | 'itemType' | 'createdAt'> & {
-      rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
-      review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
-    };
+  addWatched: { __typename?: 'Watched' } & EditableWatchedFragment;
 };
+
+type ItemData_Movie_Fragment = { __typename?: 'Movie' } & Pick<Movie, 'id' | 'title'>;
+
+type ItemData_Tv_Fragment = { __typename?: 'Tv' } & Pick<Tv, 'id' | 'name'>;
+
+export type ItemDataFragment = ItemData_Movie_Fragment | ItemData_Tv_Fragment;
+
+type TvItemData_Season_Fragment = { __typename?: 'Season' } & Pick<Season, 'season_number'>;
+
+type TvItemData_Episode_Fragment = { __typename?: 'Episode' } & Pick<Episode, 'episode_number'> & {
+    season: { __typename?: 'Season' } & Pick<Season, 'season_number'>;
+  };
+
+export type TvItemDataFragment = TvItemData_Season_Fragment | TvItemData_Episode_Fragment;
+
+export type EditableWatchedFragment = { __typename?: 'Watched' } & Pick<Watched, 'id' | 'itemType' | 'createdAt'> & {
+    tvItem?: Maybe<
+      | ({ __typename?: 'Season' } & TvItemData_Season_Fragment)
+      | ({ __typename?: 'Episode' } & TvItemData_Episode_Fragment)
+    >;
+    item: ({ __typename?: 'Movie' } & ItemData_Movie_Fragment) | ({ __typename?: 'Tv' } & ItemData_Tv_Fragment);
+    rating?: Maybe<{ __typename?: 'Rating' } & Pick<Rating, 'value'>>;
+    review?: Maybe<{ __typename?: 'Review' } & Pick<Review, 'body'>>;
+  };
 
 export type AddAutoTrackedMutationVariables = Exact<{
   meta: AutoTrackedMetaInput;
@@ -691,17 +714,17 @@ export type AddAutoTrackedMutationVariables = Exact<{
 }>;
 
 export type AddAutoTrackedMutation = { __typename?: 'Mutation' } & {
-  addAutoTracked: { __typename?: 'AutoTracked' } & Pick<AutoTracked, 'id'> & {
-      tvItem?: Maybe<
-        | ({ __typename?: 'Season' } & Pick<Season, 'season_number'>)
-        | ({ __typename?: 'Episode' } & Pick<Episode, 'episode_number'> & {
-              season: { __typename?: 'Season' } & Pick<Season, 'season_number'>;
-            })
-      >;
-      item?: Maybe<
-        ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title'>) | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name'>)
-      >;
-    };
+  autoTracked:
+    | ({ __typename?: 'AutoTracked' } & Pick<AutoTracked, 'id'> & {
+          tvItem?: Maybe<
+            | ({ __typename?: 'Season' } & TvItemData_Season_Fragment)
+            | ({ __typename?: 'Episode' } & TvItemData_Episode_Fragment)
+          >;
+          trackedItem?: Maybe<
+            ({ __typename?: 'Movie' } & ItemData_Movie_Fragment) | ({ __typename?: 'Tv' } & ItemData_Tv_Fragment)
+          >;
+        })
+    | ({ __typename?: 'Watched' } & EditableWatchedFragment);
 };
 
 export type UpdateSettingsMutationVariables = Exact<{
@@ -718,6 +741,28 @@ export type UpdateSettingsMutation = { __typename?: 'Mutation' } & {
     >;
   };
 };
+
+export type ConvertAutoTrackedMutationVariables = Exact<{
+  ids: Array<Scalars['ID']>;
+}>;
+
+export type ConvertAutoTrackedMutation = { __typename?: 'Mutation' } & {
+  convertAutoTracked: { __typename?: 'ConvertedAutoTracked' } & Pick<ConvertedAutoTracked, 'removedIds'> & {
+      watched: Array<{ __typename?: 'Watched' } & EditableWatchedFragment>;
+    };
+};
+
+export type RemoveAutoTrackedMutationVariables = Exact<{
+  ids: Array<Scalars['ID']>;
+}>;
+
+export type RemoveAutoTrackedMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeAutoTracked'>;
+
+export type RemoveWatchedMutationVariables = Exact<{
+  itemId: Scalars['ID'];
+}>;
+
+export type RemoveWatchedMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'removeWatched'>;
 
 export type UserWatchedQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -789,15 +834,13 @@ export type MovieQuery = { __typename?: 'Query' } & {
 export type SettingsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SettingsQuery = { __typename?: 'Query' } & {
-  settings?: Maybe<
-    { __typename?: 'Settings' } & {
-      general: { __typename?: 'GeneralSettings' } & Pick<GeneralSettings, 'autoConvert'>;
-      extension: { __typename?: 'ExtensionSettings' } & Pick<
-        ExtensionSettings,
-        'autoTrack' | 'minLengthSeconds' | 'blacklist'
-      >;
-    }
-  >;
+  settings: { __typename?: 'Settings' } & {
+    general: { __typename?: 'GeneralSettings' } & Pick<GeneralSettings, 'autoConvert'>;
+    extension: { __typename?: 'ExtensionSettings' } & Pick<
+      ExtensionSettings,
+      'autoTrack' | 'minLengthSeconds' | 'blacklist'
+    >;
+  };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -814,6 +857,70 @@ export type MeQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type AutoTrackedQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type AutoTrackedQuery = { __typename?: 'Query' } & {
+  autoTracked: { __typename?: 'AutoTracked' } & Pick<AutoTracked, 'id'> & {
+      tvItem?: Maybe<
+        | ({ __typename?: 'Season' } & Pick<Season, 'season_number'>)
+        | ({ __typename?: 'Episode' } & Pick<Episode, 'episode_number'> & {
+              season: { __typename?: 'Season' } & Pick<Season, 'season_number'>;
+            })
+      >;
+      item?: Maybe<
+        ({ __typename?: 'Movie' } & Pick<Movie, 'id' | 'title'>) | ({ __typename?: 'Tv' } & Pick<Tv, 'id' | 'name'>)
+      >;
+    };
+};
+
+export const TvItemDataFragmentDoc = gql`
+  fragment TvItemData on TvItem {
+    ... on Season {
+      season_number
+    }
+    ... on Episode {
+      episode_number
+      season {
+        season_number
+      }
+    }
+  }
+`;
+export const ItemDataFragmentDoc = gql`
+  fragment ItemData on Item {
+    ... on Movie {
+      id
+      title
+    }
+    ... on Tv {
+      id
+      name
+    }
+  }
+`;
+export const EditableWatchedFragmentDoc = gql`
+  fragment EditableWatched on Watched {
+    id
+    itemType
+    createdAt
+    tvItem {
+      ...TvItemData
+    }
+    item {
+      ...ItemData
+    }
+    rating {
+      value
+    }
+    review {
+      body
+    }
+  }
+  ${TvItemDataFragmentDoc}
+  ${ItemDataFragmentDoc}
+`;
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -1037,17 +1144,10 @@ export const AddWatchedDocument = gql`
       tvItemId: $tvItemId
       tvItemType: $tvItemType
     ) {
-      id
-      itemType
-      createdAt
-      rating {
-        value
-      }
-      review {
-        body
-      }
+      ...EditableWatched
     }
   }
+  ${EditableWatchedFragmentDoc}
 `;
 export type AddWatchedMutationFn = Apollo.MutationFunction<AddWatchedMutation, AddWatchedMutationVariables>;
 export type AddWatchedComponentProps = Omit<
@@ -1102,7 +1202,7 @@ export const AddAutoTrackedDocument = gql`
     $tvItemId: ID
     $tvItemType: TvItemType
   ) {
-    addAutoTracked(
+    autoTracked: addAutoTracked(
       meta: $meta
       createdAt: $createdAt
       itemId: $itemId
@@ -1110,30 +1210,23 @@ export const AddAutoTrackedDocument = gql`
       tvItemId: $tvItemId
       tvItemType: $tvItemType
     ) {
-      id
-      tvItem {
-        ... on Season {
-          season_number
+      ... on AutoTracked {
+        id
+        tvItem {
+          ...TvItemData
         }
-        ... on Episode {
-          episode_number
-          season {
-            season_number
-          }
+        trackedItem: item {
+          ...ItemData
         }
       }
-      item {
-        ... on Movie {
-          id
-          title
-        }
-        ... on Tv {
-          id
-          name
-        }
+      ... on Watched {
+        ...EditableWatched
       }
     }
   }
+  ${TvItemDataFragmentDoc}
+  ${ItemDataFragmentDoc}
+  ${EditableWatchedFragmentDoc}
 `;
 export type AddAutoTrackedMutationFn = Apollo.MutationFunction<AddAutoTrackedMutation, AddAutoTrackedMutationVariables>;
 export type AddAutoTrackedComponentProps = Omit<
@@ -1242,6 +1335,162 @@ export type UpdateSettingsMutationResult = Apollo.MutationResult<UpdateSettingsM
 export type UpdateSettingsMutationOptions = Apollo.BaseMutationOptions<
   UpdateSettingsMutation,
   UpdateSettingsMutationVariables
+>;
+export const ConvertAutoTrackedDocument = gql`
+  mutation ConvertAutoTracked($ids: [ID!]!) {
+    convertAutoTracked(ids: $ids) {
+      removedIds
+      watched {
+        ...EditableWatched
+      }
+    }
+  }
+  ${EditableWatchedFragmentDoc}
+`;
+export type ConvertAutoTrackedMutationFn = Apollo.MutationFunction<
+  ConvertAutoTrackedMutation,
+  ConvertAutoTrackedMutationVariables
+>;
+export type ConvertAutoTrackedComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<ConvertAutoTrackedMutation, ConvertAutoTrackedMutationVariables>,
+  'mutation'
+>;
+
+export const ConvertAutoTrackedComponent = (props: ConvertAutoTrackedComponentProps) => (
+  <ApolloReactComponents.Mutation<ConvertAutoTrackedMutation, ConvertAutoTrackedMutationVariables>
+    mutation={ConvertAutoTrackedDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useConvertAutoTrackedMutation__
+ *
+ * To run a mutation, you first call `useConvertAutoTrackedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConvertAutoTrackedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [convertAutoTrackedMutation, { data, loading, error }] = useConvertAutoTrackedMutation({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useConvertAutoTrackedMutation(
+  baseOptions?: Apollo.MutationHookOptions<ConvertAutoTrackedMutation, ConvertAutoTrackedMutationVariables>,
+) {
+  return Apollo.useMutation<ConvertAutoTrackedMutation, ConvertAutoTrackedMutationVariables>(
+    ConvertAutoTrackedDocument,
+    baseOptions,
+  );
+}
+export type ConvertAutoTrackedMutationHookResult = ReturnType<typeof useConvertAutoTrackedMutation>;
+export type ConvertAutoTrackedMutationResult = Apollo.MutationResult<ConvertAutoTrackedMutation>;
+export type ConvertAutoTrackedMutationOptions = Apollo.BaseMutationOptions<
+  ConvertAutoTrackedMutation,
+  ConvertAutoTrackedMutationVariables
+>;
+export const RemoveAutoTrackedDocument = gql`
+  mutation RemoveAutoTracked($ids: [ID!]!) {
+    removeAutoTracked(ids: $ids)
+  }
+`;
+export type RemoveAutoTrackedMutationFn = Apollo.MutationFunction<
+  RemoveAutoTrackedMutation,
+  RemoveAutoTrackedMutationVariables
+>;
+export type RemoveAutoTrackedComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<RemoveAutoTrackedMutation, RemoveAutoTrackedMutationVariables>,
+  'mutation'
+>;
+
+export const RemoveAutoTrackedComponent = (props: RemoveAutoTrackedComponentProps) => (
+  <ApolloReactComponents.Mutation<RemoveAutoTrackedMutation, RemoveAutoTrackedMutationVariables>
+    mutation={RemoveAutoTrackedDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useRemoveAutoTrackedMutation__
+ *
+ * To run a mutation, you first call `useRemoveAutoTrackedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAutoTrackedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAutoTrackedMutation, { data, loading, error }] = useRemoveAutoTrackedMutation({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useRemoveAutoTrackedMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveAutoTrackedMutation, RemoveAutoTrackedMutationVariables>,
+) {
+  return Apollo.useMutation<RemoveAutoTrackedMutation, RemoveAutoTrackedMutationVariables>(
+    RemoveAutoTrackedDocument,
+    baseOptions,
+  );
+}
+export type RemoveAutoTrackedMutationHookResult = ReturnType<typeof useRemoveAutoTrackedMutation>;
+export type RemoveAutoTrackedMutationResult = Apollo.MutationResult<RemoveAutoTrackedMutation>;
+export type RemoveAutoTrackedMutationOptions = Apollo.BaseMutationOptions<
+  RemoveAutoTrackedMutation,
+  RemoveAutoTrackedMutationVariables
+>;
+export const RemoveWatchedDocument = gql`
+  mutation RemoveWatched($itemId: ID!) {
+    removeWatched(itemId: $itemId)
+  }
+`;
+export type RemoveWatchedMutationFn = Apollo.MutationFunction<RemoveWatchedMutation, RemoveWatchedMutationVariables>;
+export type RemoveWatchedComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<RemoveWatchedMutation, RemoveWatchedMutationVariables>,
+  'mutation'
+>;
+
+export const RemoveWatchedComponent = (props: RemoveWatchedComponentProps) => (
+  <ApolloReactComponents.Mutation<RemoveWatchedMutation, RemoveWatchedMutationVariables>
+    mutation={RemoveWatchedDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useRemoveWatchedMutation__
+ *
+ * To run a mutation, you first call `useRemoveWatchedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveWatchedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeWatchedMutation, { data, loading, error }] = useRemoveWatchedMutation({
+ *   variables: {
+ *      itemId: // value for 'itemId'
+ *   },
+ * });
+ */
+export function useRemoveWatchedMutation(
+  baseOptions?: Apollo.MutationHookOptions<RemoveWatchedMutation, RemoveWatchedMutationVariables>,
+) {
+  return Apollo.useMutation<RemoveWatchedMutation, RemoveWatchedMutationVariables>(RemoveWatchedDocument, baseOptions);
+}
+export type RemoveWatchedMutationHookResult = ReturnType<typeof useRemoveWatchedMutation>;
+export type RemoveWatchedMutationResult = Apollo.MutationResult<RemoveWatchedMutation>;
+export type RemoveWatchedMutationOptions = Apollo.BaseMutationOptions<
+  RemoveWatchedMutation,
+  RemoveWatchedMutationVariables
 >;
 export const UserWatchedDocument = gql`
   query UserWatched($id: ID!, $cursor: String) {
@@ -1620,3 +1869,68 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const AutoTrackedDocument = gql`
+  query AutoTracked($id: ID!) {
+    autoTracked(id: $id) {
+      id
+      tvItem {
+        ... on Season {
+          season_number
+        }
+        ... on Episode {
+          episode_number
+          season {
+            season_number
+          }
+        }
+      }
+      item {
+        ... on Movie {
+          id
+          title
+        }
+        ... on Tv {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+export type AutoTrackedComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<AutoTrackedQuery, AutoTrackedQueryVariables>,
+  'query'
+> &
+  ({ variables: AutoTrackedQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const AutoTrackedComponent = (props: AutoTrackedComponentProps) => (
+  <ApolloReactComponents.Query<AutoTrackedQuery, AutoTrackedQueryVariables> query={AutoTrackedDocument} {...props} />
+);
+
+/**
+ * __useAutoTrackedQuery__
+ *
+ * To run a query within a React component, call `useAutoTrackedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAutoTrackedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAutoTrackedQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAutoTrackedQuery(baseOptions: Apollo.QueryHookOptions<AutoTrackedQuery, AutoTrackedQueryVariables>) {
+  return Apollo.useQuery<AutoTrackedQuery, AutoTrackedQueryVariables>(AutoTrackedDocument, baseOptions);
+}
+export function useAutoTrackedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<AutoTrackedQuery, AutoTrackedQueryVariables>,
+) {
+  return Apollo.useLazyQuery<AutoTrackedQuery, AutoTrackedQueryVariables>(AutoTrackedDocument, baseOptions);
+}
+export type AutoTrackedQueryHookResult = ReturnType<typeof useAutoTrackedQuery>;
+export type AutoTrackedLazyQueryHookResult = ReturnType<typeof useAutoTrackedLazyQuery>;
+export type AutoTrackedQueryResult = Apollo.QueryResult<AutoTrackedQuery, AutoTrackedQueryVariables>;

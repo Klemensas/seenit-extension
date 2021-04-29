@@ -50,11 +50,11 @@ const Settings = () => {
 
                 <FormGroup
                   label="Auto tracked"
-                  helperText="Enabling this saves identified auto tracked items directly to your watched list instead of a draft"
+                  helperText="Enabling this publishes identified auto tracked items directly to your watched list instead of saving them as a draft first"
                 >
                   <Switch
                     name="general.autoConvert"
-                    label="Automatically save eligible items"
+                    label="Automatically publish eligible items"
                     checked={values.general.autoConvert}
                     onChange={handleChange}
                   />

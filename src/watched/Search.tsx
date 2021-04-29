@@ -18,10 +18,13 @@ const renderOption: ItemRenderer<SearchOption> = ({ label, item }, { handleClick
   return <MenuItem active={modifiers.active} key={item.id} text={label} onClick={handleClick} />;
 };
 
-const Search: React.FC<{
+interface SearchProps {
   selected?: SearchItem;
   setSelected: React.Dispatch<React.SetStateAction<SearchItem | null>>;
-}> = ({ selected, setSelected }) => {
+  placeholderText?: string;
+}
+
+const Search = ({ selected, setSelected, placeholderText = 'Search...' }: SearchProps) => {
   const [query, setQuery] = React.useState('');
 
   const searchQuery = useSearchContentQuery({
@@ -61,7 +64,7 @@ const Search: React.FC<{
         loading={searchQuery.loading}
         large
         minimal
-        text={selected ? selected.title : 'Search...'}
+        text={selected ? selected.title : placeholderText}
         className="bp3-fill"
       />
     </Select>

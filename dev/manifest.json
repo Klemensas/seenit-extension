@@ -24,7 +24,8 @@
     },
     {
       "matches": [
-        "*://localhost/*"
+        "*://localhost/*",
+        "*://dev.local/*"
       ],
       "js": [
         "js/seenitContent.js"
@@ -40,6 +41,11 @@
       "all_frames": true
     }
   ],
+  "externally_connectable": {
+    "matches": [
+      "*://dev.local/*"
+    ]
+  },
   "background": {
     "scripts": [
       "js/background.js"

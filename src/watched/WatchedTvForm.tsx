@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { MutationFunction } from '@apollo/client';
 import { Formik } from 'formik';
-import Rating from 'react-rating';
 import {
   FormGroup,
   TextArea,
@@ -16,6 +15,7 @@ import { DateInput } from '@blueprintjs/datetime';
 import { ItemRenderer, Suggest } from '@blueprintjs/select';
 
 import { TvQuery, AddWatchedMutation, AddWatchedMutationVariables, ItemType, TvItemType } from '../graphql';
+import RatingInput from './RatingInput';
 
 interface EpisodeSelection {
   id: string;
@@ -25,18 +25,9 @@ interface EpisodeSelection {
   lastSeasonEpisode: boolean;
   lastSeason: boolean;
 }
-// interface ItemSelection {
-//   id: string;
-//   name: string;
-//   seasonName: string;
-//   lastSeasonEpisode: boolean;
-//   lastSeason: boolean;
-// }
 
 const renderEpisode: ItemRenderer<EpisodeSelection> = (episode, { handleClick, modifiers, query }) => {
-  if (!modifiers.matchesPredicate) {
-    return null;
-  }
+  if (!modifiers.matchesPredicate) return null;
 
   return (
     <React.Fragment key={episode.id}>
@@ -50,7 +41,6 @@ const itemFilter = (query: string, items: EpisodeSelection[]) =>
   items.filter(({ name, seasonName }) => `${name} ${seasonName}`.toLowerCase().includes(query.toLowerCase()));
 
 const getSelectOptions = (seasons: TvQuery['tv']['seasons']) =>
-  // seasons.reduce((acc: ItemSelection[], { season_number: season, episodes }, seasonIndex) => {
   seasons.reduce((acc: EpisodeSelection[], { season_number: season, episodes }, seasonIndex) => {
     acc.push(
       ...episodes.map(({ id, name, episode_number: episode }, episodeIndex) => ({
@@ -74,36 +64,31 @@ interface Props {
   isLoading: boolean;
 }
 
-const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoading }) => {
+const WatchedTvForm = ({ item, season, episode, onSubmit, isLoading }: Props) => {
   const seasons = item.seasons || [];
   const options = getSelectOptions(seasons);
-  const tvData =
-    season || episode
-      ? {
-          season,
-          episode,
-        }
-      : null;
+  const tvItemId =
+    (season && episode
+      ? seasons
+          .find(({ season_number }) => season_number === season)
+          ?.episodes.find(({ episode_number }) => episode_number === episode)?.id
+      : '') || '';
 
   return (
-    <React.Fragment>
-      <div style={{ display: 'flex' }}>
-        {item.poster_path ? (
-          <div>
-            <img src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} alt="" />
-          </div>
-        ) : null}
-        <div style={{ padding: '0 0.5em' }}>Did you enjoy watching {item.name}?</div>
-      </div>
-      <Formik<{ review: string; rating: number | null; createdAt: number; tvData: typeof tvData; tvItemId: string }>
-        // <Formik
+    <div className="flex">
+      {item.poster_path && (
+        <div className="pr-3">
+          <img src={`https://image.tmdb.org/t/p/w185${item.poster_path}`} width="185" alt={`Poster for ${item.name}`} />
+        </div>
+      )}
+      <Formik<{ review: string; rating: number | null; createdAt: number; tvItemId: string }>
         initialValues={{
           review: '',
           rating: null,
           createdAt: Date.now(),
-          tvData,
-          tvItemId: '',
+          tvItemId,
         }}
+        // TODO: submitting resetting results in a noop and a warning, adress this
         onSubmit={(values, actions) =>
           onSubmit({
             variables: {
@@ -127,12 +112,16 @@ const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoa
         }
       >
         {({ values, handleChange, handleSubmit, setFieldValue }) => (
-          <form onSubmit={handleSubmit}>
-            <FormGroup label="Date" labelFor="createdAt">
+          <form onSubmit={handleSubmit} className="flex-grow">
+            <FormGroup label="Watched on" labelFor="createdAt">
               <DateInput
                 popoverProps={{
+                  minimal: true,
                   fill: true,
+                  usePortal: false,
+                  position: PopoverPosition.TOP,
                 }}
+                timePrecision="second"
                 formatDate={(date) => date.toLocaleString()}
                 parseDate={(str) => new Date(str)}
                 placeholder="M/D/YYYY"
@@ -140,7 +129,12 @@ const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoa
                 value={new Date(values.createdAt)}
               />
             </FormGroup>
-            <FormGroup label="Episode" labelFor="tvItemId" helperText="Empty episode field indicates the whole show">
+            <FormGroup
+              label="Episode"
+              labelFor="tvItemId"
+              helperText="Empty episode field indicates the whole show"
+              style={{ position: 'relative' }}
+            >
               <Suggest
                 selectedItem={options.find(({ id }) => id === values.tvItemId) || null}
                 inputValueRenderer={({ name }) => name}
@@ -166,22 +160,44 @@ const WatchedTvForm: React.FC<Props> = ({ item, season, episode, onSubmit, isLoa
               />
             </FormGroup>
             <FormGroup label="Review" labelFor="review">
-              <TextArea fill growVertically large name="review" onChange={handleChange} value={values.review} />
-            </FormGroup>
-            <FormGroup label="Rating" labelFor="rating">
-              <Rating
-                initialRating={values.rating || undefined}
-                fractions={2}
-                onChange={(value) => setFieldValue('rating', value)}
+              <TextArea
+                fill
+                growVertically
+                large
+                name="review"
+                onChange={handleChange}
+                placeholder="Any thoughts on what you watched?"
+                value={values.review}
               />
             </FormGroup>
-            <Button type="submit" large fill intent={Intent.PRIMARY} loading={isLoading}>
+            <FormGroup label="Rating" labelFor="rating">
+              <div className="flex flex-content-between flex-items-center">
+                <div>
+                  <RatingInput
+                    value={values.rating || 0}
+                    onChange={(value) => setFieldValue('rating', value)}
+                    className="seen-rating"
+                  />
+                  <span> {values.rating || '?'}/5</span>
+                </div>
+                {values.rating && (
+                  <Button
+                    icon="cross"
+                    intent={Intent.DANGER}
+                    minimal
+                    small
+                    onClick={() => setFieldValue('rating', undefined)}
+                  />
+                )}
+              </div>
+            </FormGroup>
+            <Button type="submit" fill intent={Intent.PRIMARY} loading={isLoading}>
               Add
             </Button>
           </form>
         )}
       </Formik>
-    </React.Fragment>
+    </div>
   );
 };
 

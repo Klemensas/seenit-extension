@@ -1,8 +1,12 @@
-export function getStorageValue<T = object>(...keys: string[]) {
-  return new Promise<T>((resolve) => chrome.storage.sync.get(keys, (value) => resolve(value as T)));
+import { UserDataQuery } from '../graphql';
+
+export function getStorageValue<T extends string>(...keys: T[]) {
+  return new Promise<Record<T, unknown>>((resolve) =>
+    chrome.storage.sync.get(keys, (value) => resolve(value as Record<T, unknown>)),
+  );
 }
 
-export function updateStorage<T = object>(value: T) {
+export function updateStorage<T = Record<string, unknown>>(value: T) {
   return new Promise<void>((resolve) => chrome.storage.sync.set(value, resolve));
 }
 
@@ -23,3 +27,10 @@ chrome.storage.onChanged.addListener((changes) => {
 
   Object.entries(changes).forEach(([key, value]) => registeredCallbacks[key]?.forEach((cb) => cb(value)));
 });
+
+export function hasUserData(user: unknown): user is UserDataQuery['userData'] {
+  if (typeof user !== 'object') return false;
+  if (!user) return false;
+
+  return 'settings' in user;
+}

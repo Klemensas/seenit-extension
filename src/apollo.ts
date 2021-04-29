@@ -10,7 +10,7 @@ import { resolvers } from './resolvers';
 
 export const cache = new InMemoryCache({ possibleTypes: introspectionQueryResultData.possibleTypes });
 
-getStorageValue<{ token?: string; user?: object }>('token', 'user').then(({ token, user }) => {
+getStorageValue('token', 'user').then(({ token, user }) => {
   cache.writeQuery({
     query: gql`
       {
@@ -28,7 +28,7 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((request, { headers }) =>
-  getStorageValue<{ token: string }>('token').then(({ token }) => ({
+  getStorageValue('token').then(({ token }) => ({
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : '',

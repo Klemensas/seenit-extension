@@ -85,7 +85,7 @@ export default withRouter(function Login({ history }) {
           />
         </FormGroup>
 
-        <div className="flex flex-between">
+        <div className="flex flex-content-between">
           <Button type="submit" intent={Intent.PRIMARY}>
             {isLogin ? 'Login' : 'Register'}
           </Button>

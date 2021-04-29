@@ -1,4 +1,4 @@
-import { debugLog, getSettings } from '../main';
+import { debugLog, getStorageSettings } from '../main';
 
 export interface RenderServiceState {
   mutationObserver: MutationObserver | null;
@@ -176,18 +176,14 @@ export default class RenderService {
   }
 
   private onVideoPause(videoEl: HTMLVideoElement) {
-    const title =
-      this.state.videoData && this.state.videoData.title
-        ? this.state.videoData.title
-        : RenderService.getTitlesFromHeading();
     this.state.videoData = {
       ...(this.state.videoData as VideoData),
-      title: { name: 'adas-324-sdsa-das-dsa-d' },
       isPlaying: false,
       lastTimestamp: videoEl.currentTime,
     };
 
-    // TODO: should be a part of end
+    if (!process.env.TRACK_ON_PAUSE) return;
+
     this.triggerCb(this.state.videoData);
   }
 
@@ -197,6 +193,8 @@ export default class RenderService {
       isPlaying: false,
       lastTimestamp: videoEl.currentTime,
     };
+
+    this.triggerCb(this.state.videoData);
   }
 
   private onStartVideo(videoEl: HTMLVideoElement) {
@@ -210,7 +208,7 @@ export default class RenderService {
   }
 
   private async triggerCb(videoData: VideoData) {
-    const settings = await getSettings();
+    const settings = await getStorageSettings();
     debugLog('pause video');
     if (settings?.extension.blacklist.every((item) => !new RegExp(item, 'i').test(window.location.href))) {
       this.cb(videoData);
@@ -222,9 +220,13 @@ export default class RenderService {
     const potentialTitles = Array.from(headings)
       .sort((a, b) => +a.tagName.slice(1) - +b.tagName.slice(1))
       .filter((node) => RenderService.isValidNode(node));
-    const title = potentialTitles[0];
+
+    // Pick 1st element that has any text
+    const title = potentialTitles.find((node) => !!node.textContent);
 
     if (!title?.textContent) return null;
+
+    // TODO: break title further down and check for element identification (classes: title and episode), consider sending an array of potential targets, narrowing down
 
     const name = title.textContent
       .toLowerCase()
@@ -240,14 +242,10 @@ export default class RenderService {
   }
 
   public static isValidNode(node: Element) {
-    if (!node.textContent || !new RegExp('\\w+').test(node.textContent)) {
-      return false;
-    }
+    if (!node.textContent || !new RegExp('\\w+').test(node.textContent)) return false;
 
     const brandRegexp = new RegExp('logo|brand', 'gi');
-    if (brandRegexp.test(node.id) || brandRegexp.test(node.className)) {
-      return false;
-    }
+    if (brandRegexp.test(node.id) || brandRegexp.test(node.className)) return false;
 
     return true;
   }

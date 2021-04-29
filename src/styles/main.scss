@@ -27,8 +27,6 @@
 }
 
 .bp3-progress-bar {
-  color: red;
-
   &--custom {
     height: 4px;
 
@@ -41,53 +39,82 @@
 .flex {
   display: flex;
 
-  &-between {
+  &-content-between {
     justify-content: space-between;
+  }
+  &-content-flex-end {
+    justify-content: flex-end;
   }
 
   &-direction-column {
     flex-direction: column;
   }
 
-  &-align-items-center {
+  &-items-center {
     align-items: center;
   }
-}
 
-$spacing-unit: 4px;
-.pb {
-  &-1 {
-    padding-bottom: $spacing-unit;
-  }
-
-  &-2 {
-    padding-bottom: $spacing-unit * 2;
-  }
-
-  &-3 {
-    padding-bottom: $spacing-unit * 4;
-  }
-
-  &-4 {
-    padding-bottom: $spacing-unit * 8;
+  &-grow {
+    flex-grow: 1;
   }
 }
 
-.mb {
-  &-1 {
-    margin-bottom: $spacing-unit;
-  }
+$baseSize: 4px;
+$sizes: (
+  '0': 0,
+  '1': $baseSize * 1,
+  '2': $baseSize * 2,
+  '3': $baseSize * 4,
+  '4': $baseSize * 8,
+) !default;
 
-  &-2 {
-    margin-bottom: $spacing-unit * 2;
-  }
+$spacings: (
+  'm': 'margin',
+  'p': 'padding',
+);
 
-  &-3 {
-    margin-bottom: $spacing-unit * 4;
-  }
+$directions: (
+  'y': (
+    'top',
+    'bottom',
+  ),
+  'x': (
+    'left',
+    'right',
+  ),
+  't': (
+    'top',
+  ),
+  'r': (
+    'right',
+  ),
+  'b': (
+    'bottom',
+  ),
+  'l': (
+    'left',
+  ),
+);
 
-  &-4 {
-    margin-bottom: $spacing-unit * 8;
+@each $shorthand, $property in $spacings {
+  .#{$shorthand} {
+    @each $size, $value in $sizes {
+      &-#{$size} {
+        #{$property}: $value;
+      }
+    }
+
+    @each $direction, $modifiers in $directions {
+      &#{$direction} {
+        @each $size, $value in $sizes {
+          &-#{$size} {
+            @each $modifier in $modifiers {
+              #{$property}-#{$modifier}: $value;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
