@@ -2,16 +2,15 @@ import * as React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import * as ReactDOM from 'react-dom';
 import { MemoryRouter } from 'react-router';
-import { Toaster } from '@blueprintjs/core';
 
 import { apolloClient } from '../apollo';
-import { getSettings } from '../main';
+import { getStorageSettings } from '../main';
 import Content from './Content';
 import RenderService, { VideoData } from './renderService';
-import { AddAutoTrackedDocument, AddAutoTrackedMutation } from '../graphql';
+import { setContainer } from '../utils/helpers';
 
 const render = async (videoData: VideoData) => {
-  const settings = await getSettings();
+  const settings = await getStorageSettings();
 
   if (!settings) return;
 
@@ -21,112 +20,17 @@ const render = async (videoData: VideoData) => {
     container.setAttribute('id', 'seenit-container');
   }
 
+  // TODO: can this get called when the container is still present?
   const targetElement = document.fullscreenElement || document.body;
   targetElement.appendChild(container);
+  setContainer(container);
 
-  if (settings.extension.autoTrack) {
-    const autoTrackedMutation = await apolloClient.mutate<AddAutoTrackedMutation>({
-      mutation: AddAutoTrackedDocument,
-      variables: {
-        createdAt: Date.now(),
-        meta: {
-          title: videoData.title?.name,
-          tvData:
-            videoData.title?.season || videoData.title?.episode
-              ? {
-                  season: videoData.title.season,
-                  episode: videoData.title.episode,
-                }
-              : null,
-          url: window.location.href,
-          provider: 'extension',
-        },
-      },
-    });
+  let targetRoute = ['/'];
 
-    if (autoTrackedMutation.errors) {
-      // TODO: handle errors
-      Toaster.create(
-        {
-          position: 'top-right',
-        },
-        container,
-      ).show({
-        intent: 'danger',
-        message: (
-          <div className="text-ellipsis">
-            <span>⚠ tracking failed</span>
-          </div>
-        ),
-        // TODO: add retrying and display error
-        action: {
-          text: 'Retry',
-        },
-      });
-    } else if (autoTrackedMutation?.data?.addAutoTracked) {
-      const autoTrackedData = autoTrackedMutation.data.addAutoTracked;
-      const autoTrackedItem = autoTrackedData.item;
-      const tvData = autoTrackedData.tvItem;
-
-      if (!autoTrackedItem) {
-        Toaster.create(
-          {
-            position: 'top-right',
-          },
-          container,
-        ).show({
-          intent: 'warning',
-          message: (
-            <div className="text-ellipsis">
-              <span>❓ couldn't identify tracked item</span>
-            </div>
-          ),
-          // TODO: add editing functionality. How about undoing/publishing?
-          action: {
-            text: 'Edit',
-          },
-        });
-        return;
-      }
-
-      const name = 'name' in autoTrackedItem ? autoTrackedItem.name : autoTrackedItem.title;
-
-      let tvMeta = '';
-      if (tvData) {
-        tvMeta =
-          'episode_number' in tvData
-            ? `S${tvData.season.season_number}E${tvData.episode_number}`
-            : `S${tvData.season_number}`;
-      }
-
-      Toaster.create(
-        {
-          position: 'top-right',
-        },
-        container,
-      ).show({
-        intent: 'success',
-        message: (
-          <div className="text-ellipsis">
-            <span>👏 tracked </span>
-            <strong>
-              {tvMeta && <span>{tvMeta} </span>}
-              <span>{name}</span>
-            </strong>
-          </div>
-        ),
-        // TODO: add editing functionality. How about undoing/publishing?
-        action: {
-          text: 'Edit',
-        },
-      });
-    }
-
-    return;
-  }
+  if (settings.extension.autoTrack) targetRoute = ['/auto-tracked'];
 
   ReactDOM.render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={targetRoute} initialIndex={0}>
       <ApolloProvider client={apolloClient}>
         <Content videoData={videoData} />
       </ApolloProvider>

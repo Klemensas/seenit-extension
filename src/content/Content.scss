@@ -23,16 +23,50 @@
   }
 
   .notification-layout {
+    .card-notification {
+      $padding: 8px;
+
+      // TODO: can overflow really be shown? Done so to make popovers breakout and be shown fully
+      // overflow: hidden;
+      position: relative;
+      padding: $padding;
+      // TODO: investigate whether this is fine - mainly meant for stopping title from expanding further and must consider tracking size which has a min size of 400
+      max-width: 600px;
+
+      &--auto-hide {
+        // Add to bottom padding height of progressbar
+        padding: $padding $padding $padding + $progress-bar-height;
+      }
+    }
+
+    .card-intent-primary,
+    .card-intent-success,
+    .card-intent-warning,
+    .card-intent-danger {
+      color: $pt-dark-text-color;
+    }
+
+    .card-intent-primary {
+      background-color: $pt-intent-primary;
+    }
+    .card-intent-success {
+      background-color: $pt-intent-success;
+    }
+    .card-intent-warning {
+      background-color: $pt-intent-warning;
+    }
     .card-intent-danger {
       background-color: $pt-intent-danger;
     }
 
-    .card-intent-warning {
-      background-color: $pt-intent-warning;
+    .bp3-intent-danger .bp3-progress-meter {
+      background-color: darken($pt-intent-danger, 20%);
     }
-
-    .card-intent-success {
-      background-color: $pt-intent-success;
+    .bp3-intent-warning .bp3-progress-meter {
+      background-color: darken($pt-intent-warning, 20%);
+    }
+    .bp3-intent-success .bp3-progress-meter {
+      background-color: darken($pt-intent-success, 20%);
     }
 
     .bp3-text-muted {
@@ -42,9 +76,6 @@
     .card-intent-danger,
     .card-intent-warning,
     .card-intent-success {
-      color: $pt-dark-text-color;
-      padding: 8px;
-
       .bp3-icon,
       .bp3-button {
         color: rgba($pt-dark-text-color, 0.7);
@@ -55,5 +86,33 @@
         }
       }
     }
+
+    .card-progressbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      border-radius: 0;
+    }
   }
+
+  // TODO: figure out a better way to override card search suggestion overflow
+  .bp3-popover-wrapper .bp3-transition-container {
+    width: 100%;
+
+    .bp3-select-popover {
+      width: 100%;
+    }
+  }
+}
+
+.seen-rating {
+  min-height: $pt-button-height-small;
+  display: inline-flex !important;
+  align-items: center;
+}
+
+// Minimum size when not much content present (error, not found), search dropdown does not expand the size and depends on min size
+.track-card-notification {
+  min-width: 400px;
+  min-height: 400px;
 }

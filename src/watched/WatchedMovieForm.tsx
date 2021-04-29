@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { MutationFunction } from '@apollo/client';
 import { Formik } from 'formik';
-import Rating from 'react-rating';
-import { FormGroup, TextArea, Button, Intent } from '@blueprintjs/core';
+import { FormGroup, TextArea, Button, Intent, PopoverPosition } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 
 import { MovieQuery, AddWatchedMutation, AddWatchedMutationVariables, ItemType } from '../graphql';
+import RatingInput from './RatingInput';
 
 interface Props {
   item: MovieQuery['movie'];
@@ -15,15 +15,16 @@ interface Props {
 
 const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
   return (
-    <React.Fragment>
-      <div style={{ display: 'flex' }}>
-        {item.poster_path ? (
-          <div>
-            <img src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} alt="" />
-          </div>
-        ) : null}
-        <div style={{ padding: '0 0.5em' }}>Did you enjoy watching {item.title}?</div>
-      </div>
+    <div className="flex">
+      {item.poster_path ? (
+        <div className="pr-3">
+          <img
+            src={`https://image.tmdb.org/t/p/w185${item.poster_path}`}
+            width="185"
+            alt={`Poster for ${item.title}`}
+          />
+        </div>
+      ) : null}
       <Formik<{ review: string; rating: number | null; createdAt: number }>
         enableReinitialize
         initialValues={{
@@ -52,12 +53,16 @@ const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
         }}
       >
         {({ values, handleChange, handleSubmit, setFieldValue }) => (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="flex-grow">
             <FormGroup label="Date" labelFor="createdAt">
               <DateInput
                 popoverProps={{
+                  minimal: true,
                   fill: true,
+                  usePortal: false,
+                  position: PopoverPosition.TOP,
                 }}
+                timePrecision="second"
                 formatDate={(date) => date.toLocaleString()}
                 parseDate={(str) => new Date(str)}
                 placeholder="M/D/YYYY"
@@ -66,14 +71,36 @@ const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
               />
             </FormGroup>
             <FormGroup label="Review" labelFor="review">
-              <TextArea fill growVertically large name="review" onChange={handleChange} value={values.review} />
+              <TextArea
+                fill
+                growVertically
+                large
+                name="review"
+                onChange={handleChange}
+                placeholder="Any thoughts on what you watched?"
+                value={values.review}
+              />
             </FormGroup>
             <FormGroup label="Rating" labelFor="rating">
-              <Rating
-                initialRating={values.rating || undefined}
-                fractions={2}
-                onChange={(value) => setFieldValue('rating', value)}
-              />
+              <div className="flex flex-content-between flex-items-center">
+                <div>
+                  <RatingInput
+                    value={values.rating || 0}
+                    onChange={(value) => setFieldValue('rating', value)}
+                    className="seen-rating"
+                  />
+                  <span> {values.rating || '?'}/5</span>
+                </div>
+                {values.rating && (
+                  <Button
+                    icon="cross"
+                    intent={Intent.DANGER}
+                    minimal
+                    small
+                    onClick={() => setFieldValue('rating', undefined)}
+                  />
+                )}
+              </div>
             </FormGroup>
             <Button type="submit" large fill intent={Intent.PRIMARY} loading={isLoading}>
               Add
@@ -81,7 +108,7 @@ const WatchedMovieForm: React.FC<Props> = ({ item, onSubmit, isLoading }) => {
           </form>
         )}
       </Formik>
-    </React.Fragment>
+    </div>
   );
 };
 
