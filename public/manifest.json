@@ -40,6 +40,11 @@
       "all_frames": true
     }
   ],
+  "externally_connectable": {
+    "matches": [
+      "*://seenit.show/*"
+    ]
+  },
   "background": {
     "scripts": [
       "js/background.js"
