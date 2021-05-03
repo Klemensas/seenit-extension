@@ -24,21 +24,21 @@
     },
     {
       "matches": [
-        "https://seenit.show/*"
-      ],
-      "js": [
-        "js/content.js"
-      ]
-    },
-    {
-      "matches": [
         "*://*/*"
       ],
       "js": [
         "js/iframeContent.js"
       ],
       "all_frames": true
-    }
+    },
+    {
+      "matches": [
+        "https://seenit.show/*"
+      ],
+      "js": [
+        "js/seenitContent.js"
+      ]
+    },
   ],
   "externally_connectable": {
     "matches": [
