@@ -17,7 +17,6 @@ export const renderWatchedActionTitle = (
   item: EditableWatchedFragment['item'],
   tvItem: EditableWatchedFragment['tvItem'],
 ) => {
-  console.log('dafuq', prefix, item, tvItem);
   const name = 'name' in item ? item.name : item.title;
 
   let tvMeta = '';

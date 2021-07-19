@@ -1,23 +1,19 @@
 import * as React from 'react';
 import { Formik, Form } from 'formik';
-import { Switch, Spinner, Button, H3, FormGroup, H4, NumericInput } from '@blueprintjs/core';
+import { Spinner, Button, H3, FormGroup, H4, NumericInput, Checkbox } from '@blueprintjs/core';
 
 import Blacklist from './Blacklist';
-import { useUserDataQuery, useUpdateSettingsMutation, useSettingsQuery } from '../graphql';
+import { useUpdateSettingsMutation, useSettingsQuery } from '../graphql';
 import { updateUserSettings } from '../common/apollo/helpers';
 
 const Settings = () => {
   const { data: settingsData, loading } = useSettingsQuery();
-  const { data: localUser } = useUserDataQuery();
   const currentSettings = settingsData?.settings;
   const [updateSettings] = useUpdateSettingsMutation({
     update: (cache, { data }) => {
-      if (!data || !localUser) return;
+      if (!data) return;
 
-      updateUserSettings(cache, {
-        ...localUser.userData,
-        settings: data.updateSettings,
-      });
+      updateUserSettings(cache, data.updateSettings);
     },
   });
 
@@ -52,7 +48,7 @@ const Settings = () => {
                   label="Auto tracked"
                   helperText="Enabling this publishes identified auto tracked items directly to your watched list instead of saving them as a draft first"
                 >
-                  <Switch
+                  <Checkbox
                     name="general.autoConvert"
                     label="Automatically publish eligible items"
                     checked={values.general.autoConvert}
@@ -68,7 +64,7 @@ const Settings = () => {
                   label="Tracking"
                   helperText="Enabling this removes the watched popup after finishing a video and instead automatically saves the item as a draft"
                 >
-                  <Switch
+                  <Checkbox
                     name="extension.autoTrack"
                     label="Automatically track finished videos"
                     checked={values.extension.autoTrack}

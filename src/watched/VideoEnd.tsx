@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Intent } from '@blueprintjs/core';
+import { Button, Intent } from '@blueprintjs/core';
 
 import { useSearchContentQuery, SearchItem, SearchContentQuery, EditableWatchedFragment } from '../graphql';
 import { VideoContext } from '../content/Content';
@@ -7,11 +7,13 @@ import Search from './Search';
 import WatchedForm from './WatchedForm';
 import { CardNotification } from './CardNotification';
 import { renderWatchedActionTitle } from '../utils/watched';
+import IgnorePrompt from './IgnorePrompt';
 
 const VideoEnd = () => {
   const videoData = React.useContext(VideoContext);
   const [selected, setSelected] = React.useState<SearchItem | null>(null);
   const [saved, setSaved] = React.useState<EditableWatchedFragment>();
+  const [isBlacklisted, setIsBlacklisted] = React.useState(false);
   const title = videoData?.title || null;
   const { data, loading, error } = useSearchContentQuery({
     // TODO: this is needed because title type says it can be undefined, but skip prevents that. See if this can be changed
@@ -34,15 +36,16 @@ const VideoEnd = () => {
   cardTitle = cardTitle || (error && 'Unexpected error');
   cardTitle = cardTitle || (target ? `Seen ${target.title}` : "Couldn't find your watched item");
 
-  if (saved) {
-    console.log('saved thing', saved);
+  if (saved)
     return (
       <CardNotification
         intent={Intent.SUCCESS}
         title={renderWatchedActionTitle('🙌 Saved', saved.item, saved.tvItem)}
       />
     );
-  }
+
+  if (isBlacklisted)
+    return <CardNotification intent={Intent.SUCCESS} title="✅ added to your blacklist" hideAfter={4000} />;
 
   return (
     <CardNotification title={<strong>{cardTitle}</strong>} hideAfter={false} className="track-card-notification">
@@ -59,6 +62,9 @@ const VideoEnd = () => {
             onSave={(watched) => setSaved(watched)}
           />
         )}
+        <div className="pt-4">
+          <IgnorePrompt onBlacklisted={() => setIsBlacklisted(true)} />
+        </div>
       </>
     </CardNotification>
   );

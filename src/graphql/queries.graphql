@@ -95,14 +95,7 @@ query Movie($id: ID!) {
 
 query Settings {
   settings {
-    general {
-      autoConvert
-    }
-    extension {
-      autoTrack
-      minLengthSeconds
-      blacklist
-    }
+    ...ManagedSettings
   }
 }
 
