@@ -60,13 +60,9 @@ const Search = ({ selected, setSelected, placeholderText = 'Search...' }: Search
       }}
       className="select-popover-centered"
     >
-      <Button
-        loading={searchQuery.loading}
-        large
-        minimal
-        text={selected ? selected.title : placeholderText}
-        className="bp3-fill"
-      />
+      <Button loading={searchQuery.loading} large minimal outlined fill>
+        {selected ? selected.title : placeholderText}
+      </Button>
     </Select>
   );
 };

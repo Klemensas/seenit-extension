@@ -151,16 +151,26 @@ mutation AddAutoTracked(
   }
 }
 
+fragment ManagedSettings on Settings {
+  general {
+    autoConvert
+  }
+  extension {
+    autoTrack
+    minLengthSeconds
+    blacklist
+  }
+}
+
 mutation UpdateSettings($general: GeneralSettingsInput!, $extension: ExtensionSettingsInput!) {
   updateSettings(general: $general, extension: $extension) {
-    general {
-      autoConvert
-    }
-    extension {
-      autoTrack
-      minLengthSeconds
-      blacklist
-    }
+    ...ManagedSettings
+  }
+}
+
+mutation AddToExtensionBlacklist($blacklistItem: String!) {
+  addToExtensionBlacklist(blacklistItem: $blacklistItem) {
+    ...ManagedSettings
   }
 }
 

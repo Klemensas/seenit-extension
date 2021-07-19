@@ -1,4 +1,5 @@
 import { debugLog, getStorageSettings } from '../main';
+import { normalizeUrl } from '../utils/helpers';
 
 export interface RenderServiceState {
   mutationObserver: MutationObserver | null;
@@ -209,10 +210,12 @@ export default class RenderService {
 
   private async triggerCb(videoData: VideoData) {
     const settings = await getStorageSettings();
+    const isBlacklisted = settings.extension.blacklist.some((item) => new RegExp(item, 'i').test(normalizeUrl()));
     debugLog('pause video');
-    if (settings?.extension.blacklist.every((item) => !new RegExp(item, 'i').test(window.location.href))) {
-      this.cb(videoData);
-    }
+
+    if (isBlacklisted) return;
+
+    this.cb(videoData);
   }
 
   public static getTitlesFromHeading(): Title | null {

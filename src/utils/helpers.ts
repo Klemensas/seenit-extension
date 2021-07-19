@@ -1,3 +1,6 @@
+// Required for normalize-url, see https://github.com/sindresorhus/normalize-url/releases/tag/v5.0.0
+import NormalizeUrl = require('normalize-url');
+
 /* eslint-disable import/prefer-default-export */
 
 export const isProduction = process.env.NODE_ENV === 'production';
@@ -45,3 +48,8 @@ export const getTokenPayload = (token?: string | null) => {
     return null;
   }
 };
+
+export const normalizeUrl = (
+  url: string = window.location.href,
+  options: NormalizeUrl.Options = { stripProtocol: true },
+) => NormalizeUrl(url, options);

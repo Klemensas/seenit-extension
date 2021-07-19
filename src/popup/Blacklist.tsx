@@ -3,7 +3,7 @@ import * as React from 'react';
 import { InputGroup, Button, FormGroup, Intent, Callout, Colors } from '@blueprintjs/core';
 
 const inputRegex = new RegExp(
-  '^(?:(?:(?:https?|ftp|\\*):)?\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:\\*\\.?)?(?:[a-z0-9\\u00a1-\\uffff][a-z0-9\\u00a1-\\uffff_-]{0,62})?[a-z0-9\\u00a1-\\uffff]\\.)+((?:\\*)|(?:[a-z\\u00a1-\\uffff]{2,}\\.?)))(?::\\d{2,5})?(?:[/?#]\\S*)?$',
+  '^(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:\\*\\.?)?(?:[a-z0-9\\u00a1-\\uffff][a-z0-9\\u00a1-\\uffff_-]{0,62})?[a-z0-9\\u00a1-\\uffff]\\.)+((?:\\*)|(?:[a-z\\u00a1-\\uffff]{2,}\\.?)))(?::\\d{2,5})?(?:[/?#]\\S*)?$',
   'i',
 );
 
@@ -51,7 +51,7 @@ interface ListItem {
 
 const Blacklist = ({ id, list, updateList, helperTextPrefix }: BlacklistProps) => {
   const [input, setInput] = React.useState('');
-  const [error, setError] = React.useState<string>('');
+  const [error, setError] = React.useState('');
   const { list: cleanList, hasClashing } = list.reduce(
     (acc: { list: ListItem[]; hasClashing: boolean }, item) => {
       const matches = !!input && new RegExp(item, 'i').test(input);
@@ -77,13 +77,11 @@ const Blacklist = ({ id, list, updateList, helperTextPrefix }: BlacklistProps) =
             <span>
               Supports basic wildcards, some supported examples:
               <br />
-              https://www.netflix.com/watch/80186674
+              youtube.*
               <br />
-              *://*.google.com/video/*
+              *.google.com/video/*
               <br />
-              //youtube.*
-              <br />
-              *://watch.*
+              netflix.com/watch/80186674
             </span>
           </>
         }
@@ -92,7 +90,7 @@ const Blacklist = ({ id, list, updateList, helperTextPrefix }: BlacklistProps) =
           id={id}
           value={input}
           intent={error ? Intent.DANGER : Intent.NONE}
-          placeholder="https://netflix.com/*"
+          placeholder="facebook.com/video/*"
           onChange={({ currentTarget }: React.FormEvent<HTMLInputElement>) => {
             setInput(currentTarget.value);
             setError('');

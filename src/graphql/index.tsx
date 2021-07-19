@@ -116,7 +116,7 @@ export type Movie = {
   poster_path?: Maybe<Scalars['String']>;
   production_companies?: Maybe<Array<Maybe<Company>>>;
   production_countries?: Maybe<Array<Maybe<Country>>>;
-  release_date: Scalars['String'];
+  release_date?: Maybe<Scalars['String']>;
   revenue?: Maybe<Scalars['Int']>;
   runtime?: Maybe<Scalars['Int']>;
   spoken_languages?: Maybe<Array<Maybe<Language>>>;
@@ -241,10 +241,10 @@ export type Tv = {
   backdrop_path?: Maybe<Scalars['String']>;
   created_by?: Maybe<Array<Maybe<Author>>>;
   episode_run_time?: Maybe<Array<Maybe<Scalars['Int']>>>;
-  first_air_date: Scalars['String'];
+  first_air_date?: Maybe<Scalars['String']>;
   genres?: Maybe<Array<Maybe<Genre>>>;
   homepage: Scalars['String'];
-  in_production: Scalars['Boolean'];
+  in_production?: Maybe<Scalars['Boolean']>;
   languages?: Maybe<Array<Maybe<Scalars['String']>>>;
   last_air_date: Scalars['String'];
   last_episode_to_air?: Maybe<Episode>;
@@ -414,6 +414,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   _?: Maybe<Scalars['Boolean']>;
   addAutoTracked: AutoTrackedResult;
+  addToExtensionBlacklist: Settings;
   addWatched: Watched;
   convertAutoTracked: ConvertedAutoTracked;
   editWatched: Watched;
@@ -433,6 +434,10 @@ export type MutationAddAutoTrackedArgs = {
   itemType?: Maybe<ItemType>;
   tvItemId?: Maybe<Scalars['ID']>;
   tvItemType?: Maybe<TvItemType>;
+};
+
+export type MutationAddToExtensionBlacklistArgs = {
+  blacklistItem: Scalars['String'];
 };
 
 export type MutationAddWatchedArgs = {
@@ -727,19 +732,29 @@ export type AddAutoTrackedMutation = { __typename?: 'Mutation' } & {
     | ({ __typename?: 'Watched' } & EditableWatchedFragment);
 };
 
+export type ManagedSettingsFragment = { __typename?: 'Settings' } & {
+  general: { __typename?: 'GeneralSettings' } & Pick<GeneralSettings, 'autoConvert'>;
+  extension: { __typename?: 'ExtensionSettings' } & Pick<
+    ExtensionSettings,
+    'autoTrack' | 'minLengthSeconds' | 'blacklist'
+  >;
+};
+
 export type UpdateSettingsMutationVariables = Exact<{
   general: GeneralSettingsInput;
   extension: ExtensionSettingsInput;
 }>;
 
 export type UpdateSettingsMutation = { __typename?: 'Mutation' } & {
-  updateSettings: { __typename?: 'Settings' } & {
-    general: { __typename?: 'GeneralSettings' } & Pick<GeneralSettings, 'autoConvert'>;
-    extension: { __typename?: 'ExtensionSettings' } & Pick<
-      ExtensionSettings,
-      'autoTrack' | 'minLengthSeconds' | 'blacklist'
-    >;
-  };
+  updateSettings: { __typename?: 'Settings' } & ManagedSettingsFragment;
+};
+
+export type AddToExtensionBlacklistMutationVariables = Exact<{
+  blacklistItem: Scalars['String'];
+}>;
+
+export type AddToExtensionBlacklistMutation = { __typename?: 'Mutation' } & {
+  addToExtensionBlacklist: { __typename?: 'Settings' } & ManagedSettingsFragment;
 };
 
 export type ConvertAutoTrackedMutationVariables = Exact<{
@@ -834,13 +849,7 @@ export type MovieQuery = { __typename?: 'Query' } & {
 export type SettingsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type SettingsQuery = { __typename?: 'Query' } & {
-  settings: { __typename?: 'Settings' } & {
-    general: { __typename?: 'GeneralSettings' } & Pick<GeneralSettings, 'autoConvert'>;
-    extension: { __typename?: 'ExtensionSettings' } & Pick<
-      ExtensionSettings,
-      'autoTrack' | 'minLengthSeconds' | 'blacklist'
-    >;
-  };
+  settings: { __typename?: 'Settings' } & ManagedSettingsFragment;
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -920,6 +929,18 @@ export const EditableWatchedFragmentDoc = gql`
   }
   ${TvItemDataFragmentDoc}
   ${ItemDataFragmentDoc}
+`;
+export const ManagedSettingsFragmentDoc = gql`
+  fragment ManagedSettings on Settings {
+    general {
+      autoConvert
+    }
+    extension {
+      autoTrack
+      minLengthSeconds
+      blacklist
+    }
+  }
 `;
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
@@ -1280,16 +1301,10 @@ export type AddAutoTrackedMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateSettingsDocument = gql`
   mutation UpdateSettings($general: GeneralSettingsInput!, $extension: ExtensionSettingsInput!) {
     updateSettings(general: $general, extension: $extension) {
-      general {
-        autoConvert
-      }
-      extension {
-        autoTrack
-        minLengthSeconds
-        blacklist
-      }
+      ...ManagedSettings
     }
   }
+  ${ManagedSettingsFragmentDoc}
 `;
 export type UpdateSettingsMutationFn = Apollo.MutationFunction<UpdateSettingsMutation, UpdateSettingsMutationVariables>;
 export type UpdateSettingsComponentProps = Omit<
@@ -1335,6 +1350,64 @@ export type UpdateSettingsMutationResult = Apollo.MutationResult<UpdateSettingsM
 export type UpdateSettingsMutationOptions = Apollo.BaseMutationOptions<
   UpdateSettingsMutation,
   UpdateSettingsMutationVariables
+>;
+export const AddToExtensionBlacklistDocument = gql`
+  mutation AddToExtensionBlacklist($blacklistItem: String!) {
+    addToExtensionBlacklist(blacklistItem: $blacklistItem) {
+      ...ManagedSettings
+    }
+  }
+  ${ManagedSettingsFragmentDoc}
+`;
+export type AddToExtensionBlacklistMutationFn = Apollo.MutationFunction<
+  AddToExtensionBlacklistMutation,
+  AddToExtensionBlacklistMutationVariables
+>;
+export type AddToExtensionBlacklistComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    AddToExtensionBlacklistMutation,
+    AddToExtensionBlacklistMutationVariables
+  >,
+  'mutation'
+>;
+
+export const AddToExtensionBlacklistComponent = (props: AddToExtensionBlacklistComponentProps) => (
+  <ApolloReactComponents.Mutation<AddToExtensionBlacklistMutation, AddToExtensionBlacklistMutationVariables>
+    mutation={AddToExtensionBlacklistDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useAddToExtensionBlacklistMutation__
+ *
+ * To run a mutation, you first call `useAddToExtensionBlacklistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddToExtensionBlacklistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addToExtensionBlacklistMutation, { data, loading, error }] = useAddToExtensionBlacklistMutation({
+ *   variables: {
+ *      blacklistItem: // value for 'blacklistItem'
+ *   },
+ * });
+ */
+export function useAddToExtensionBlacklistMutation(
+  baseOptions?: Apollo.MutationHookOptions<AddToExtensionBlacklistMutation, AddToExtensionBlacklistMutationVariables>,
+) {
+  return Apollo.useMutation<AddToExtensionBlacklistMutation, AddToExtensionBlacklistMutationVariables>(
+    AddToExtensionBlacklistDocument,
+    baseOptions,
+  );
+}
+export type AddToExtensionBlacklistMutationHookResult = ReturnType<typeof useAddToExtensionBlacklistMutation>;
+export type AddToExtensionBlacklistMutationResult = Apollo.MutationResult<AddToExtensionBlacklistMutation>;
+export type AddToExtensionBlacklistMutationOptions = Apollo.BaseMutationOptions<
+  AddToExtensionBlacklistMutation,
+  AddToExtensionBlacklistMutationVariables
 >;
 export const ConvertAutoTrackedDocument = gql`
   mutation ConvertAutoTracked($ids: [ID!]!) {
@@ -1775,16 +1848,10 @@ export type MovieQueryResult = Apollo.QueryResult<MovieQuery, MovieQueryVariable
 export const SettingsDocument = gql`
   query Settings {
     settings {
-      general {
-        autoConvert
-      }
-      extension {
-        autoTrack
-        minLengthSeconds
-        blacklist
-      }
+      ...ManagedSettings
     }
   }
+  ${ManagedSettingsFragmentDoc}
 `;
 export type SettingsComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<SettingsQuery, SettingsQueryVariables>,
