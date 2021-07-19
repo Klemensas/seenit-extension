@@ -78,7 +78,7 @@
     "flatpickr": "^4.5.7",
     "formik": "^2.1.4",
     "graphql": "^15.4.0",
-    "normalize-url": "^6.1.0",
+    "normalize-url": "^7.0.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-rating": "^1.7.2",
