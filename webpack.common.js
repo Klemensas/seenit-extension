@@ -4,9 +4,9 @@ const webpack = require('webpack');
 
 module.exports = {
   plugins: [
-    new CopyPlugin([
+    new CopyPlugin({ patterns: [
       { from: 'public/', to: '../' },
-    ]),
+    ]}),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
       SERVER_API: 'http://localhost:9000',
@@ -21,7 +21,6 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'dist/js'),
-    filename: '[name].js'
   },
   module: {
     rules: [
@@ -47,7 +46,15 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        use: [
+          {
+            loader: 'style-loader' // Creates style nodes from JS strings
+          },
+          {
+            loader: 'css-loader' // Translates CSS into CommonJS
+          },
+
+        ]
       },
       {
         exclude: /node_modules/,
