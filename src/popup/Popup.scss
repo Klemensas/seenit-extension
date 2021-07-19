@@ -1,19 +1,14 @@
 @import '~@blueprintjs/core/src/common/variables';
 
-$primary-color: darkblue;
-$background-color: #fefefe;
+@import '../styles/main';
+// @import '../styles/blueprint-overrides';
 
 #seenit-container {
-  @import '../styles/main';
-  @import '../styles/blueprint-overrides';
-
   margin: 0;
   min-width: 400px;
 
   .content-container {
     align-items: center;
-    background-color: $background-color;
-    color: $primary-color;
     justify-content: center;
     padding: 20px;
   }
