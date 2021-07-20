@@ -84,7 +84,7 @@
     "react-rating": "^1.7.2",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
-    "react-spring": "^9.0.0-rc.3",
+    "react-spring": "^9.2.4",
     "react-toastify": "^5.4.1"
   }
 }
